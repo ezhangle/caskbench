@@ -21,17 +21,17 @@ find_package(Cairo)
 
 add_definitions(-std=c99)
 
-#add_executable(fill src/fill.c)
-#target_link_libraries(fill cairo)
+add_executable(fill src/fill.c)
+target_link_libraries(fill cairo)
 
-#add_executable(image src/image.c)
-#target_link_libraries(image cairo)
+add_executable(image src/image.c)
+target_link_libraries(image cairo)
 
-#add_executable(mask src/mask.c)
-#target_link_libraries(mask cairo)
+add_executable(mask src/mask.c)
+target_link_libraries(mask cairo)
 
-#add_executable(paint src/paint.c)
-#target_link_libraries(paint cairo)
+add_executable(paint src/paint.c)
+target_link_libraries(paint cairo)
 
 add_executable(stroke src/stroke.c)
 target_link_libraries(stroke ${CAIRO_LIBRARIES} GL ${GTK2_LIBRARIES} ${X11_LIBRARIES})

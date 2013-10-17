@@ -1,0 +1,24 @@
+caskbench - The Cairo and SKia Benchmark
+========================================
+
+Bryce - can you start make benchmarks to compare cairogles vs. skia?
+The benchmarks would cover fill, stroke, paint, mask and test.  Both
+with constant constant colors and alpha colors, and image as source and
+masks.  For example, one of the benchmark for stroke would be run stroke
+with random line width, join style, cap style, and random dash length on
+randomly generated circles, rectangles.  The benchmarks would use msaa,
+and on PC first and identify which areas of skia can be further
+optimized.  Then we will port benchmarks to android and tizen and do
+further comparison.
+
+We would like to see where the strength and weakness of cairogles or
+skia (please use GL backend for both).
+
+* objectives:
+  - Cover fill, stroke, paint, mask, and test
+  - Constant colors, alpha colors
+  - Image as source and masks
+  - Use MSAA and focus on PC first
+  - Port benchmarks to tizen and android
+* Post to github when ready to be public
+

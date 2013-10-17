@@ -22,3 +22,10 @@ skia (please use GL backend for both).
   - Port benchmarks to tizen and android
 * Post to github when ready to be public
 
+
+== Building ==
+
+To build this testsuite, use these commands:
+
+ $ cmake .
+ $ make

@@ -19,17 +19,7 @@ add_definitions(${GTK2_CFLAGS_OTHER})
 find_package(Cairo)
 #include_directories(BEFORE ${CAIRO_INCLUDE_DIRS})
 
-add_executable(fill src/fill.cpp)
-target_link_libraries(fill cairo)
+add_executable(caskbench src/caskbench.cpp src/fill.cpp src/image.cpp src/mask.cpp src/paint.cpp src/stroke.cpp)
+target_link_libraries(caskbench ${CAIRO_LIBRARIES})
 
-add_executable(image src/image.cpp)
-target_link_libraries(image cairo)
-
-add_executable(mask src/mask.cpp)
-target_link_libraries(mask cairo)
-
-add_executable(paint src/paint.cpp)
-target_link_libraries(paint cairo)
-
-add_executable(stroke src/stroke.cpp)
-target_link_libraries(stroke ${CAIRO_LIBRARIES} GL ${GTK2_LIBRARIES} ${X11_LIBRARIES})
+#target_link_libraries(stroke ${CAIRO_LIBRARIES} GL ${GTK2_LIBRARIES} ${X11_LIBRARIES})

@@ -1,15 +1,37 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
 #include <sys/time.h>
+#include <cairo.h>
 
-#include "framework.h"
+#include "caskbench.h"
 
 typedef struct _caskbench_perf_case {
-  PERF_RUN_DECL (*run);
+  const char *name;
+  int (*setup)(cairo_t*);
+  void (*teardown)(void);
+  int (*test)(cairo_t*);
 } caskbench_perf_case_t;
 
-const caskbench_perf_case_t perf_cases[];
+typedef struct _caskbench_result {
+  const char *test_name;
+  int iterations;
+  double min_run_time;
+  double avg_run_time;
+  int status;
+} caskbench_result_t;
+
+caskbench_perf_case_t perf_cases[] = {
+  {"fill", setup_fill,   teardown_fill,   test_fill},
+  {"image", setup_image,  teardown_image,  test_image},
+  {"mask", setup_mask,   teardown_mask,   test_mask},
+  {"paint", setup_paint,  teardown_paint,  test_paint},
+  {"stroke", setup_stroke, teardown_stroke, test_stroke},
+};
+#define NUM_CASES (5)
 
 double
-cb_get_tick (void)
+get_tick (void)
 {
   struct timeval now;
   gettimeofday (&now, NULL);
@@ -17,15 +39,29 @@ cb_get_tick (void)
 }
 
 void
-cb_generate_color (double *color)
+randomize_color(cairo_t *cr)
 {
-  int i;
+  double red, green, blue, alpha;
 
-  for (i = 0; i< 3; i++)
-    color[i] = (int)(drand48 () * 3)/3.0;
+  red = (double)rand()/RAND_MAX;
+  green = (double)rand()/RAND_MAX;
+  blue = (double)rand()/RAND_MAX;
+  alpha = (double)rand()/RAND_MAX;
+
+  cairo_set_source_rgba (cr, red, green, blue, alpha);
 }
 
-#define NUM_CASES (10)
+void
+display_results_json(const caskbench_result_t *result)
+{
+  printf("   {\n");
+  printf("       \"test\": \"%s\",\n", result->test_name);
+  printf("       \"iterations\": %d,\n", result->iterations);
+  printf("       \"minimum run time (s)\": %f,\n", result->min_run_time);
+  printf("       \"average run time (s)\": %f,\n", result->avg_run_time);
+  printf("       \"status\": \"%d\"\n", result->status);
+  printf("   }");
+}
 
 // TODO: parse_options
 
@@ -33,28 +69,73 @@ int
 main (int argc, char *argv[])
 {
   int c, i;
-  int num_iterations = 10;
-  double start_time, stop_time, run_sec;
+  int iterations_requested = 16*1024;
+  double start_time, stop_time, run_time, run_total;
 
-  parse_options (&perf, argc, argv);
-
-  // TODO: Open output file, start json
+  // TODO: Open output file
+  // start json
+  printf("[\n");
   for (c=0; c<NUM_CASES; c++) {
-    test_case = NULL; // TODO
+    // Setup
+    caskbench_result_t result;
+    cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
+    cairo_t *cr = cairo_create(surface);
     // If dry run, just list the test
+    srand(0xdeadbeef);
+
+    result.test_name = perf_cases[c].name;
+    result.min_run_time = -1.0;
+    result.avg_run_time = -1.0;
+
+    if (perf_cases[c].setup != NULL)
+      if (!perf_cases[c].setup(cr)) {
+	result.status = -1;
+	goto FINAL;
+      }
 
     // TODO: Perhaps run once just to warm caches and calibrate
-    start_time = cb_get_tick();
-    for (i=0; i<num_iterations; i++) {
-    try:
-      // TODO: Execute test_case
-    except:
-      // Mark as crashed
+    for (i=iterations_requested; i>=0; --i) {
+      try {
+	assert(perf_cases[c].test);
+	start_time = get_tick();
+
+	// Execute test_case
+	result.status = perf_cases[c].test(cr);
+
+	stop_time = get_tick();
+	run_time = stop_time - start_time;
+	if (result.min_run_time < 0)
+	  result.min_run_time = run_time;
+	else
+	  result.min_run_time = MIN(run_time, result.min_run_time);
+	run_total += run_time;
+	printf("%f\n", run_time);
+      } catch (...) {
+	printf("Unknown exception encountered\n");
+	// Mark as crashed
+	result.status = 3; // ERROR
+	goto FINAL;
+      }
     }
-    stop_time = cb_get_tick();
-    run_sec = stop_time - start_time;
-    // TODO: Print test summary to stdout
-    // TODO: Write json
+    result.iterations = iterations_requested - i;
+    result.avg_run_time = run_total / (double)result.iterations;
+
+    cairo_surface_write_to_png (surface, "fill.png");
+
+  FINAL:
+    // TODO: Print results to stdout plain text
+    display_results_json(&result);
+    if (c != NUM_CASES-1)
+      printf(",");
+    printf("\n");
+
+    if (perf_cases[c].teardown != NULL)
+      perf_cases[c].teardown();
+    cairo_destroy(cr);
+    cairo_surface_destroy(surface);
   }
-  // TODO: End json, close output file
+
+  // End json
+  printf("]\n");
+  // TODO: close output file
 }

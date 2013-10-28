@@ -2,27 +2,23 @@
 #include <stdlib.h>
 #include <cairo.h>
 
-void
-randomize_color(cairo_t *cr)
+#include "caskbench.h"
+
+int
+setup_stroke(cairo_t *cr)
 {
-  double red, green, blue, alpha;
+  return 1;
+}
 
-  red = (double)rand()/RAND_MAX;
-  green = (double)rand()/RAND_MAX;
-  blue = (double)rand()/RAND_MAX;
-  alpha = (double)rand()/RAND_MAX;
-
-  cairo_set_source_rgba (cr, red, green, blue, alpha);
+void
+teardown_stroke(void)
+{
 }
 
 int
-main(int argc, char *argv[]) {
+test_stroke(cairo_t *cr)
+{
   int i, x, w, prev_w;
-  cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
-  cairo_t *cr = cairo_create (surface);
-
-  srand(0xdeadbeef);
-
   x = 0;
   prev_w = 0;
   for (i=0; i<32; i++) {
@@ -35,10 +31,5 @@ main(int argc, char *argv[]) {
     cairo_stroke (cr);
     prev_w = w;
   }
-
-  cairo_destroy (cr);
-  cairo_surface_write_to_png (surface, "hello.png");
-  cairo_surface_destroy (surface);
-  return 0;
+  return 1;
 }
-

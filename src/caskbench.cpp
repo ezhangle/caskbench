@@ -13,7 +13,7 @@ cb_get_tick (void)
 {
   struct timeval now;
   gettimeofday (&now, NULL);
-  return now.tv_sec + now.tv_usec / 1000000.0;
+  return (double)now.tv_sec + (double)now.tv_usec / 1000000.0;
 }
 
 void
@@ -34,7 +34,7 @@ main (int argc, char *argv[])
 {
   int c, i;
   int num_iterations = 10;
-  double start_time, stop_time;
+  double start_time, stop_time, run_sec;
 
   parse_options (&perf, argc, argv);
 
@@ -52,6 +52,7 @@ main (int argc, char *argv[])
       // Mark as crashed
     }
     stop_time = cb_get_tick();
+    run_sec = stop_time - start_time;
     // TODO: Print test summary to stdout
     // TODO: Write json
   }

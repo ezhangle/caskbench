@@ -4,6 +4,7 @@
 #include <sys/time.h>
 #include <cairo.h>
 #include <popt.h>
+#include <err.h>
 
 #include "caskbench.h"
 
@@ -72,6 +73,7 @@ display_results_json(const caskbench_result_t *result)
 int
 main (int argc, char *argv[])
 {
+  int rc;
   int c, i;
   caskbench_options_t opt;
   double start_time, stop_time, run_time, run_total;
@@ -94,25 +96,21 @@ main (int argc, char *argv[])
   opt.dry_run = 0;
   opt.iterations = 1024;
 
-  int rc = poptGetNextOpt(pc);
   while ((rc = poptGetNextOpt(pc)) >= 0) {
+    printf("%d\n", rc);
   }
   if (rc != -1) {
     // handle error
     switch(rc) {
     case POPT_ERROR_NOARG:
-      printf("Argument missing for an option\n");
-      exit(1);
+      errx(1, "Argument missing for an option\n");
     case POPT_ERROR_BADOPT:
-      printf("Option's argument could not be parsed\n");
-      exit(1);
+      errx(1, "Unknown option or argument\n");
     case POPT_ERROR_BADNUMBER:
     case POPT_ERROR_OVERFLOW:
-      printf("Option could not be converted to number\n");
-      exit(1);
+      errx(1, "Option could not be converted to number\n");
     default:
-      printf("Unknown error in option processing\n");
-      exit(1);
+      errx(1, "Unknown error in option processing\n");
     }
   }
 
@@ -163,7 +161,7 @@ main (int argc, char *argv[])
 	  result.min_run_time = MIN(run_time, result.min_run_time);
 	run_total += run_time;
       } catch (...) {
-	printf("Unknown exception encountered\n");
+	warnx("Unknown exception encountered\n");
 	// Mark as crashed
 	result.status = 3; // ERROR
 	goto FINAL;

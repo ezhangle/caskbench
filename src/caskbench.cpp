@@ -37,6 +37,78 @@ caskbench_perf_test_t perf_tests[] = {
 };
 #define NUM_CASES (5)
 
+typedef enum {
+  CASKBENCH_STATUS_PASS,
+  CASKBENCH_STATUS_FAIL,
+  CASKBENCH_STATUS_ERROR,
+  CASKBENCH_STATUS_CRASH,
+} caskbench_status_t;
+
+static const char *
+_status_to_string(int result)
+{
+  switch (result) {
+  case CASKBENCH_STATUS_PASS:
+    return "PASS";
+  case CASKBENCH_STATUS_FAIL:
+    return "FAIL";
+  case CASKBENCH_STATUS_ERROR:
+    return "ERROR";
+  case CASKBENCH_STATUS_CRASH:
+    return "CRASH";
+  default:
+    return "unknown";
+  }
+}
+
+void
+process_options(caskbench_options_t *opt, int argc, char *argv[])
+{
+  int rc;
+  poptContext pc;
+  struct poptOption po[] = {
+    {"iterations", 'i', POPT_ARG_INT, &opt->iterations, 0,
+     "The number of times each test case should be run",
+     NULL},
+    {"dry-run", 'n', POPT_ARG_NONE, &opt->dry_run, 0,
+     "Just list the selected test case names without executing",
+     "num"},
+    POPT_AUTOHELP
+    {NULL}
+  };
+
+  assert(opt);
+
+  // Initialize options
+  opt->dry_run = 0;
+  opt->iterations = 1024;
+
+  pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
+  poptSetOtherOptionHelp(pc, "[ARG...]");
+  poptReadDefaultConfig(pc, 0);
+
+  while ((rc = poptGetNextOpt(pc)) >= 0) {
+    printf("%d\n", rc);
+  }
+  if (rc != -1) {
+    // handle error
+    switch(rc) {
+    case POPT_ERROR_NOARG:
+      errx(1, "Argument missing for an option\n");
+    case POPT_ERROR_BADOPT:
+      errx(1, "Unknown option or argument\n");
+    case POPT_ERROR_BADNUMBER:
+    case POPT_ERROR_OVERFLOW:
+      errx(1, "Option could not be converted to number\n");
+    default:
+      errx(1, "Unknown error in option processing\n");
+    }
+  }
+
+  // Remaining args are the tests to be run, or all if this list is empty
+  const char **tests = poptGetArgs(pc);
+}
+
 double
 get_tick (void)
 {
@@ -66,56 +138,18 @@ display_results_json(const caskbench_result_t *result)
   printf("       \"iterations\": %d,\n", result->iterations);
   printf("       \"minimum run time (s)\": %f,\n", result->min_run_time);
   printf("       \"average run time (s)\": %f,\n", result->avg_run_time);
-  printf("       \"status\": \"%d\"\n", result->status);
+  printf("       \"status\": \"%s\"\n", _status_to_string(result->status));
   printf("   }");
 }
 
 int
 main (int argc, char *argv[])
 {
-  int rc;
   int c, i;
   caskbench_options_t opt;
   double start_time, stop_time, run_time, run_total;
 
-  poptContext pc;
-  struct poptOption po[] = {
-    {"iterations", 'i', POPT_ARG_INT, &opt.iterations, 0,
-     "The number of times each test case should be run",
-     NULL},
-    {"dry-run", 'n', POPT_ARG_NONE, &opt.dry_run, 0,
-     "Just list the selected test case names without executing",
-     "num"},
-    POPT_AUTOHELP
-    {NULL}
-  };
-  pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
-  poptSetOtherOptionHelp(pc, "[ARG...]");
-  poptReadDefaultConfig(pc, 0);
-
-  opt.dry_run = 0;
-  opt.iterations = 1024;
-
-  while ((rc = poptGetNextOpt(pc)) >= 0) {
-    printf("%d\n", rc);
-  }
-  if (rc != -1) {
-    // handle error
-    switch(rc) {
-    case POPT_ERROR_NOARG:
-      errx(1, "Argument missing for an option\n");
-    case POPT_ERROR_BADOPT:
-      errx(1, "Unknown option or argument\n");
-    case POPT_ERROR_BADNUMBER:
-    case POPT_ERROR_OVERFLOW:
-      errx(1, "Option could not be converted to number\n");
-    default:
-      errx(1, "Unknown error in option processing\n");
-    }
-  }
-
-  // Remaining args are the tests to be run, or all if this list is empty
-  const char **tests = poptGetArgs(pc);
+  process_options(&opt, argc, argv);
 
   // TODO: Open output file
   // start json
@@ -140,7 +174,7 @@ main (int argc, char *argv[])
 
     if (perf_tests[c].setup != NULL)
       if (!perf_tests[c].setup(cr)) {
-	result.status = -1;
+	result.status = CASKBENCH_STATUS_ERROR;
 	goto FINAL;
       }
 
@@ -151,7 +185,10 @@ main (int argc, char *argv[])
 	start_time = get_tick();
 
 	// Execute test_case
-	result.status = perf_tests[c].test_case(cr);
+	if (perf_tests[c].test_case(cr))
+	  result.status = CASKBENCH_STATUS_PASS;
+	else
+	  result.status = CASKBENCH_STATUS_FAIL;
 
 	stop_time = get_tick();
 	run_time = stop_time - start_time;
@@ -162,8 +199,7 @@ main (int argc, char *argv[])
 	run_total += run_time;
       } catch (...) {
 	warnx("Unknown exception encountered\n");
-	// Mark as crashed
-	result.status = 3; // ERROR
+	result.status = CASKBENCH_STATUS_CRASH;
 	goto FINAL;
       }
     }

@@ -3,23 +3,56 @@ cmake_minimum_required(VERSION 2.8)
 project(caskbench)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 
+set(CASKBENCH_LIBS "")
+set(CASKBENCH_INCS "")
+set(CASKBENCH_INCS_SYS "")
+
+list(APPEND CASKBENCH_INCS
+	${PROJECT_SOURCE_DIR}
+	${PROJECT_SOURCE_DIR}/src
+
+	# Generated includes
+	${CMAKE_BINARY_DIR}/include
+)
+
+# ----------------------------------------------------------------------
+# Dependencies
+# ----------------------------------------------------------------------
+
 find_package(PkgConfig REQUIRED)
 
-#add_subdirectory(src)
+find_package(Popt REQUIRED)
+list(APPEND CASKBENCH_INCS_SYS ${POPT_INCLUDE_DIR})
+list(APPEND CASKBENCH_LIBS ${POPT_LIBRARIES})
+add_definitions(${POPT_DEFINITIONS})
 
 pkg_check_modules(GTK2 REQUIRED gtk+-2.0)
-find_package(X11 REQUIRED)
-
-include_directories(${GTK2_INCLUDE_DIRS})
+list(APPEND CASKBENCH_INCS_SYS
+	${GTK2_INCLUDE_DIRS}
+	${GTK2_CAIRO_INCLUDE_DIR}
+)
+list(APPEND CASKBENCH_LIBS ${GTK2_LIBRARIES})
 link_directories(${GTK2_LIBRARY_DIRS})
 add_definitions(${GTK2_CFLAGS_OTHER})
 
-#message("CMake Prefix: ${CMAKE_PREFIX_PATH}")
+find_package(X11 REQUIRED)
+#list(APPEND CASKBENCH_LIBS ${X11_LIBRARIES})
 
 find_package(Cairo)
-#include_directories(BEFORE ${CAIRO_INCLUDE_DIRS})
+list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
+list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
 
+# ----------------------------------------------------------------------
+# Build
+# ----------------------------------------------------------------------
+
+include_directories(${CASKBENCH_INCS})
+include_directories(SYSTEM ${CASKBENCH_INCS_SYS})
+
+#add_subdirectory(src)
+#message("CMake Prefix: ${CMAKE_PREFIX_PATH}")
 add_executable(caskbench src/caskbench.cpp src/fill.cpp src/image.cpp src/mask.cpp src/paint.cpp src/stroke.cpp)
-target_link_libraries(caskbench ${CAIRO_LIBRARIES})
+target_link_libraries(caskbench ${CASKBENCH_LIBS})
 
-#target_link_libraries(stroke ${CAIRO_LIBRARIES} GL ${GTK2_LIBRARIES} ${X11_LIBRARIES})
+unset(CASKBENCH_INCS)
+unset(CASKBENCH_INCS_SYS)

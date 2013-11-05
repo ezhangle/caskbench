@@ -51,7 +51,7 @@ include_directories(SYSTEM ${CASKBENCH_INCS_SYS})
 
 #add_subdirectory(src)
 #message("CMake Prefix: ${CMAKE_PREFIX_PATH}")
-add_executable(caskbench src/caskbench.cpp src/fill.cpp src/image.cpp src/mask.cpp src/paint.cpp src/stroke.cpp)
+add_executable(caskbench src/caskbench.cpp src/cairo-tests/fill.cpp src/cairo-tests/image.cpp src/cairo-tests/mask.cpp src/cairo-tests/paint.cpp src/cairo-tests/stroke.cpp)
 target_link_libraries(caskbench ${CASKBENCH_LIBS})
 
 unset(CASKBENCH_INCS)

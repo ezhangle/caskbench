@@ -21,24 +21,24 @@ void   display_results_json(int iterations, int status);
 void   randomize_color(cairo_t *cr);
 
 // Tests
-int setup_fill(cairo_t *cr);
-void teardown_fill();
-int test_fill(cairo_t *cr);
+int  ca_setup_fill(cairo_t *cr);
+void ca_teardown_fill();
+int  ca_test_fill(cairo_t *cr);
 
-int setup_image(cairo_t *cr);
-void teardown_image();
-int test_image(cairo_t *cr);
+int  ca_setup_image(cairo_t *cr);
+void ca_teardown_image();
+int  ca_test_image(cairo_t *cr);
 
-int setup_mask(cairo_t *cr);
-void teardown_mask();
-int test_mask(cairo_t *cr);
+int  ca_setup_mask(cairo_t *cr);
+void ca_teardown_mask();
+int  ca_test_mask(cairo_t *cr);
 
-int setup_paint(cairo_t *cr);
-void teardown_paint();
-int test_paint(cairo_t *cr);
+int  ca_setup_paint(cairo_t *cr);
+void ca_teardown_paint();
+int  ca_test_paint(cairo_t *cr);
 
-int setup_stroke(cairo_t *cr);
-void teardown_stroke();
-int test_stroke(cairo_t *cr);
+int  ca_setup_stroke(cairo_t *cr);
+void ca_teardown_stroke();
+int  ca_test_stroke(cairo_t *cr);
 
 #endif // __CASKBENCH_H__

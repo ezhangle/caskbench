@@ -29,11 +29,11 @@ typedef struct _caskbench_result {
 } caskbench_result_t;
 
 caskbench_perf_test_t perf_tests[] = {
-  {"fill", setup_fill,   teardown_fill,   test_fill},
-  {"image", setup_image,  teardown_image,  test_image},
-  {"mask", setup_mask,   teardown_mask,   test_mask},
-  {"paint", setup_paint,  teardown_paint,  test_paint},
-  {"stroke", setup_stroke, teardown_stroke, test_stroke},
+  {"fill",   ca_setup_fill,   ca_teardown_fill,   ca_test_fill},
+  {"image",  ca_setup_image,  ca_teardown_image,  ca_test_image},
+  {"mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask},
+  {"paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint},
+  {"stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
 };
 #define NUM_CASES (5)
 

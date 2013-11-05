@@ -5,18 +5,18 @@
 #include "caskbench.h"
 
 int
-setup_stroke(cairo_t *cr)
+ca_setup_stroke(cairo_t *cr)
 {
   return 1;
 }
 
 void
-teardown_stroke(void)
+ca_teardown_stroke(void)
 {
 }
 
 int
-test_stroke(cairo_t *cr)
+ca_test_stroke(cairo_t *cr)
 {
   int i, x, w, prev_w;
   x = 0;

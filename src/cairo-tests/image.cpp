@@ -7,7 +7,7 @@
 static cairo_surface_t *image;
 
 int
-setup_image(cairo_t *cr)
+ca_setup_image(cairo_t *cr)
 {
   image = cairo_image_surface_create_from_png ("../data/romedalen.png");
   cairo_set_source_surface (cr, image, 0, 0);
@@ -15,13 +15,13 @@ setup_image(cairo_t *cr)
 }
 
 void
-teardown_image(void)
+ca_teardown_image(void)
 {
   cairo_surface_destroy (image);
 }
 
 int
-test_image(cairo_t *cr)
+ca_test_image(cairo_t *cr)
 {
   cairo_paint (cr);
   return 1;

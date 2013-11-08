@@ -35,13 +35,19 @@ typedef struct _caskbench_result {
 } caskbench_result_t;
 
 caskbench_perf_test_t perf_tests[] = {
-  {"fill",   ca_setup_fill,   ca_teardown_fill,   ca_test_fill},
-  {"image",  ca_setup_image,  ca_teardown_image,  ca_test_image},
-  {"mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask},
-  {"paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint},
-  {"stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
+  {"cairo-fill",   ca_setup_fill,   ca_teardown_fill,   ca_test_fill},
+  {"cairo-image",  ca_setup_image,  ca_teardown_image,  ca_test_image},
+  {"cairo-mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask},
+  {"cairo-paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint},
+  {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
+
+  {"skia-fill",   sk_setup_fill,   sk_teardown_fill,   sk_test_fill},
+  {"skia-image",  sk_setup_image,  sk_teardown_image,  sk_test_image},
+  {"skia-mask",   sk_setup_mask,   sk_teardown_mask,   sk_test_mask},
+  {"skia-paint",  sk_setup_paint,  sk_teardown_paint,  sk_test_paint},
+  {"skia-stroke", sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
 };
-#define NUM_CASES (5)
+#define NUM_CASES (10)
 
 typedef enum {
   CASKBENCH_STATUS_PASS,
@@ -164,9 +170,14 @@ main (int argc, char *argv[])
     // Setup
     caskbench_context_t context;
     caskbench_result_t result;
-    cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
+    cairo_surface_t *cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
+
+    SkBitmap bitmap;
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 800, 100);
+    bitmap.allocPixels();
+    SkBitmapDevice device(bitmap);
+    SkCanvas canvas(&device);
     SkPaint paint;
-    SkCanvas canvas;
 
     // If dry run, just list the test cases
     if (opt.dry_run) {
@@ -175,7 +186,7 @@ main (int argc, char *argv[])
     }
 
     srand(0xdeadbeef);
-    context.cr = cairo_create(surface);
+    context.cr = cairo_create(cairo_surface);
     context.paint = &paint;
     context.canvas = &canvas;
 
@@ -217,7 +228,18 @@ main (int argc, char *argv[])
     result.iterations = opt.iterations - i;
     result.avg_run_time = run_total / (double)result.iterations;
 
-    cairo_surface_write_to_png (surface, "fill.png");
+    {
+      SkAutoLockPixels image_lock(bitmap);
+      cairo_surface_t* skia_surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(),
+									  CAIRO_FORMAT_ARGB32,
+									  bitmap.width(), bitmap.height(), 
+									  bitmap.rowBytes());
+
+      cairo_surface_write_to_png (skia_surface,  "fill-skia.png");
+      cairo_surface_destroy(skia_surface);
+    }
+ 
+    cairo_surface_write_to_png (cairo_surface, "fill-cairo.png");
 
   FINAL:
     // TODO: Print results to stdout plain text
@@ -228,8 +250,9 @@ main (int argc, char *argv[])
 
     if (perf_tests[c].teardown != NULL)
       perf_tests[c].teardown();
+
     cairo_destroy(context.cr);
-    cairo_surface_destroy(surface);
+    cairo_surface_destroy(cairo_surface);
   }
 
   // End json

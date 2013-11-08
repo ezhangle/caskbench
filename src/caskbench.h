@@ -29,7 +29,7 @@ void   display_results_json(int iterations, int status);
 // Cairo helpers
 void   randomize_color(cairo_t *cr);
 
-// Tests
+// Cairo Tests
 int  ca_setup_fill(caskbench_context_t *ctx);
 void ca_teardown_fill();
 int  ca_test_fill(caskbench_context_t *ctx);
@@ -49,5 +49,27 @@ int  ca_test_paint(caskbench_context_t *ctx);
 int  ca_setup_stroke(caskbench_context_t *ctx);
 void ca_teardown_stroke();
 int  ca_test_stroke(caskbench_context_t *ctx);
+
+
+// Skia Tests
+int  sk_setup_fill(caskbench_context_t *ctx);
+void sk_teardown_fill();
+int  sk_test_fill(caskbench_context_t *ctx);
+
+int  sk_setup_image(caskbench_context_t *ctx);
+void sk_teardown_image();
+int  sk_test_image(caskbench_context_t *ctx);
+
+int  sk_setup_mask(caskbench_context_t *ctx);
+void sk_teardown_mask();
+int  sk_test_mask(caskbench_context_t *ctx);
+
+int  sk_setup_paint(caskbench_context_t *ctx);
+void sk_teardown_paint();
+int  sk_test_paint(caskbench_context_t *ctx);
+
+int  sk_setup_stroke(caskbench_context_t *ctx);
+void sk_teardown_stroke();
+int  sk_test_stroke(caskbench_context_t *ctx);
 
 #endif // __CASKBENCH_H__

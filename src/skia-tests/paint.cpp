@@ -11,51 +11,23 @@
 static SkRect r;
 
 int
-sk_setup_fill(SkPaint *paint)
+sk_setup_paint(caskbench_context_t *ctx)
 {
   return 1;
 }
 
 int
-sk_test_fill(SkCanvas *canvas, SkPaint *paint)
+sk_test_paint(caskbench_context_t *ctx)
 {
   int i;
   for (i=0; i<32; i++) {
-    canvas->drawColor(rand());
+    ctx->canvas->drawColor(rand());
   }
 
   return 1;
 }
 
 void
-sk_teardown_fill(void)
+sk_teardown_paint(void)
 {
-}
-
-int main()
-{
-  SkBitmap bitmap;
-  bitmap.setConfig(SkBitmap::kARGB_8888_Config, 800, 100);
-  bitmap.allocPixels();
-  SkBitmapDevice device(bitmap);
-  SkCanvas canvas(&device);
-  SkPaint paint;
-
-  for (int i=0; i<1; i++) {
-    sk_setup_fill(&paint);
-    /* time... */
-    sk_test_fill(&canvas, &paint);
-    /* done timing */
-  }
-
-  sk_teardown_fill();
-  {
-    SkAutoLockPixels image_lock(bitmap);
-    cairo_surface_t* surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(), CAIRO_FORMAT_ARGB32,
-								   bitmap.width(), bitmap.height(), bitmap.rowBytes());
-    cairo_surface_write_to_png(surface, "fill.png");
-    cairo_surface_destroy(surface);
-  }
- 
-  return 0;
 }

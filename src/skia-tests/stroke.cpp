@@ -11,25 +11,25 @@
 static SkRect r;
 
 int
-setup_stroke(SkPaint *paint)
+sk_setup_stroke(caskbench_context_t *ctx)
 {
-  paint->setARGB(255, 255, 255, 255);
+  ctx->paint->setARGB(255, 255, 255, 255);
   r.set(10, 10, 20, 20);
   return 1;
 }
 
 int
-test_stroke(SkCanvas *canvas, SkPaint *paint)
+sk_test_stroke(caskbench_context_t *ctx)
 {
   int i, x, w, prev_w;
   x = 0;
   prev_w = 0;
   for (i=0; i<32; i++) {
-    paint->setColor(rand());
+    ctx->paint->setColor(rand());
     w = (32.0*rand())/RAND_MAX + 1;
     x += 4 + (prev_w + w)/2.0;
-    paint->setStrokeWidth(w);
-    canvas->drawLine(x,10, x,70, *paint);
+    ctx->paint->setStrokeWidth(w);
+    ctx->canvas->drawLine(x,10, x,70, *(ctx->paint));
     prev_w = w;
   }
 
@@ -37,31 +37,6 @@ test_stroke(SkCanvas *canvas, SkPaint *paint)
 }
 
 void
-teardown_stroke(void)
+sk_teardown_stroke(void)
 {
-}
-
-int main()
-{
-  SkBitmap bitmap;
-  bitmap.setConfig(SkBitmap::kARGB_8888_Config, 800, 100);
-  bitmap.allocPixels();
-  SkBitmapDevice device(bitmap);
-  SkCanvas canvas(&device);
-  SkPaint paint;
-
-  for (int i=0; i<1; i++) {
-    setup_stroke(&paint);
-    test_stroke(&canvas, &paint);
-  }
-
-  {
-    SkAutoLockPixels image_lock(bitmap);
-    cairo_surface_t* surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(), CAIRO_FORMAT_ARGB32,
-								   bitmap.width(), bitmap.height(), bitmap.rowBytes());
-    cairo_surface_write_to_png(surface, "snapshot.png");
-    cairo_surface_destroy(surface);
-  }
- 
-  return 0;
 }

@@ -2,9 +2,15 @@
 #include <stdio.h>
 #include <assert.h>
 #include <sys/time.h>
-#include <cairo.h>
 #include <popt.h>
 #include <err.h>
+
+#include <cairo.h>
+
+#include <SkBitmap.h>
+#include <SkBitmapDevice.h>
+#include <SkPaint.h>
+#include <SkCanvas.h>
 
 #include "caskbench.h"
 
@@ -15,9 +21,9 @@ typedef struct _caskbench_options {
 
 typedef struct _caskbench_perf_test {
   const char *name;
-  int (*setup)(cairo_t*);
+  int (*setup)(caskbench_context_t*);
   void (*teardown)(void);
-  int (*test_case)(cairo_t*);
+  int (*test_case)(caskbench_context_t*);
 } caskbench_perf_test_t;
 
 typedef struct _caskbench_result {
@@ -81,7 +87,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
   // Initialize options
   opt->dry_run = 0;
-  opt->iterations = 1024;
+  opt->iterations = 16;
 
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
   poptSetOtherOptionHelp(pc, "[ARG...]");
@@ -156,9 +162,11 @@ main (int argc, char *argv[])
   printf("[\n");
   for (c=0; c<NUM_CASES; c++) {
     // Setup
+    caskbench_context_t context;
     caskbench_result_t result;
     cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
-    cairo_t *cr = cairo_create(surface);
+    SkPaint paint;
+    SkCanvas canvas;
 
     // If dry run, just list the test cases
     if (opt.dry_run) {
@@ -167,13 +175,16 @@ main (int argc, char *argv[])
     }
 
     srand(0xdeadbeef);
+    context.cr = cairo_create(surface);
+    context.paint = &paint;
+    context.canvas = &canvas;
 
     result.test_case_name = perf_tests[c].name;
     result.min_run_time = -1.0;
     result.avg_run_time = -1.0;
 
     if (perf_tests[c].setup != NULL)
-      if (!perf_tests[c].setup(cr)) {
+      if (!perf_tests[c].setup(&context)) {
 	result.status = CASKBENCH_STATUS_ERROR;
 	goto FINAL;
       }
@@ -185,7 +196,7 @@ main (int argc, char *argv[])
 	start_time = get_tick();
 
 	// Execute test_case
-	if (perf_tests[c].test_case(cr))
+	if (perf_tests[c].test_case(&context))
 	  result.status = CASKBENCH_STATUS_PASS;
 	else
 	  result.status = CASKBENCH_STATUS_FAIL;
@@ -217,7 +228,7 @@ main (int argc, char *argv[])
 
     if (perf_tests[c].teardown != NULL)
       perf_tests[c].teardown();
-    cairo_destroy(cr);
+    cairo_destroy(context.cr);
     cairo_surface_destroy(surface);
   }
 

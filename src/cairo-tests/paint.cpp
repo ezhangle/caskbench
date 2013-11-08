@@ -5,7 +5,7 @@
 #include "caskbench.h"
 
 int
-ca_setup_paint(cairo_t *cr)
+ca_setup_paint(caskbench_context_t *ctx)
 {
   return 1;
 }
@@ -16,9 +16,9 @@ ca_teardown_paint()
 }
 
 int
-ca_test_paint(cairo_t *cr)
+ca_test_paint(caskbench_context_t *ctx)
 {
-  randomize_color (cr);
-  cairo_paint (cr);
+  randomize_color (ctx->cr);
+  cairo_paint (ctx->cr);
   return 1;
 }

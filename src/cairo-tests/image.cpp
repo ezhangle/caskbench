@@ -7,10 +7,10 @@
 static cairo_surface_t *image;
 
 int
-ca_setup_image(cairo_t *cr)
+ca_setup_image(caskbench_context_t *ctx)
 {
   image = cairo_image_surface_create_from_png ("../data/romedalen.png");
-  cairo_set_source_surface (cr, image, 0, 0);
+  cairo_set_source_surface (ctx->cr, image, 0, 0);
   return 1;
 }
 
@@ -21,9 +21,9 @@ ca_teardown_image(void)
 }
 
 int
-ca_test_image(cairo_t *cr)
+ca_test_image(caskbench_context_t* ctx)
 {
-  cairo_paint (cr);
+  cairo_paint (ctx->cr);
   return 1;
 }  
 

@@ -7,7 +7,7 @@
 static cairo_pattern_t *mask;
 
 int
-ca_setup_mask(cairo_t *cr)
+ca_setup_mask(caskbench_context_t *ctx)
 {
   mask = cairo_pattern_create_rgba (0, 0, 0, 0.5);
   return 1;
@@ -20,8 +20,8 @@ ca_teardown_mask(void)
 }
 
 int
-ca_test_mask(cairo_t *cr)
+ca_test_mask(caskbench_context_t *ctx)
 {
-  cairo_mask (cr, mask);
+  cairo_mask (ctx->cr, mask);
   return 1;
 }

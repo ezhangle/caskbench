@@ -44,6 +44,42 @@ find_package(Cairo)
 list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
 
+# skia
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH}
+  /home/bryce/src/skia/trunk/out/Release/
+  /usr/lib/x86_64-linux-gnu)
+link_directories(/home/bryce/src/skia/trunk/out/Release/
+  /usr/lib/x86_64-linux-gnu)
+list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/)
+list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/core/)
+list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/config/)
+list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/tools/flags/)
+list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/include/lazy/)
+
+#OBJS="\
+#    ${SKIA_ROOT}/out/Release/obj/tools/flags/flags.SkCommandLineFlags.o      \
+#    ${SKIA_ROOT}/out/Release/obj.target/zlib/src/core/SkFlate.o              \
+#    "
+#
+
+list(APPEND CASKBENCH_LIBS
+  skia_core
+  skia_pdf
+  skia_opts
+  skia_utils
+  skia_views
+  skia_xml
+  skia_opts_ssse3
+  skia_ports
+  skia_sfnt
+  skia_effects
+  skia_images
+  skia_skgpu
+  skia_core
+  freetype
+  fontconfig
+)
+
 # ----------------------------------------------------------------------
 # Build
 # ----------------------------------------------------------------------

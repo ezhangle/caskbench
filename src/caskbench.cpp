@@ -203,6 +203,7 @@ main (int argc, char *argv[])
     // Run once to warm caches and calibrate
     perf_tests[c].test_case(&context);
 
+    run_total = 0;
     for (i=opt.iterations; i>0; --i) {
       try {
 	assert(perf_tests[c].test_case);

@@ -17,6 +17,7 @@
 typedef struct _caskbench_options {
   int dry_run;
   int iterations;
+  char* output_file;
 } caskbench_options_t;
 
 typedef struct _caskbench_perf_test {
@@ -36,16 +37,19 @@ typedef struct _caskbench_result {
 
 caskbench_perf_test_t perf_tests[] = {
   {"cairo-fill",   ca_setup_fill,   ca_teardown_fill,   ca_test_fill},
-  {"cairo-image",  ca_setup_image,  ca_teardown_image,  ca_test_image},
-  {"cairo-mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask},
-  {"cairo-paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint},
-  {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
+  {"skia-fill",    sk_setup_fill,   sk_teardown_fill,   sk_test_fill},
 
-  {"skia-fill",   sk_setup_fill,   sk_teardown_fill,   sk_test_fill},
-  {"skia-image",  sk_setup_image,  sk_teardown_image,  sk_test_image},
-  {"skia-mask",   sk_setup_mask,   sk_teardown_mask,   sk_test_mask},
-  {"skia-paint",  sk_setup_paint,  sk_teardown_paint,  sk_test_paint},
-  {"skia-stroke", sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
+  {"cairo-image",  ca_setup_image,  ca_teardown_image,  ca_test_image},
+  {"skia-image",   sk_setup_image,  sk_teardown_image,  sk_test_image},
+
+  {"cairo-mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask},
+  {"skia-mask",    sk_setup_mask,   sk_teardown_mask,   sk_test_mask},
+
+  {"cairo-paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint},
+  {"skia-paint",   sk_setup_paint,  sk_teardown_paint,  sk_test_paint},
+
+  {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
+  {"skia-stroke",  sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
 };
 #define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 
@@ -85,6 +89,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     {"dry-run", 'n', POPT_ARG_NONE, &opt->dry_run, 0,
      "Just list the selected test case names without executing",
      NULL},
+    {"output-file", 'o', POPT_ARG_STRING, &opt->output_file, 0,
+     "Filename to write JSON output to",
+     NULL},
     POPT_AUTOHELP
     {NULL}
   };
@@ -94,6 +101,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
   // Initialize options
   opt->dry_run = 0;
   opt->iterations = 64;
+  opt->output_file = NULL;
 
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
   poptSetOtherOptionHelp(pc, "[ARG...]");
@@ -142,30 +150,21 @@ randomize_color(cairo_t *cr)
   cairo_set_source_rgba (cr, red, green, blue, alpha);
 }
 
-void
-display_results_json(const caskbench_result_t *result)
-{
-  printf("   {\n");
-  printf("       \"test case\": \"%s\",\n", result->test_case_name);
-  printf("       \"iterations\": %d,\n", result->iterations);
-  printf("       \"minimum run time (s)\": %f,\n", result->min_run_time);
-  printf("       \"average run time (s)\": %f,\n", result->avg_run_time);
-  printf("       \"status\": \"%s\"\n", _status_to_string(result->status));
-  printf("   }");
-}
-
 int
 main (int argc, char *argv[])
 {
   int c, i;
   caskbench_options_t opt;
   double start_time, stop_time, run_time, run_total;
+  FILE *fp;
 
   process_options(&opt, argc, argv);
 
-  // TODO: Open output file
-  // start json
-  printf("[\n");
+  if (opt.output_file) {
+    // start writing json to output file
+    fp = fopen(opt.output_file, "w");
+    fprintf(fp, "[\n");
+  }
   for (c=0; c<NUM_ELEM(perf_tests); c++) {
     // Setup
     caskbench_context_t context;
@@ -245,11 +244,25 @@ main (int argc, char *argv[])
     cairo_surface_write_to_png (cairo_surface, "fill-cairo.png");
 
   FINAL:
-    // TODO: Print results to stdout plain text
-    display_results_json(&result);
-    if (c != NUM_ELEM(perf_tests)-1)
-      printf(",");
-    printf("\n");
+    printf("%-20s %s  %d  %f  %f\n",
+	   result.test_case_name,
+	   _status_to_string(result.status),
+	   result.iterations,
+	   result.min_run_time,
+	   result.avg_run_time);
+    if (opt.output_file) {
+      fprintf(fp, "   {\n");
+      fprintf(fp, "       \"test case\": \"%s\",\n", result.test_case_name);
+      fprintf(fp, "       \"status\": \"%s\"\n", _status_to_string(result.status));
+      fprintf(fp, "       \"iterations\": %d,\n", result.iterations);
+      fprintf(fp, "       \"minimum run time (s)\": %f,\n", result.min_run_time);
+      fprintf(fp, "       \"average run time (s)\": %f,\n", result.avg_run_time);
+      fprintf(fp, "   }");
+
+      if (c != NUM_ELEM(perf_tests)-1)
+	fprintf(fp, ",");
+      fprintf(fp, "\n");
+    }
 
     if (perf_tests[c].teardown != NULL)
       perf_tests[c].teardown();
@@ -258,7 +271,9 @@ main (int argc, char *argv[])
     cairo_surface_destroy(cairo_surface);
   }
 
-  // End json
-  printf("]\n");
-  // TODO: close output file
+  if (opt.output_file) {
+    // End json
+    fprintf(fp, "]\n");
+    fclose(fp);
+  }
 }

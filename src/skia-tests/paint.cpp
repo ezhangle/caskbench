@@ -20,7 +20,7 @@ int
 sk_test_paint(caskbench_context_t *ctx)
 {
   int i;
-  for (i=0; i<32; i++) {
+  for (i=0; i<ctx->size; i++) {
     ctx->canvas->drawColor(rand());
   }
 

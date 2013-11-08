@@ -18,7 +18,10 @@ ca_teardown_paint()
 int
 ca_test_paint(caskbench_context_t *ctx)
 {
-  randomize_color (ctx->cr);
-  cairo_paint (ctx->cr);
+  int i;
+  for (i=0; i<ctx->size; i++) {
+    randomize_color (ctx->cr);
+    cairo_paint (ctx->cr);
+  }
   return 1;
 }

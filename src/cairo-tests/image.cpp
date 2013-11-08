@@ -23,7 +23,9 @@ ca_teardown_image(void)
 int
 ca_test_image(caskbench_context_t* ctx)
 {
-  cairo_paint (ctx->cr);
+  int i;
+  for (i=0; i<ctx->size; i++)
+    cairo_paint (ctx->cr);
   return 1;
 }  
 

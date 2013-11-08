@@ -22,6 +22,8 @@ ca_teardown_mask(void)
 int
 ca_test_mask(caskbench_context_t *ctx)
 {
-  cairo_mask (ctx->cr, mask);
+  int i;
+  for (i=0; i<ctx->size; i++)
+    cairo_mask (ctx->cr, mask);
   return 1;
 }

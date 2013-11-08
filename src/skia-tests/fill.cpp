@@ -17,7 +17,7 @@ int
 sk_test_fill(caskbench_context_t *ctx)
 {
   int i;
-  for (i=0; i<32; i++) {
+  for (i=0; i<ctx->size; i++) {
     ctx->paint->setColor(rand());
     ctx->canvas->drawCircle(40*i, 40, 30, *ctx->paint);
   }

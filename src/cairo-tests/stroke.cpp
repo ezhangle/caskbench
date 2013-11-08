@@ -21,9 +21,9 @@ ca_test_stroke(caskbench_context_t *ctx)
   int i, x, w, prev_w;
   x = 0;
   prev_w = 0;
-  for (i=0; i<32; i++) {
+  for (i=0; i<ctx->size; i++) {
     randomize_color (ctx->cr);
-    w = (32.0*rand())/RAND_MAX + 1;
+    w = ((double)ctx->size*rand())/RAND_MAX + 1;
     x += 4 + (prev_w + w)/2.0;
     cairo_move_to (ctx->cr, x, 10);
     cairo_line_to (ctx->cr, x, 70);

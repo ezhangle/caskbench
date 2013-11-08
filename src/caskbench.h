@@ -17,6 +17,7 @@ class SkPaint;
 class SkCanvas;
 
 typedef struct _caskbench_context {
+  int       size;
   cairo_t   *cr;
   SkPaint   *paint;
   SkCanvas  *canvas;

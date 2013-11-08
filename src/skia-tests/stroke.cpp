@@ -24,9 +24,9 @@ sk_test_stroke(caskbench_context_t *ctx)
   int i, x, w, prev_w;
   x = 0;
   prev_w = 0;
-  for (i=0; i<32; i++) {
+  for (i=0; i<ctx->size; i++) {
     ctx->paint->setColor(rand());
-    w = (32.0*rand())/RAND_MAX + 1;
+    w = ((double)ctx->size*rand())/RAND_MAX + 1;
     x += 4 + (prev_w + w)/2.0;
     ctx->paint->setStrokeWidth(w);
     ctx->canvas->drawLine(x,10, x,70, *(ctx->paint));

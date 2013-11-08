@@ -17,6 +17,7 @@
 typedef struct _caskbench_options {
   int dry_run;
   int iterations;
+  int size;
   char* output_file;
 } caskbench_options_t;
 
@@ -29,6 +30,7 @@ typedef struct _caskbench_perf_test {
 
 typedef struct _caskbench_result {
   const char *test_case_name;
+  int size;
   int iterations;
   double min_run_time;
   double avg_run_time;
@@ -92,6 +94,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     {"output-file", 'o', POPT_ARG_STRING, &opt->output_file, 0,
      "Filename to write JSON output to",
      NULL},
+    {"test-size", 's', POPT_ARG_INT, &opt->size, 0,
+     "Controls the complexity of the tests, such as number of drawn elements",
+     NULL},
     POPT_AUTOHELP
     {NULL}
   };
@@ -101,6 +106,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
   // Initialize options
   opt->dry_run = 0;
   opt->iterations = 64;
+  opt->size = 64;
   opt->output_file = NULL;
 
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
@@ -188,8 +194,10 @@ main (int argc, char *argv[])
     context.cr = cairo_create(cairo_surface);
     context.paint = &paint;
     context.canvas = &canvas;
+    context.size = opt.size;
 
     result.test_case_name = perf_tests[c].name;
+    result.size = 0;
     result.min_run_time = -1.0;
     result.avg_run_time = -1.0;
 
@@ -229,6 +237,7 @@ main (int argc, char *argv[])
     }
     result.iterations = opt.iterations - i;
     result.avg_run_time = run_total / (double)result.iterations;
+    result.size = opt.size;
 
     {
       SkAutoLockPixels image_lock(bitmap);
@@ -244,8 +253,9 @@ main (int argc, char *argv[])
     cairo_surface_write_to_png (cairo_surface, "fill-cairo.png");
 
   FINAL:
-    printf("%-20s %s  %d  %f  %f\n",
+    printf("%-20s %-4d   %s  %d  %f  %f\n",
 	   result.test_case_name,
+	   result.size,
 	   _status_to_string(result.status),
 	   result.iterations,
 	   result.min_run_time,
@@ -253,6 +263,7 @@ main (int argc, char *argv[])
     if (opt.output_file) {
       fprintf(fp, "   {\n");
       fprintf(fp, "       \"test case\": \"%s\",\n", result.test_case_name);
+      fprintf(fp, "       \"size\": \"%d\",\n", result.size);
       fprintf(fp, "       \"status\": \"%s\"\n", _status_to_string(result.status));
       fprintf(fp, "       \"iterations\": %d,\n", result.iterations);
       fprintf(fp, "       \"minimum run time (s)\": %f,\n", result.min_run_time);

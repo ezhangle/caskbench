@@ -21,7 +21,7 @@ int
 sk_test_image(caskbench_context_t *ctx)
 {
   int i;
-  for (i=0; i<32; i++) {
+  for (i=0; i<ctx->size; i++) {
     ctx->canvas->drawBitmap(bitmap, 0, 0);
   }
 

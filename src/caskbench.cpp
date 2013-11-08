@@ -47,7 +47,7 @@ caskbench_perf_test_t perf_tests[] = {
   {"skia-paint",  sk_setup_paint,  sk_teardown_paint,  sk_test_paint},
   {"skia-stroke", sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
 };
-#define NUM_CASES (sizeof(perf_tests)/sizeof(perf_tests[0]))
+#define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 
 typedef enum {
   CASKBENCH_STATUS_PASS,
@@ -84,7 +84,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
      NULL},
     {"dry-run", 'n', POPT_ARG_NONE, &opt->dry_run, 0,
      "Just list the selected test case names without executing",
-     "num"},
+     NULL},
     POPT_AUTOHELP
     {NULL}
   };
@@ -166,7 +166,7 @@ main (int argc, char *argv[])
   // TODO: Open output file
   // start json
   printf("[\n");
-  for (c=0; c<NUM_CASES; c++) {
+  for (c=0; c<NUM_ELEM(perf_tests); c++) {
     // Setup
     caskbench_context_t context;
     caskbench_result_t result;
@@ -247,7 +247,7 @@ main (int argc, char *argv[])
   FINAL:
     // TODO: Print results to stdout plain text
     display_results_json(&result);
-    if (c != NUM_CASES-1)
+    if (c != NUM_ELEM(perf_tests)-1)
       printf(",");
     printf("\n");
 

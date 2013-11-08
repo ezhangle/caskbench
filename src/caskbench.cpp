@@ -47,7 +47,7 @@ caskbench_perf_test_t perf_tests[] = {
   {"skia-paint",  sk_setup_paint,  sk_teardown_paint,  sk_test_paint},
   {"skia-stroke", sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
 };
-#define NUM_CASES (10)
+#define NUM_CASES (sizeof(perf_tests)/sizeof(perf_tests[0]))
 
 typedef enum {
   CASKBENCH_STATUS_PASS,
@@ -93,7 +93,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
   // Initialize options
   opt->dry_run = 0;
-  opt->iterations = 16;
+  opt->iterations = 64;
 
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
   poptSetOtherOptionHelp(pc, "[ARG...]");
@@ -200,8 +200,10 @@ main (int argc, char *argv[])
 	goto FINAL;
       }
 
-    // TODO: Perhaps run once just to warm caches and calibrate
-    for (i=opt.iterations; i>=0; --i) {
+    // Run once to warm caches and calibrate
+    perf_tests[c].test_case(&context);
+
+    for (i=opt.iterations; i>0; --i) {
       try {
 	assert(perf_tests[c].test_case);
 	start_time = get_tick();

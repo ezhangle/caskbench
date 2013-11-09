@@ -1,0 +1,16 @@
+0.2 - November 8, 2013
+----------------------
+This release provides improved Cairo tests and matching Skia tests.
+Both are run with a common `caskbench` executable, and results tabulated
+to stdout or optionally written to a JSON file.
+
+The Skia cmake integration is still incomplete, in that paths are
+hardcoded to my own environment.  These will be cleaned up in future
+releases.  The main priority was to get everything running on my own
+system.
+
+
+0.1 - November 1, 2013
+----------------------
+Initial release.  Cairo tests have been stubbed in, but it's got a long
+way to go before it's usable.

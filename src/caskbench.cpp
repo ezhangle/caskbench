@@ -162,6 +162,8 @@ main (int argc, char *argv[])
   int c, i;
   caskbench_options_t opt;
   double start_time, stop_time, run_time, run_total;
+  double cairo_avg_time = 0.0;
+  double perf_improvement = 0.0;
   FILE *fp;
 
   process_options(&opt, argc, argv);
@@ -243,23 +245,34 @@ main (int argc, char *argv[])
       SkAutoLockPixels image_lock(bitmap);
       cairo_surface_t* skia_surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(),
 									  CAIRO_FORMAT_ARGB32,
-									  bitmap.width(), bitmap.height(), 
+									  bitmap.width(), bitmap.height(),
 									  bitmap.rowBytes());
 
       cairo_surface_write_to_png (skia_surface,  "fill-skia.png");
       cairo_surface_destroy(skia_surface);
     }
- 
+
     cairo_surface_write_to_png (cairo_surface, "fill-cairo.png");
 
   FINAL:
-    printf("%-20s %-4d   %s  %d  %f  %f\n",
+    printf("%-20s %-4d   %s  %d  %f  %f",
 	   result.test_case_name,
 	   result.size,
 	   _status_to_string(result.status),
 	   result.iterations,
 	   result.min_run_time,
 	   result.avg_run_time);
+
+    if (result.test_case_name[0] == 'c') {
+      perf_improvement = 0.0;
+      cairo_avg_time = result.avg_run_time;
+    } else {
+      perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
+      cairo_avg_time = 0.0;
+      printf("  %4.2f%%", perf_improvement * 100.0);
+    }
+    printf("\n");
+
     if (opt.output_file) {
       fprintf(fp, "   {\n");
       fprintf(fp, "       \"test case\": \"%s\",\n", result.test_case_name);

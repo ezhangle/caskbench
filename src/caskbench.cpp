@@ -54,7 +54,6 @@ caskbench_perf_test_t perf_tests[] = {
   {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
   {"skia-stroke",  sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
 };
-#define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 
 typedef enum {
   CASKBENCH_STATUS_PASS,

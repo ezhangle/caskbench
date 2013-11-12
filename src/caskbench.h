@@ -13,6 +13,10 @@
 # define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #endif
 
+#ifndef NUM_ELEM
+# define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
+#endif
+
 class SkPaint;
 class SkCanvas;
 

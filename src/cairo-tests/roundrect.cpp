@@ -37,8 +37,8 @@ ca_test_roundrect(caskbench_context_t *ctx)
   int i, w, x, y;
   for (i=0; i<ctx->size; i++) {
     randomize_color (ctx->cr);
-    x = 10 + ((double)800*rand())/RAND_MAX;
-    y = 10 + ((double)300*rand())/RAND_MAX;;
+    x = 10 + ((double)ctx->canvas_width*rand())/RAND_MAX;
+    y = 10 + ((double)ctx->canvas_height*rand())/RAND_MAX;;
     w = ((double)ctx->size*rand())/RAND_MAX + 1;
 
     rounded_rectangle (ctx->cr, x, y, 100, 40, 4);

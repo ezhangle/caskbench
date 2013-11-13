@@ -179,7 +179,7 @@ cleanup (void *data)
 }
 
 static cairo_surface_t *
-create_source_surface_glx (int size)
+create_source_surface_glx (int width, int height)
 {
   int rgba_attribs[] = {
     GLX_RGBA,
@@ -234,7 +234,7 @@ create_source_surface_glx (int size)
 
   surface = cairo_gl_surface_create (device,
 				     CAIRO_CONTENT_COLOR_ALPHA,
-				     size, size);
+				     width, height);
   cairo_device_destroy (device);
 
   return surface;
@@ -263,13 +263,21 @@ main (int argc, char *argv[])
     caskbench_result_t result;
     cairo_surface_t *cairo_surface;
 
+    context.size = opt.size;
+    context.canvas_width = 800;
+    context.canvas_height = 400;
+
     if (opt.cairo_surface_type == NULL || !strcmp(opt.cairo_surface_type, "image"))
-      cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
+      cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+						  context.canvas_width,
+						  context.canvas_height);
     else
-      cairo_surface = create_source_surface_glx (800);
+      cairo_surface = create_source_surface_glx ( context.canvas_width,
+						  context.canvas_height);
 
     SkBitmap bitmap;
-    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 800, 100);
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config,
+		     context.canvas_width, context.canvas_height);
     bitmap.allocPixels();
     SkBitmapDevice device(bitmap);
     SkCanvas canvas(&device);
@@ -285,7 +293,6 @@ main (int argc, char *argv[])
     context.cr = cairo_create(cairo_surface);
     context.paint = &paint;
     context.canvas = &canvas;
-    context.size = opt.size;
 
     result.test_case_name = perf_tests[c].name;
     result.size = 0;

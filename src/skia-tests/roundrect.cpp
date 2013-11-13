@@ -24,8 +24,8 @@ sk_test_roundrect(caskbench_context_t *ctx)
   for (i=0; i<ctx->size; i++) {
     ctx->paint->setColor(rand());
     w = ((double)ctx->size*rand())/RAND_MAX + 1;
-    x = ((double)800*rand())/RAND_MAX + 10;
-    y = ((double)300*rand())/RAND_MAX + 10;
+    x = ((double)ctx->canvas_width*rand())/RAND_MAX + 10;
+    y = ((double)ctx->canvas_height*rand())/RAND_MAX + 10;
     rect.set(x, y, x+100, y+40);
     ctx->paint->setStrokeWidth(w);
     ctx->canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->paint));

@@ -97,6 +97,10 @@ int  ca_setup_paint(caskbench_context_t *ctx);
 void ca_teardown_paint();
 int  ca_test_paint(caskbench_context_t *ctx);
 
+int  ca_setup_rectangles(caskbench_context_t *ctx);
+void ca_teardown_rectangles();
+int  ca_test_rectangles(caskbench_context_t *ctx);
+
 int  ca_setup_roundrect(caskbench_context_t *ctx);
 void ca_teardown_roundrect();
 int  ca_test_roundrect(caskbench_context_t *ctx);
@@ -122,6 +126,10 @@ int  sk_test_paint(caskbench_context_t *ctx);
 int  sk_setup_stroke(caskbench_context_t *ctx);
 void sk_teardown_stroke();
 int  sk_test_stroke(caskbench_context_t *ctx);
+
+int  sk_setup_rectangles(caskbench_context_t *ctx);
+void sk_teardown_rectangles();
+int  sk_test_rectangles(caskbench_context_t *ctx);
 
 int  sk_setup_roundrect(caskbench_context_t *ctx);
 void sk_teardown_roundrect();

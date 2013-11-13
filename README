@@ -1,6 +1,63 @@
 caskbench - The Cairo and SKia Benchmark
 ========================================
 
+This benchmark is designed to do synthetic performance testing of
+the cairo and skia drawing libraries.
+
+Our principle goal is to identify problem areas in either of the drawing
+libraries for performance work to be done.  To this end, we enable large
+scale randomized testing of a broad range of drawing features, but
+document the parameters so that particular problem cases can easily be
+run in isolation for performance work.
+
+This test strives for a higher level of complexity than Cairo's micro
+performance benchmarks.  Instead of focusing on one discrete
+functionality and testing it repeatedly, this suite covers a set of
+drawing operations, much like would be done in a real world
+application.
+
+
+== Design ==
+
+The benchmark comprises several individual tests, each of which provides
+a set of inputs that can be varied to exercise drawing functionality in
+different ways.
+
+Random permutation of test case inputs are used in order to increase
+coverage to unusual cases.  These inputs are pre-generated, and then
+provided to both the cairo and skia implementations of the tests.  In
+this way, the graphical output by each library should theoretically
+be visually (if not bitwise) identical.  The inputs can control the
+number of items drawn, their style, and so forth.
+
+The quantity of different input sets to use is user-specified; more
+input sets gives more thorough testing, but will take longer to test.
+
+For each input set, the test suite will run the test for a defined
+number of iterations.  This is intended to help even out any variation
+due to external factors by increasing the number of iterations.
+
+foreach test:
+  generate the range of input sets we're going to test
+  foreach input set:
+    foreach graphics_lib:
+      setup test with inputs
+      foreach iteration:
+        run test case
+      cleanup
+
+== Tests ==
+
+Stroke:  Tests different stroke styles on lines, circles, and
+rectangles.
+
+Curves:  Tests drawing curved lines in various ways.
+See cairo perf's curve.c, many-curves.c
+
+Fill:  Fills
+
+== Original Request ==
+
 Bryce - can you start make benchmarks to compare cairogles vs. skia?
 The benchmarks would cover fill, stroke, paint, mask and test.  Both
 with constant constant colors and alpha colors, and image as source and
@@ -29,3 +86,4 @@ To build this testsuite, use these commands:
 
  $ cmake .
  $ make
+

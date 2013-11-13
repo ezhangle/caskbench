@@ -54,6 +54,9 @@ caskbench_perf_test_t perf_tests[] = {
 
   {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
   {"skia-stroke",  sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
+
+  {"cairo-roundrect", ca_setup_roundrect, ca_teardown_roundrect, ca_test_roundrect},
+  {"skia-roundrect",  sk_setup_roundrect, sk_teardown_roundrect, sk_test_roundrect},
 };
 
 typedef enum {

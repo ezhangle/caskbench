@@ -97,12 +97,14 @@ add_executable(caskbench
   src/cairo-tests/mask.cpp
   src/cairo-tests/paint.cpp
   src/cairo-tests/stroke.cpp
+  src/cairo-tests/roundrect.cpp
 
   src/skia-tests/fill.cpp
   src/skia-tests/image.cpp
   src/skia-tests/mask.cpp
   src/skia-tests/paint.cpp
   src/skia-tests/stroke.cpp
+  src/skia-tests/roundrect.cpp
   )
 target_link_libraries(caskbench ${CASKBENCH_LIBS})
 

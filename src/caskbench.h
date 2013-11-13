@@ -105,6 +105,14 @@ int  ca_setup_roundrect(caskbench_context_t *ctx);
 void ca_teardown_roundrect();
 int  ca_test_roundrect(caskbench_context_t *ctx);
 
+int  ca_setup_bubbles(caskbench_context_t *ctx);
+void ca_teardown_bubbles();
+int  ca_test_bubbles(caskbench_context_t *ctx);
+
+int  ca_setup_multishape(caskbench_context_t *ctx);
+void ca_teardown_multishape();
+int  ca_test_multishape(caskbench_context_t *ctx);
+
 
 // Skia Tests
 int  sk_setup_fill(caskbench_context_t *ctx);
@@ -134,5 +142,13 @@ int  sk_test_rectangles(caskbench_context_t *ctx);
 int  sk_setup_roundrect(caskbench_context_t *ctx);
 void sk_teardown_roundrect();
 int  sk_test_roundrect(caskbench_context_t *ctx);
+
+int  sk_setup_bubbles(caskbench_context_t *ctx);
+void sk_teardown_bubbles();
+int  sk_test_bubbles(caskbench_context_t *ctx);
+
+int  sk_setup_multishape(caskbench_context_t *ctx);
+void sk_teardown_multishape();
+int  sk_test_multishape(caskbench_context_t *ctx);
 
 #endif // __CASKBENCH_H__

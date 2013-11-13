@@ -99,6 +99,8 @@ add_executable(caskbench
   src/cairo-tests/stroke.cpp
   src/cairo-tests/rectangles.cpp
   src/cairo-tests/roundrect.cpp
+  src/cairo-tests/bubbles.cpp
+  src/cairo-tests/multishape.cpp
 
   src/skia-tests/fill.cpp
   src/skia-tests/image.cpp
@@ -107,6 +109,8 @@ add_executable(caskbench
   src/skia-tests/stroke.cpp
   src/skia-tests/rectangles.cpp
   src/skia-tests/roundrect.cpp
+  src/skia-tests/bubbles.cpp
+  src/skia-tests/multishape.cpp
   )
 target_link_libraries(caskbench ${CASKBENCH_LIBS})
 

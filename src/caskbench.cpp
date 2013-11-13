@@ -60,6 +60,12 @@ caskbench_perf_test_t perf_tests[] = {
 
   {"cairo-roundrect", ca_setup_roundrect, ca_teardown_roundrect, ca_test_roundrect},
   {"skia-roundrect",  sk_setup_roundrect, sk_teardown_roundrect, sk_test_roundrect},
+
+  {"cairo-bubbles", ca_setup_bubbles, ca_teardown_bubbles, ca_test_bubbles},
+  {"skia-bubbles",  sk_setup_bubbles, sk_teardown_bubbles, sk_test_bubbles},
+
+  {"cairo-multishape", ca_setup_multishape, ca_teardown_multishape, ca_test_multishape},
+  {"skia-multishape",  sk_setup_multishape, sk_teardown_multishape, sk_test_multishape},
 };
 
 typedef enum {

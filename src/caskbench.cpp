@@ -20,6 +20,7 @@ typedef struct _caskbench_options {
   int iterations;
   int size;
   char* output_file;
+  char* cairo_surface_type;
 } caskbench_options_t;
 
 typedef struct _caskbench_perf_test {
@@ -97,6 +98,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     {"test-size", 's', POPT_ARG_INT, &opt->size, 0,
      "Controls the complexity of the tests, such as number of drawn elements",
      NULL},
+    {"cairo-surface-type", 't', POPT_ARG_STRING, &opt->cairo_surface_type, 0,
+     "Type of Cairo surface to use (image, glx)",
+     NULL},
     POPT_AUTOHELP
     {NULL}
   };
@@ -106,6 +110,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
   opt->iterations = 64;
   opt->size = 64;
   opt->output_file = NULL;
+  opt->cairo_surface_type = NULL;
 
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
   poptSetOtherOptionHelp(pc, "[ARG...]");
@@ -253,8 +258,12 @@ main (int argc, char *argv[])
     // Setup
     caskbench_context_t context;
     caskbench_result_t result;
-    // TODO: Set up a gl surface
-    cairo_surface_t *cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
+    cairo_surface_t *cairo_surface;
+
+    if (opt.cairo_surface_type == NULL || !strcmp(opt.cairo_surface_type, "image"))
+      cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 800, 80);
+    else
+      cairo_surface = create_source_surface_glx (800);
 
     SkBitmap bitmap;
     bitmap.setConfig(SkBitmap::kARGB_8888_Config, 800, 100);

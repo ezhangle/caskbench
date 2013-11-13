@@ -9,12 +9,14 @@
 #include "caskbench.h"
 
 static SkRect r;
+static int line_length;
 
 int
 sk_setup_stroke(caskbench_context_t *ctx)
 {
   ctx->paint->setARGB(255, 255, 255, 255);
   r.set(10, 10, 20, 20);
+  line_length = 60;
   return 1;
 }
 
@@ -29,7 +31,7 @@ sk_test_stroke(caskbench_context_t *ctx)
     w = ((double)ctx->size*rand())/RAND_MAX + 1;
     x += 4 + (prev_w + w)/2.0;
     ctx->paint->setStrokeWidth(w);
-    ctx->canvas->drawLine(x,10, x,70, *(ctx->paint));
+    ctx->canvas->drawLine(x,10, x,10+line_length, *(ctx->paint));
     prev_w = w;
   }
 

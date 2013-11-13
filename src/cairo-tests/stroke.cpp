@@ -4,9 +4,12 @@
 
 #include "caskbench.h"
 
+static int line_length;
+
 int
 ca_setup_stroke(caskbench_context_t *ctx)
 {
+  line_length = 60;
   return 1;
 }
 
@@ -26,7 +29,7 @@ ca_test_stroke(caskbench_context_t *ctx)
     w = ((double)ctx->size*rand())/RAND_MAX + 1;
     x += 4 + (prev_w + w)/2.0;
     cairo_move_to (ctx->cr, x, 10);
-    cairo_line_to (ctx->cr, x, 70);
+    cairo_line_to (ctx->cr, x, 10 + line_length);
     cairo_set_line_width (ctx->cr, w);
     cairo_stroke (ctx->cr);
     prev_w = w;

@@ -28,6 +28,7 @@ typedef struct _caskbench_perf_test {
   int (*setup)(caskbench_context_t*);
   void (*teardown)(void);
   int (*test_case)(caskbench_context_t*);
+  void (*write_image)(const char *, caskbench_context_t*);
 } caskbench_perf_test_t;
 
 typedef struct _caskbench_result {
@@ -39,33 +40,55 @@ typedef struct _caskbench_result {
   int status;
 } caskbench_result_t;
 
+void
+write_image_file_cairo (const char *fname, caskbench_context_t *context)
+{
+  cairo_surface_write_to_png (context->cairo_surface, fname);
+}
+
+
+void
+write_image_file_skia (const char *fname, caskbench_context_t *context)
+{
+  SkBitmap *bitmap = context->skia_bitmap;
+  SkAutoLockPixels image_lock(*bitmap);
+  cairo_surface_t* skia_surface = cairo_image_surface_create_for_data((unsigned char*)bitmap->getPixels(),
+								      CAIRO_FORMAT_ARGB32,
+								      bitmap->width(), bitmap->height(),
+								      bitmap->rowBytes());
+
+  cairo_surface_write_to_png (skia_surface, fname);
+  cairo_surface_destroy(skia_surface);
+}
+
+
 caskbench_perf_test_t perf_tests[] = {
-  {"cairo-fill",   ca_setup_fill,   ca_teardown_fill,   ca_test_fill},
-  {"skia-fill",    sk_setup_fill,   sk_teardown_fill,   sk_test_fill},
+  {"cairo-fill",   ca_setup_fill,   ca_teardown_fill,   ca_test_fill,   write_image_file_cairo},
+  {"skia-fill",    sk_setup_fill,   sk_teardown_fill,   sk_test_fill,   write_image_file_skia },
 
-  {"cairo-image",  ca_setup_image,  ca_teardown_image,  ca_test_image},
-  {"skia-image",   sk_setup_image,  sk_teardown_image,  sk_test_image},
+  {"cairo-image",  ca_setup_image,  ca_teardown_image,  ca_test_image,   write_image_file_cairo},
+  {"skia-image",   sk_setup_image,  sk_teardown_image,  sk_test_image,   write_image_file_skia },
 
-  {"cairo-mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask},
-  {"skia-mask",    sk_setup_mask,   sk_teardown_mask,   sk_test_mask},
+  {"cairo-mask",   ca_setup_mask,   ca_teardown_mask,   ca_test_mask,   write_image_file_cairo},
+  {"skia-mask",    sk_setup_mask,   sk_teardown_mask,   sk_test_mask,   write_image_file_skia },
 
-  {"cairo-paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint},
-  {"skia-paint",   sk_setup_paint,  sk_teardown_paint,  sk_test_paint},
+  {"cairo-paint",  ca_setup_paint,  ca_teardown_paint,  ca_test_paint,   write_image_file_cairo},
+  {"skia-paint",   sk_setup_paint,  sk_teardown_paint,  sk_test_paint,   write_image_file_skia },
 
-  {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke},
-  {"skia-stroke",  sk_setup_stroke, sk_teardown_stroke, sk_test_stroke},
+  {"cairo-stroke", ca_setup_stroke, ca_teardown_stroke, ca_test_stroke,   write_image_file_cairo},
+  {"skia-stroke",  sk_setup_stroke, sk_teardown_stroke, sk_test_stroke,   write_image_file_skia },
 
-  {"cairo-rectangles", ca_setup_rectangles, ca_teardown_rectangles, ca_test_rectangles},
-  {"skia-rectangles",  sk_setup_rectangles, sk_teardown_rectangles, sk_test_rectangles},
+  {"cairo-rectangles", ca_setup_rectangles, ca_teardown_rectangles, ca_test_rectangles,   write_image_file_cairo},
+  {"skia-rectangles",  sk_setup_rectangles, sk_teardown_rectangles, sk_test_rectangles,   write_image_file_skia },
 
-  {"cairo-roundrect", ca_setup_roundrect, ca_teardown_roundrect, ca_test_roundrect},
-  {"skia-roundrect",  sk_setup_roundrect, sk_teardown_roundrect, sk_test_roundrect},
+  {"cairo-roundrect", ca_setup_roundrect, ca_teardown_roundrect, ca_test_roundrect,       write_image_file_cairo},
+  {"skia-roundrect",  sk_setup_roundrect, sk_teardown_roundrect, sk_test_roundrect,       write_image_file_skia },
 
-  {"cairo-bubbles", ca_setup_bubbles, ca_teardown_bubbles, ca_test_bubbles},
-  {"skia-bubbles",  sk_setup_bubbles, sk_teardown_bubbles, sk_test_bubbles},
+  {"cairo-bubbles", ca_setup_bubbles, ca_teardown_bubbles, ca_test_bubbles,               write_image_file_cairo},
+  {"skia-bubbles",  sk_setup_bubbles, sk_teardown_bubbles, sk_test_bubbles,               write_image_file_skia },
 
-  {"cairo-multishape", ca_setup_multishape, ca_teardown_multishape, ca_test_multishape},
-  {"skia-multishape",  sk_setup_multishape, sk_teardown_multishape, sk_test_multishape},
+  {"cairo-multishape", ca_setup_multishape, ca_teardown_multishape, ca_test_multishape,   write_image_file_cairo},
+  {"skia-multishape",  sk_setup_multishape, sk_teardown_multishape, sk_test_multishape,   write_image_file_skia },
 };
 
 typedef enum {
@@ -124,10 +147,10 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
   opt->output_file = NULL;
   opt->cairo_surface_type = NULL;
 
+  // Process the command line
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
   poptSetOtherOptionHelp(pc, "[ARG...]");
   poptReadDefaultConfig(pc, 0);
-
   while ((rc = poptGetNextOpt(pc)) >= 0) {
     printf("%d\n", rc);
   }
@@ -147,7 +170,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
   }
 
   // Remaining args are the tests to be run, or all if this list is empty
-  const char **tests = poptGetArgs(pc);
+  //const char **tests = poptGetArgs(pc);
 }
 
 double
@@ -258,6 +281,7 @@ main (int argc, char *argv[])
   double cairo_avg_time = 0.0;
   double perf_improvement = 0.0;
   FILE *fp;
+  char fname[256];
 
   process_options(&opt, argc, argv);
 
@@ -302,6 +326,8 @@ main (int argc, char *argv[])
     context.cr = cairo_create(cairo_surface);
     context.paint = &paint;
     context.canvas = &canvas;
+    context.cairo_surface = cairo_surface;
+    context.skia_bitmap = &bitmap;
 
     result.test_case_name = perf_tests[c].name;
     result.size = 0;
@@ -346,18 +372,11 @@ main (int argc, char *argv[])
     result.avg_run_time = run_total / (double)result.iterations;
     result.size = opt.size;
 
-    {
-      SkAutoLockPixels image_lock(bitmap);
-      cairo_surface_t* skia_surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(),
-									  CAIRO_FORMAT_ARGB32,
-									  bitmap.width(), bitmap.height(),
-									  bitmap.rowBytes());
-
-      cairo_surface_write_to_png (skia_surface,  "fill-skia.png");
-      cairo_surface_destroy(skia_surface);
+    // Write image to file
+    if (perf_tests[c].write_image) {
+      snprintf(fname, sizeof(fname), "%s.png", perf_tests[c].name);
+      perf_tests[c].write_image (fname, &context);
     }
-
-    cairo_surface_write_to_png (cairo_surface, "fill-cairo.png");
 
   FINAL:
     printf("%-20s %-4d   %s  %d  %f  %f",

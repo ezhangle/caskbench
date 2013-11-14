@@ -3,20 +3,21 @@
 #include <cairo.h>
 #include <cairo-gl.h>
 
-struct closure {
+struct graphics_state {
   Display *dpy;
-  GLXContext ctx;
+
+  GLXContext glx_context;
 };
 
 static void
 cleanup (void *data)
 {
-  struct closure *arg = (closure*)data;
+  struct graphics_state *state = (graphics_state*)data;
 
-  glXDestroyContext (arg->dpy, arg->ctx);
-  XCloseDisplay (arg->dpy);
+  glXDestroyContext (state->dpy, state->glx_context);
+  XCloseDisplay (state->dpy);
 
-  free (arg);
+  free (state);
 }
 
 cairo_surface_t *
@@ -33,7 +34,7 @@ create_source_surface_glx (int width, int height)
   };
   XVisualInfo *visinfo;
   GLXContext ctx;
-  struct closure *arg;
+  struct graphics_state *state;
   cairo_device_t *device;
   cairo_surface_t *surface;
   Display *dpy;
@@ -60,22 +61,22 @@ create_source_surface_glx (int width, int height)
     return NULL;
   }
 
-  arg = (closure*) malloc (sizeof (struct closure));
-  if (!arg) {
+  state = (graphics_state*) malloc (sizeof (struct graphics_state));
+  if (!state) {
     warnx ("Out of memory\n");
     XCloseDisplay (dpy);
     return NULL;
   }
-  arg->dpy = dpy;
-  arg->ctx = ctx;
+  state->dpy = dpy;
+  state->glx_context = ctx;
   device = cairo_glx_device_create (dpy, ctx);
   if (cairo_device_set_user_data (device,
 				  (cairo_user_data_key_t *) cleanup,
-				  arg,
+				  state,
 				  cleanup))
     {
-      warnx ("Failed to setup cleanup callback\n");
-      cleanup (arg);
+      warnx ("Failed to setup cleanup callback closure\n");
+      cleanup (state);
       return NULL;
     }
 

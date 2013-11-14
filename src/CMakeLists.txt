@@ -1,5 +1,6 @@
 file(GLOB caskbench_SOURCES
   caskbench.cpp
+  surface-glx.cpp
 
   cairo-tests/*.cpp
   skia-tests/*.cpp

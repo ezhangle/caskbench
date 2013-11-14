@@ -47,12 +47,6 @@ list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/config/)
 list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/tools/flags/)
 list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/include/lazy/)
 
-#OBJS="\
-#    ${SKIA_ROOT}/out/Release/obj/tools/flags/flags.SkCommandLineFlags.o      \
-#    ${SKIA_ROOT}/out/Release/obj.target/zlib/src/core/SkFlate.o              \
-#    "
-#
-
 list(APPEND CASKBENCH_LIBS
   skia_core
   skia_pdf
@@ -78,32 +72,7 @@ list(APPEND CASKBENCH_LIBS
 include_directories(${CASKBENCH_INCS})
 include_directories(SYSTEM ${CASKBENCH_INCS_SYS})
 
-#add_subdirectory(src)
-#message("CMake Prefix: ${CMAKE_PREFIX_PATH}")
-add_executable(caskbench
-  src/caskbench.cpp
-
-  src/cairo-tests/fill.cpp
-  src/cairo-tests/image.cpp
-  src/cairo-tests/mask.cpp
-  src/cairo-tests/paint.cpp
-  src/cairo-tests/stroke.cpp
-  src/cairo-tests/rectangles.cpp
-  src/cairo-tests/roundrect.cpp
-  src/cairo-tests/bubbles.cpp
-  src/cairo-tests/multishape.cpp
-
-  src/skia-tests/fill.cpp
-  src/skia-tests/image.cpp
-  src/skia-tests/mask.cpp
-  src/skia-tests/paint.cpp
-  src/skia-tests/stroke.cpp
-  src/skia-tests/rectangles.cpp
-  src/skia-tests/roundrect.cpp
-  src/skia-tests/bubbles.cpp
-  src/skia-tests/multishape.cpp
-  )
-target_link_libraries(caskbench ${CASKBENCH_LIBS})
+add_subdirectory(src)
 
 unset(CASKBENCH_INCS)
 unset(CASKBENCH_INCS_SYS)

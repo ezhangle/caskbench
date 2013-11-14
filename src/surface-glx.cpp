@@ -1,3 +1,4 @@
+#include <err.h>
 #include <stdlib.h>
 #include <cairo.h>
 #include <cairo-gl.h>
@@ -38,11 +39,14 @@ create_source_surface_glx (int width, int height)
   Display *dpy;
 
   dpy = XOpenDisplay (NULL);
-  if (dpy == NULL)
+  if (dpy == NULL) {
+    warnx ("Failed to open display: %s\n", XDisplayName (0));
     return NULL;
+  }
 
   visinfo = glXChooseVisual (dpy, DefaultScreen (dpy), rgba_attribs);
   if (visinfo == NULL) {
+    warnx ("Failed to choose glx visual\n");
     XCloseDisplay (dpy);
     return NULL;
   }
@@ -51,12 +55,14 @@ create_source_surface_glx (int width, int height)
   XFree (visinfo);
 
   if (ctx == NULL) {
+    warnx ("Could not create glx context\n");
     XCloseDisplay (dpy);
     return NULL;
   }
 
   arg = (closure*) malloc (sizeof (struct closure));
   if (!arg) {
+    warnx ("Out of memory\n");
     XCloseDisplay (dpy);
     return NULL;
   }
@@ -68,6 +74,7 @@ create_source_surface_glx (int width, int height)
 				  arg,
 				  cleanup))
     {
+      warnx ("Failed to setup cleanup callback\n");
       cleanup (arg);
       return NULL;
     }

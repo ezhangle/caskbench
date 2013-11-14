@@ -17,6 +17,21 @@ drawing operations, much like would be done in a real world
 application.
 
 
+== Building ==
+
+To build this testsuite, use these commands:
+
+ $ cmake .
+ $ make
+
+The build system assumes skia has been unpacked and built in the
+directory ~/src/skia/trunk.  You can override this via the SKIA_ROOT
+option:
+
+ $ cmake . -DSKIA_ROOT=/your/path/to/skia
+ $ make
+
+
 == Design ==
 
 The benchmark comprises several individual tests, each of which provides
@@ -78,12 +93,3 @@ skia (please use GL backend for both).
   - Use MSAA and focus on PC first
   - Port benchmarks to tizen and android
 * Post to github when ready to be public
-
-
-== Building ==
-
-To build this testsuite, use these commands:
-
- $ cmake .
- $ make
-

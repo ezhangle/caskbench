@@ -29,23 +29,24 @@ list(APPEND CASKBENCH_LIBS ${POPT_LIBRARIES})
 add_definitions(${POPT_DEFINITIONS})
 
 find_package(X11 REQUIRED)
-#list(APPEND CASKBENCH_LIBS ${X11_LIBRARIES})
 
 find_package(Cairo)
 list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
 
 # skia
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH}
-  /home/bryce/src/skia/trunk/out/Release/
+set(SKIA_ROOT "$ENV{HOME}/src/skia/trunk" CACHE STRING "Location of skia source tree")
+message(STATUS "Using skia from ${SKIA_ROOT}")
+set(SKIA_LIB_PATHS 
+  ${SKIA_ROOT}/out/Release/
   /usr/lib/x86_64-linux-gnu)
-link_directories(/home/bryce/src/skia/trunk/out/Release/
-  /usr/lib/x86_64-linux-gnu)
-list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/)
-list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/core/)
-list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/config/)
-list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/tools/flags/)
-list(APPEND CASKBENCH_INCS /home/bryce/src/skia/trunk/include/include/lazy/)
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${SKIA_LIB_PATHS})
+link_directories(${SKIA_LIB_PATHS})
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/core/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/config/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/tools/flags/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/include/lazy/)
 
 list(APPEND CASKBENCH_LIBS
   skia_core

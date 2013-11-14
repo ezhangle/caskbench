@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8)
 project(caskbench)
 set(PROJECT_VERSION "0.2")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeScripts/Modules/")
 
 set(CASKBENCH_LIBS "")
 set(CASKBENCH_INCS "")

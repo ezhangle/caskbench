@@ -49,6 +49,7 @@ create_source_surface_glx (int width, int height);
 void
 write_image_file_cairo (const char *fname, caskbench_context_t *context)
 {
+  assert (context->cairo_surface);
   cairo_surface_write_to_png (context->cairo_surface, fname);
 }
 
@@ -57,6 +58,8 @@ void
 write_image_file_skia (const char *fname, caskbench_context_t *context)
 {
   SkBitmap *bitmap = context->skia_bitmap;
+
+  assert (bitmap);
   SkAutoLockPixels image_lock(*bitmap);
   cairo_surface_t* skia_surface = cairo_image_surface_create_for_data((unsigned char*)bitmap->getPixels(),
 								      CAIRO_FORMAT_ARGB32,
@@ -235,6 +238,8 @@ main (int argc, char *argv[])
     else
       cairo_surface = create_source_surface_glx ( context.canvas_width,
 						  context.canvas_height);
+    if (!cairo_surface)
+      errx(2, "Error: Could not create a cairo surface\n");
 
     SkBitmap bitmap;
     bitmap.setConfig(SkBitmap::kARGB_8888_Config,

@@ -19,6 +19,14 @@ application.
 
 == Building ==
 
+Prerequisites include popt and gles3.  To install these on Ubuntu 13.04:
+
+ $ sudo apt-get install libpopt-dev libgles2-mesa-dev
+
+You will also need a GL-enabled version of libcairo installed.  This
+isn't packaged for Ubuntu currently, so you'll need to build from
+source or find a PPA that provides it.
+
 To build this testsuite, use these commands:
 
  $ cmake .

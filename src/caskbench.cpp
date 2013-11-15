@@ -44,6 +44,8 @@ typedef struct _caskbench_result {
 cairo_surface_t *
 create_source_surface_glx (int width, int height);
 
+cairo_surface_t *
+create_source_surface_egl (int width, int height);
 
 
 void
@@ -143,7 +145,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
      "Controls the complexity of the tests, such as number of drawn elements",
      NULL},
     {"cairo-surface-type", 't', POPT_ARG_STRING, &opt->cairo_surface_type, 0,
-     "Type of Cairo surface to use (image, glx)",
+     "Type of Cairo surface to use (image, glx, or egl)",
      NULL},
     POPT_AUTOHELP
     {NULL}
@@ -231,13 +233,18 @@ main (int argc, char *argv[])
     context.canvas_width = 800;
     context.canvas_height = 400;
 
-    if (opt.cairo_surface_type == NULL || !strcmp(opt.cairo_surface_type, "image"))
+    if (opt.cairo_surface_type == NULL || !strncmp(opt.cairo_surface_type, "image", 5))
       cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
 						  context.canvas_width,
 						  context.canvas_height);
-    else
+    else if (!strncmp(opt.cairo_surface_type, "glx", 3))
       cairo_surface = create_source_surface_glx ( context.canvas_width,
 						  context.canvas_height);
+    else if (!strncmp(opt.cairo_surface_type, "egl", 3))
+      cairo_surface = create_source_surface_egl ( context.canvas_width,
+						  context.canvas_height);
+
+
     if (!cairo_surface)
       errx(2, "Error: Could not create a cairo surface\n");
 

@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(caskbench)
 set(PROJECT_VERSION "0.2")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMakeScripts/Modules/")
+set(CMAKE_SCRIPTS "CMakeScripts")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/Modules/")
 
 set(CASKBENCH_LIBS "")
 set(CASKBENCH_INCS "")
@@ -89,3 +90,19 @@ add_custom_target(dist
   COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
       | bzip2 > ${CMAKE_BINARY_DIR}/${ARCHIVE_NAME}.tar.bz2
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+# ----------------------------------------------------------------------
+# Install
+# ----------------------------------------------------------------------
+# TODO
+
+
+# ----------------------------------------------------------------------
+# Uninstall
+# ----------------------------------------------------------------------
+CONFIGURE_FILE(
+  "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake"
+  IMMEDIATE @ONLY)
+ADD_CUSTOM_TARGET(uninstall
+  "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake") 

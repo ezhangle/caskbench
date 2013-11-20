@@ -16,7 +16,7 @@
 #include "caskbench.h"
 
 typedef struct _caskbench_options {
-  int dry_run;
+  int dry_run;  
   int iterations;
   int size;
   char* output_file;
@@ -224,7 +224,6 @@ main (int argc, char *argv[])
     fprintf(fp, "[\n");
   }
   for (c=0; c<NUM_ELEM(perf_tests); c++) {
-    // Setup
     caskbench_context_t context;
     caskbench_result_t result;
     cairo_surface_t *cairo_surface;
@@ -246,7 +245,7 @@ main (int argc, char *argv[])
 
 
     if (!cairo_surface)
-      errx(2, "Error: Could not create a cairo surface\n");
+      errx(2, "Could not create a cairo surface\n");
 
     SkBitmap bitmap;
     bitmap.setConfig(SkBitmap::kARGB_8888_Config,

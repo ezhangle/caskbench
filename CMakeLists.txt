@@ -68,6 +68,9 @@ list(APPEND CASKBENCH_LIBS
   skia_core
   freetype
   fontconfig
+  pthread
+  EGL
+  GL
 )
 
 # ----------------------------------------------------------------------

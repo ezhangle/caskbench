@@ -17,7 +17,7 @@
 *.out
 *.app
 
-build
+build*
 INSTALL
 Makefile
 *.pc

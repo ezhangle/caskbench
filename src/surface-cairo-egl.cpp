@@ -6,14 +6,7 @@
 #include <EGL/egl.h>
 #include <GLES3/gl3.h>
 
-struct graphics_state {
-  Display   *dpy;
-  Window     window;
-
-  EGLDisplay egl_display;
-  EGLContext egl_context;
-  EGLSurface egl_surface;
-};
+#include "egl.h"
 
 static Display* getDisplay()
 {
@@ -24,7 +17,7 @@ static Display* getDisplay()
 }
 
 static bool
-createWindow(graphics_state *state, int width, int height)
+createWindow(egl_state_t *state, int width, int height)
 {
   state->dpy = XOpenDisplay (NULL);
   if (state->dpy == NULL) {
@@ -45,7 +38,7 @@ createWindow(graphics_state *state, int width, int height)
 static void
 cleanup (void *data)
 {
-  struct graphics_state *state = (graphics_state*)data;
+  egl_state_t *state = (egl_state_t*)data;
 
   eglDestroyContext (state->egl_display, state->egl_context);
   eglDestroySurface (state->egl_display, state->egl_surface);
@@ -56,78 +49,14 @@ cleanup (void *data)
   free (state);
 }
 
-static bool
-createEGLContextWithWindow(struct graphics_state *state)
-{
-  EGLint attr[] = {
-    EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
-    EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
-    EGL_RED_SIZE, 1,
-    EGL_GREEN_SIZE, 1,
-    EGL_BLUE_SIZE, 1,
-    EGL_ALPHA_SIZE, 1,
-    EGL_STENCIL_SIZE, 1,
-    EGL_SAMPLES, 4,
-    EGL_SAMPLE_BUFFERS, 1,
-    EGL_NONE
-  };
-  EGLint ctx_attr[] = {
-    EGL_CONTEXT_CLIENT_VERSION, 3,
-    EGL_NONE
-  };
-  EGLConfig config;
-  EGLint num;
-
-  state->egl_display = eglGetDisplay ((EGLNativeDisplayType) state->dpy);
-  if (state->egl_display == EGL_NO_DISPLAY) {
-    warnx ("Cannot get egl display\n");
-    return false;
-  }
-
-  if (! eglChooseConfig (state->egl_display, attr, &config, 1, &num)) {
-    warnx ("Cannot choose EGL configuration\n");
-    return false;
-  }
-
-  state->egl_context = eglCreateContext (state->egl_display, config, NULL, ctx_attr);
-  if (state->egl_context == EGL_NO_CONTEXT) {
-    warnx ("Cannot create EGL context\n");
-    return false;
-  }
-
-  state->egl_surface = eglCreateWindowSurface (state->egl_display, config, state->window, NULL);
-  if (state->egl_surface == EGL_NO_SURFACE) {
-    warnx ("Cannot create EGL window surface\n");
-    return false;
-  }
-  return true;
-}
-
-static bool
-initializeEGL(struct graphics_state *state)
-{
-  EGLint major, minor;
-  if (!eglInitialize(state->egl_display, &major, &minor)) {
-    warnx ("Cannot initialize EGL\n");
-    return false;
-  }
-
-  if (!eglBindAPI(EGL_OPENGL_ES_API)) {
-    warnx ("Cannot bind EGL to GLES API\n");
-    return false;
-  }
-
-  return true;
-}
-
 cairo_surface_t *
 create_source_surface_egl (int width, int height)
 {
-  struct graphics_state *state;
+  egl_state_t *state;
   cairo_device_t *cairo_device;
   cairo_surface_t *cairo_surface;
 
-  state = (graphics_state*) malloc (sizeof (struct graphics_state));
+  state = (egl_state_t*) malloc (sizeof (egl_state_t));
   if (!state) {
     warnx ("Out of memory\n");
     return NULL;

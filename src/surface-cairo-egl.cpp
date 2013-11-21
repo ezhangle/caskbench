@@ -15,6 +15,33 @@ struct graphics_state {
   EGLSurface egl_surface;
 };
 
+static Display* getDisplay()
+{
+  static Display* display = NULL;
+  if (!display)
+    display = XOpenDisplay(NULL);
+  return display;
+}
+
+static bool
+createWindow(graphics_state *state, int width, int height)
+{
+  state->dpy = XOpenDisplay (NULL);
+  if (state->dpy == NULL) {
+    warnx ("Failed to open display: %s\n", XDisplayName (0));
+    return false;
+  }
+
+  state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
+				       0, 0,
+				       width, height,
+				       0,
+				       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
+				       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)));
+  XMapWindow (state->dpy, state->window);
+  return true;
+}
+
 static void
 cleanup (void *data)
 {
@@ -29,13 +56,9 @@ cleanup (void *data)
   free (state);
 }
 
-cairo_surface_t *
-create_source_surface_egl (int width, int height)
+static bool
+createEGLContextWithWindow(struct graphics_state *state)
 {
-  struct graphics_state *state;
-  cairo_device_t *cairo_device;
-  cairo_surface_t *cairo_surface;
-
   EGLint attr[] = {
     EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
     EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
@@ -54,7 +77,55 @@ create_source_surface_egl (int width, int height)
   };
   EGLConfig config;
   EGLint num;
+
+  state->egl_display = eglGetDisplay ((EGLNativeDisplayType) state->dpy);
+  if (state->egl_display == EGL_NO_DISPLAY) {
+    warnx ("Cannot get egl display\n");
+    return false;
+  }
+
+  if (! eglChooseConfig (state->egl_display, attr, &config, 1, &num)) {
+    warnx ("Cannot choose EGL configuration\n");
+    return false;
+  }
+
+  state->egl_context = eglCreateContext (state->egl_display, config, NULL, ctx_attr);
+  if (state->egl_context == EGL_NO_CONTEXT) {
+    warnx ("Cannot create EGL context\n");
+    return false;
+  }
+
+  state->egl_surface = eglCreateWindowSurface (state->egl_display, config, state->window, NULL);
+  if (state->egl_surface == EGL_NO_SURFACE) {
+    warnx ("Cannot create EGL window surface\n");
+    return false;
+  }
+  return true;
+}
+
+static bool
+initializeEGL(struct graphics_state *state)
+{
   EGLint major, minor;
+  if (!eglInitialize(state->egl_display, &major, &minor)) {
+    warnx ("Cannot initialize EGL\n");
+    return false;
+  }
+
+  if (!eglBindAPI(EGL_OPENGL_ES_API)) {
+    warnx ("Cannot bind EGL to GLES API\n");
+    return false;
+  }
+
+  return true;
+}
+
+cairo_surface_t *
+create_source_surface_egl (int width, int height)
+{
+  struct graphics_state *state;
+  cairo_device_t *cairo_device;
+  cairo_surface_t *cairo_surface;
 
   state = (graphics_state*) malloc (sizeof (struct graphics_state));
   if (!state) {
@@ -62,50 +133,17 @@ create_source_surface_egl (int width, int height)
     return NULL;
   }
 
-  state->dpy = XOpenDisplay (NULL);
-  if (state->dpy == NULL) {
-    warnx ("Failed to open display: %s\n", XDisplayName (0));
+  if (!createWindow(state, width, height)) {
     return NULL;
   }
 
-  state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
-				       0, 0,
-				       width, height,
-				       0,
-				       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
-				       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)));
-  XMapWindow (state->dpy, state->window);
-
-  state->egl_display = eglGetDisplay ((EGLNativeDisplayType) state->dpy);
-  if (state->egl_display == EGL_NO_DISPLAY) {
-    warnx ("Cannot get egl display\n");
+  if (!initializeEGL(state)) {
+    cleanup(state);
     return NULL;
   }
 
-  if (! eglInitialize (state->egl_display, &major, &minor)) {
-    warnx ("Cannot initialize egl\n");
-    return NULL;
-  }
-
-  if (! eglBindAPI (EGL_OPENGL_ES_API)) {
-    warnx ("Cannot bind egl to gles2 API\n");
-    return NULL;
-  }
-
-  if (! eglChooseConfig (state->egl_display, attr, &config, 1, &num)) {
-    warnx ("Cannot get egl configuration\n");
-    return NULL;
-  }
-
-  state->egl_context = eglCreateContext (state->egl_display, config, NULL, ctx_attr);
-  if (state->egl_context == EGL_NO_CONTEXT) {
-    warnx ("Cannot create egl context\n");
-    return NULL;
-  }
-
-  state->egl_surface = eglCreateWindowSurface (state->egl_display, config, state->window, NULL);
-  if (state->egl_surface == EGL_NO_SURFACE) {
-    warnx ("Cannot create egl window surface\n");
+  if (!createEGLContextWithWindow(state)) {
+    cleanup(state);
     return NULL;
   }
 

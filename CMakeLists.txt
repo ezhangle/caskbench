@@ -50,8 +50,11 @@ link_directories(${SKIA_LIB_PATHS})
 list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/)
 list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/core/)
 list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/config/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/utils/)
 list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/tools/flags/)
 list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/include/lazy/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/gpu/)
+list(APPEND CASKBENCH_INCS ${SKIA_ROOT}/include/gpu/gl/)
 
 list(APPEND CASKBENCH_LIBS
   skia_core

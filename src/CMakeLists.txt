@@ -1,8 +1,7 @@
 file(GLOB caskbench_SOURCES
   caskbench.cpp
   egl.cpp
-  surface-cairo-glx.cpp
-  surface-cairo-egl.cpp
+  surface-cairo-*.cpp
 
   cairo-tests/*.cpp
   skia-tests/*.cpp

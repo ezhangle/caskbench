@@ -42,6 +42,9 @@ typedef struct _caskbench_result {
 
 // Surfaces
 cairo_surface_t *
+create_cairo_surface_image (int width, int height);
+
+cairo_surface_t *
 create_cairo_surface_glx (int width, int height);
 
 cairo_surface_t *
@@ -236,9 +239,8 @@ main (int argc, char *argv[])
     context.skia_paint = &skia_paint;
 
     if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
-      context.cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
-							  context.canvas_width,
-							  context.canvas_height);
+      context.cairo_surface = create_cairo_surface_image ( context.canvas_width,
+							   context.canvas_height);
 
       SkBitmap skia_bitmap;
       skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,

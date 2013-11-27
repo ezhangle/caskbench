@@ -59,17 +59,18 @@ write_image_file_cairo (const char *fname, caskbench_context_t *context)
 void
 write_image_file_skia (const char *fname, caskbench_context_t *context)
 {
-  SkBitmap *bitmap = context->skia_bitmap;
+  SkBaseDevice *device = context->skia_device;
+  assert (device);
 
-  assert (bitmap);
-  SkAutoLockPixels image_lock(*bitmap);
-  cairo_surface_t* skia_surface = cairo_image_surface_create_for_data((unsigned char*)bitmap->getPixels(),
-								      CAIRO_FORMAT_ARGB32,
-								      bitmap->width(), bitmap->height(),
-								      bitmap->rowBytes());
+  const SkBitmap &bitmap = device->accessBitmap(false);
+  SkAutoLockPixels image_lock(bitmap);
+  cairo_surface_t* surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(),
+								 CAIRO_FORMAT_ARGB32,
+								 bitmap.width(), bitmap.height(),
+								 bitmap.rowBytes());
 
-  cairo_surface_write_to_png (skia_surface, fname);
-  cairo_surface_destroy(skia_surface);
+  cairo_surface_write_to_png (surface, fname);
+  cairo_surface_destroy(surface);
 }
 
 
@@ -252,8 +253,8 @@ main (int argc, char *argv[])
     skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
 			  context.canvas_width, context.canvas_height);
     skia_bitmap.allocPixels();
-    SkBitmapDevice device(skia_bitmap);
-    SkCanvas skia_canvas(&device);
+    SkBitmapDevice skia_device(skia_bitmap);
+    SkCanvas skia_canvas(&skia_device);
 
     // If dry run, just list the test cases
     if (opt.dry_run) {
@@ -266,7 +267,7 @@ main (int argc, char *argv[])
     context.paint = &skia_paint;
     context.canvas = &skia_canvas;
     context.cairo_surface = cairo_surface;
-    context.skia_bitmap = &skia_bitmap;
+    context.skia_device = &skia_device;
 
     result.test_case_name = perf_tests[c].name;
     result.size = 0;

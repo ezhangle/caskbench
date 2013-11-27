@@ -17,9 +17,9 @@
 # define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 #endif
 
-class SkBitmap;
 class SkPaint;
 class SkCanvas;
+class SkBaseDevice;
 
 typedef struct _caskbench_context {
   int       size;
@@ -28,7 +28,7 @@ typedef struct _caskbench_context {
   cairo_t   *cr;
   SkPaint   *paint;
   SkCanvas  *canvas;
-  SkBitmap        *skia_bitmap;
+  SkBaseDevice    *skia_device;
   cairo_surface_t *cairo_surface;
 } caskbench_context_t;
 

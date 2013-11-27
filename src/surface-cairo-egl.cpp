@@ -50,7 +50,7 @@ cleanup (void *data)
 }
 
 cairo_surface_t *
-create_source_surface_egl (int width, int height)
+create_cairo_surface_egl (int width, int height)
 {
   egl_state_t *state;
   cairo_device_t *cairo_device;

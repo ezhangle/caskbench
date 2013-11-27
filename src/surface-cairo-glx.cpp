@@ -24,7 +24,7 @@ cleanup (void *data)
 }
 
 cairo_surface_t *
-create_source_surface_glx (int width, int height)
+create_cairo_surface_glx (int width, int height)
 {
   struct graphics_state *state;
   cairo_device_t *cairo_device;

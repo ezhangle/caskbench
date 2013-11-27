@@ -42,10 +42,10 @@ typedef struct _caskbench_result {
 
 // Surfaces
 cairo_surface_t *
-create_source_surface_glx (int width, int height);
+create_cairo_surface_glx (int width, int height);
 
 cairo_surface_t *
-create_source_surface_egl (int width, int height);
+create_cairo_surface_egl (int width, int height);
 
 
 void
@@ -237,10 +237,10 @@ main (int argc, char *argv[])
 						  context.canvas_width,
 						  context.canvas_height);
     } else if (!strncmp(opt.surface_type, "glx", 3)) {
-      cairo_surface = create_source_surface_glx ( context.canvas_width,
+      cairo_surface = create_cairo_surface_glx ( context.canvas_width,
 						  context.canvas_height);
     } else if (!strncmp(opt.surface_type, "egl", 3)) {
-      cairo_surface = create_source_surface_egl ( context.canvas_width,
+      cairo_surface = create_cairo_surface_egl ( context.canvas_width,
 						  context.canvas_height);
     }
 

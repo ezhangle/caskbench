@@ -15,7 +15,6 @@ ca_setup_image(caskbench_context_t *ctx)
   cr_image = cairo_create(image);
   cairo_set_source_surface (cr_image, image, 0, 0);
 
-
   x = y = 5;
   for (i=0; i<16; i++) {
     x += 5;
@@ -37,8 +36,9 @@ int
 ca_test_image(caskbench_context_t* ctx)
 {
   int i;
-  for (i=0; i<ctx->size; i++)
-    cairo_paint (ctx->cr);
-  return 1;
-}  
+  cairo_t *cr = ctx->cairo_cr;
 
+  for (i=0; i<ctx->size; i++)
+    cairo_paint (cr);
+  return 1;
+}

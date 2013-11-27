@@ -227,19 +227,18 @@ main (int argc, char *argv[])
   for (c=0; c<NUM_ELEM(perf_tests); c++) {
     caskbench_context_t context;
     caskbench_result_t result;
-    cairo_surface_t *cairo_surface;
     SkPaint skia_paint;
 
     context.size = opt.size;
     context.canvas_width = 800;
     context.canvas_height = 400;
     context.skia_device = NULL;
-    context.paint = &skia_paint;
+    context.skia_paint = &skia_paint;
 
     if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
-      cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
-						  context.canvas_width,
-						  context.canvas_height);
+      context.cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
+							  context.canvas_width,
+							  context.canvas_height);
 
       SkBitmap skia_bitmap;
       skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
@@ -248,15 +247,15 @@ main (int argc, char *argv[])
       context.skia_device = new SkBitmapDevice (skia_bitmap);
 
     } else if (!strncmp(opt.surface_type, "glx", 3)) {
-      cairo_surface = create_cairo_surface_glx ( context.canvas_width,
-						  context.canvas_height);
+      context.cairo_surface = create_cairo_surface_glx ( context.canvas_width,
+							 context.canvas_height);
 
     } else if (!strncmp(opt.surface_type, "egl", 3)) {
-      cairo_surface = create_cairo_surface_egl ( context.canvas_width,
-						  context.canvas_height);
+      context.cairo_surface = create_cairo_surface_egl ( context.canvas_width,
+							 context.canvas_height);
     }
 
-    if (!cairo_surface)
+    if (!context.cairo_surface)
       errx(2, "Could not create a cairo surface\n");
     if (!context.skia_device)
       errx(2, "Could not create a skia device\n");
@@ -268,9 +267,8 @@ main (int argc, char *argv[])
     }
 
     srand(0xdeadbeef);
-    context.cr = cairo_create(cairo_surface);
-    context.canvas = new SkCanvas(context.skia_device);
-    context.cairo_surface = cairo_surface;
+    context.cairo_cr = cairo_create(context.cairo_surface);
+    context.skia_canvas = new SkCanvas(context.skia_device);
 
     result.test_case_name = perf_tests[c].name;
     result.size = 0;
@@ -358,8 +356,10 @@ main (int argc, char *argv[])
     if (perf_tests[c].teardown != NULL)
       perf_tests[c].teardown();
 
-    cairo_destroy(context.cr);
-    cairo_surface_destroy(cairo_surface);
+    delete context.skia_canvas;
+    delete context.skia_device;
+    cairo_destroy(context.cairo_cr);
+    cairo_surface_destroy(context.cairo_surface);
   }
 
   if (opt.output_file) {

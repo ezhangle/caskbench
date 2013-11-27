@@ -35,15 +35,17 @@ int
 ca_test_roundrect(caskbench_context_t *ctx)
 {
   int i, w, x, y;
+  cairo_t *cr = ctx->cairo_cr;
+
   for (i=0; i<ctx->size; i++) {
-    randomize_color (ctx->cr);
+    randomize_color (cr);
     x = 10 + ((double)ctx->canvas_width*rand())/RAND_MAX;
     y = 10 + ((double)ctx->canvas_height*rand())/RAND_MAX;;
     w = ((double)ctx->size*rand())/RAND_MAX + 1;
 
-    rounded_rectangle (ctx->cr, x, y, 100, 40, 4);
-    cairo_set_line_width (ctx->cr, w);
-    cairo_stroke (ctx->cr);
+    rounded_rectangle (cr, x, y, 100, 40, 4);
+    cairo_set_line_width (cr, w);
+    cairo_stroke (cr);
   }
   return 1;
 }

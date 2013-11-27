@@ -1,10 +1,9 @@
 // From http://www.atoker.com/blog/2008/09/06/skia-graphics-library-in-chrome-first-impressions/
 
-#include "SkBitmap.h"
-#include "SkBitmapDevice.h"
-#include "SkPaint.h"
+#include <SkCanvas.h>
+#include <SkPaint.h>
 #include <cairo.h>
- 
+
 #include "caskbench.h"
 
 static int max_dim;
@@ -16,6 +15,11 @@ sk_setup_bubbles(caskbench_context_t *ctx)
   return 1;
 }
 
+void
+sk_teardown_bubbles(void)
+{
+}
+
 int
 sk_test_bubbles(caskbench_context_t *ctx)
 {
@@ -24,15 +28,9 @@ sk_test_bubbles(caskbench_context_t *ctx)
     r = ((double)max_dim*rand())/RAND_MAX + 1;
     x = (0.5*(double)ctx->canvas_width*rand())/RAND_MAX;
     y = (0.5*(double)ctx->canvas_height*rand())/RAND_MAX;
-    ctx->paint->setColor(rand());
-    ctx->canvas->drawCircle(x, y, r, *ctx->paint);
+    ctx->skia_paint->setColor(rand());
+    ctx->skia_canvas->drawCircle(x, y, r, *ctx->skia_paint);
   }
 
   return 1;
 }
-
-void
-sk_teardown_bubbles(void)
-{
-}
-

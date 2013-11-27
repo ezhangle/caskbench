@@ -23,7 +23,9 @@ int
 ca_test_mask(caskbench_context_t *ctx)
 {
   int i;
+  cairo_t *cr = ctx->cairo_cr;
+
   for (i=0; i<ctx->size; i++)
-    cairo_mask (ctx->cr, mask);
+    cairo_mask (cr, mask);
   return 1;
 }

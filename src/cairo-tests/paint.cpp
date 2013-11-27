@@ -19,9 +19,11 @@ int
 ca_test_paint(caskbench_context_t *ctx)
 {
   int i;
+  cairo_t *cr = ctx->cairo_cr;
+
   for (i=0; i<ctx->size; i++) {
-    randomize_color (ctx->cr);
-    cairo_paint (ctx->cr);
+    randomize_color (cr);
+    cairo_paint (cr);
   }
   return 1;
 }

@@ -19,10 +19,12 @@ int
 ca_test_fill(caskbench_context_t *ctx)
 {
   int i;
+  cairo_t *cr = ctx->cairo_cr;
+
   for (i=0; i<ctx->size; i++) {
-    randomize_color (ctx->cr);
-    cairo_arc (ctx->cr, 40*i, 40, 30, 0, 2*M_PI);
-    cairo_fill (ctx->cr);
+    randomize_color (cr);
+    cairo_arc (cr, 40*i, 40, 30, 0, 2*M_PI);
+    cairo_fill (cr);
   }
   return 1;
 }

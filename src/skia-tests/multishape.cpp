@@ -1,8 +1,7 @@
-#include "SkBitmap.h"
-#include "SkBitmapDevice.h"
-#include "SkPaint.h"
+#include <SkCanvas.h>
+#include <SkPaint.h>
 #include <cairo.h>
- 
+
 #include "caskbench.h"
 
 static int element_spacing;
@@ -24,6 +23,11 @@ sk_setup_multishape(caskbench_context_t *ctx)
   return 1;
 }
 
+void
+sk_teardown_multishape(void)
+{
+}
+
 int
 sk_test_multishape(caskbench_context_t *ctx)
 {
@@ -36,17 +40,11 @@ sk_test_multishape(caskbench_context_t *ctx)
       x = i * element_spacing;
 
       // TODO: Select a pre-defined paint object at random
-      ctx->paint->setColor(rand());
+      ctx->skia_paint->setColor(rand());
 
       // TODO: Randomly select different shapes to be drawn
-      ctx->canvas->drawCircle(x, y, r, *ctx->paint);
+      ctx->skia_canvas->drawCircle(x, y, r, *ctx->skia_paint);
     }
   }
   return 1;
 }
-
-void
-sk_teardown_multishape(void)
-{
-}
-

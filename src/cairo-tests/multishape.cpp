@@ -31,17 +31,17 @@ int
 ca_test_multishape(caskbench_context_t *ctx)
 {
   int i, j, x, y, r;
+  cairo_t *cr = ctx->cairo_cr;
 
   r = 0.9 * element_spacing / 2;
   for (j=0; j<num_y_elements; j++) {
     y = j * element_spacing;
     for (i=0; i<num_x_elements; i++) {
       x = i * element_spacing;
-      randomize_color (ctx->cr);
-      cairo_arc (ctx->cr, x, y, r, 0, 2*M_PI);
-      cairo_fill (ctx->cr);
+      randomize_color (cr);
+      cairo_arc (cr, x, y, r, 0, 2*M_PI);
+      cairo_fill (cr);
     }
   }
   return 1;
 }
-

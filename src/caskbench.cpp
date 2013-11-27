@@ -40,7 +40,7 @@ typedef struct _caskbench_result {
   int status;
 } caskbench_result_t;
 
-// Surfaces
+// Backend-specific graphics initialization
 cairo_surface_t *
 create_cairo_surface_image (int width, int height);
 
@@ -49,6 +49,9 @@ create_cairo_surface_glx (int width, int height);
 
 cairo_surface_t *
 create_cairo_surface_egl (int width, int height);
+
+SkBaseDevice *
+create_skia_device_image (int width, int height);
 
 
 void
@@ -241,12 +244,8 @@ main (int argc, char *argv[])
     if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
       context.cairo_surface = create_cairo_surface_image ( context.canvas_width,
 							   context.canvas_height);
-
-      SkBitmap skia_bitmap;
-      skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
-			    context.canvas_width, context.canvas_height);
-      skia_bitmap.allocPixels();
-      context.skia_device = new SkBitmapDevice (skia_bitmap);
+      context.skia_device = create_skia_device_image ( context.canvas_width,
+						       context.canvas_height);
 
     } else if (!strncmp(opt.surface_type, "glx", 3)) {
       context.cairo_surface = create_cairo_surface_glx ( context.canvas_width,

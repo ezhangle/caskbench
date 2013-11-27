@@ -227,6 +227,8 @@ main (int argc, char *argv[])
     caskbench_context_t context;
     caskbench_result_t result;
     cairo_surface_t *cairo_surface;
+    SkBitmap skia_bitmap;
+    SkPaint skia_paint;
 
     context.size = opt.size;
     context.canvas_width = 800;
@@ -247,13 +249,11 @@ main (int argc, char *argv[])
     if (!cairo_surface)
       errx(2, "Could not create a cairo surface\n");
 
-    SkBitmap bitmap;
-    bitmap.setConfig(SkBitmap::kARGB_8888_Config,
-		     context.canvas_width, context.canvas_height);
-    bitmap.allocPixels();
-    SkBitmapDevice device(bitmap);
-    SkCanvas canvas(&device);
-    SkPaint paint;
+    skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
+			  context.canvas_width, context.canvas_height);
+    skia_bitmap.allocPixels();
+    SkBitmapDevice device(skia_bitmap);
+    SkCanvas skia_canvas(&device);
 
     // If dry run, just list the test cases
     if (opt.dry_run) {
@@ -263,10 +263,10 @@ main (int argc, char *argv[])
 
     srand(0xdeadbeef);
     context.cr = cairo_create(cairo_surface);
-    context.paint = &paint;
-    context.canvas = &canvas;
+    context.paint = &skia_paint;
+    context.canvas = &skia_canvas;
     context.cairo_surface = cairo_surface;
-    context.skia_bitmap = &bitmap;
+    context.skia_bitmap = &skia_bitmap;
 
     result.test_case_name = perf_tests[c].name;
     result.size = 0;

@@ -16,11 +16,11 @@
 #include "caskbench.h"
 
 typedef struct _caskbench_options {
-  int dry_run;  
+  int dry_run;
   int iterations;
   int size;
   char* output_file;
-  char* cairo_surface_type;
+  char* surface_type;
 } caskbench_options_t;
 
 typedef struct _caskbench_perf_test {
@@ -144,8 +144,8 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     {"test-size", 's', POPT_ARG_INT, &opt->size, 0,
      "Controls the complexity of the tests, such as number of drawn elements",
      NULL},
-    {"cairo-surface-type", 't', POPT_ARG_STRING, &opt->cairo_surface_type, 0,
-     "Type of Cairo surface to use (image, glx, or egl)",
+    {"surface-type", 't', POPT_ARG_STRING, &opt->surface_type, 0,
+     "Type of graphics surface to use (image, glx, or egl)",
      NULL},
     POPT_AUTOHELP
     {NULL}
@@ -156,7 +156,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
   opt->iterations = 64;
   opt->size = 64;
   opt->output_file = NULL;
-  opt->cairo_surface_type = NULL;
+  opt->surface_type = NULL;
 
   // Process the command line
   pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
@@ -232,17 +232,17 @@ main (int argc, char *argv[])
     context.canvas_width = 800;
     context.canvas_height = 400;
 
-    if (opt.cairo_surface_type == NULL || !strncmp(opt.cairo_surface_type, "image", 5))
+    if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
       cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
 						  context.canvas_width,
 						  context.canvas_height);
-    else if (!strncmp(opt.cairo_surface_type, "glx", 3))
+    } else if (!strncmp(opt.surface_type, "glx", 3)) {
       cairo_surface = create_source_surface_glx ( context.canvas_width,
 						  context.canvas_height);
-    else if (!strncmp(opt.cairo_surface_type, "egl", 3))
+    } else if (!strncmp(opt.surface_type, "egl", 3)) {
       cairo_surface = create_source_surface_egl ( context.canvas_width,
 						  context.canvas_height);
-
+    }
 
     if (!cairo_surface)
       errx(2, "Could not create a cairo surface\n");

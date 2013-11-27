@@ -228,20 +228,29 @@ main (int argc, char *argv[])
     caskbench_context_t context;
     caskbench_result_t result;
     cairo_surface_t *cairo_surface;
-    SkBitmap skia_bitmap;
     SkPaint skia_paint;
 
     context.size = opt.size;
     context.canvas_width = 800;
     context.canvas_height = 400;
+    context.skia_device = NULL;
+    context.paint = &skia_paint;
 
     if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
       cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
 						  context.canvas_width,
 						  context.canvas_height);
+
+      SkBitmap skia_bitmap;
+      skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
+			    context.canvas_width, context.canvas_height);
+      skia_bitmap.allocPixels();
+      context.skia_device = new SkBitmapDevice (skia_bitmap);
+
     } else if (!strncmp(opt.surface_type, "glx", 3)) {
       cairo_surface = create_cairo_surface_glx ( context.canvas_width,
 						  context.canvas_height);
+
     } else if (!strncmp(opt.surface_type, "egl", 3)) {
       cairo_surface = create_cairo_surface_egl ( context.canvas_width,
 						  context.canvas_height);
@@ -249,12 +258,8 @@ main (int argc, char *argv[])
 
     if (!cairo_surface)
       errx(2, "Could not create a cairo surface\n");
-
-    skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
-			  context.canvas_width, context.canvas_height);
-    skia_bitmap.allocPixels();
-    SkBitmapDevice skia_device(skia_bitmap);
-    SkCanvas skia_canvas(&skia_device);
+    if (!context.skia_device)
+      errx(2, "Could not create a skia device\n");
 
     // If dry run, just list the test cases
     if (opt.dry_run) {
@@ -264,10 +269,8 @@ main (int argc, char *argv[])
 
     srand(0xdeadbeef);
     context.cr = cairo_create(cairo_surface);
-    context.paint = &skia_paint;
-    context.canvas = &skia_canvas;
+    context.canvas = new SkCanvas(context.skia_device);
     context.cairo_surface = cairo_surface;
-    context.skia_device = &skia_device;
 
     result.test_case_name = perf_tests[c].name;
     result.size = 0;

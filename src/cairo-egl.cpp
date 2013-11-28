@@ -12,13 +12,7 @@ static void
 cleanup (void *data)
 {
   egl_state_t *state = (egl_state_t*)data;
-
-  eglDestroyContext (state->egl_display, state->egl_context);
-  eglDestroySurface (state->egl_display, state->egl_surface);
-  eglTerminate (state->egl_display);
-
-  XCloseDisplay (state->dpy);
-
+  destroyEGLContextAndWindow (state);
   free (state);
 }
 
@@ -35,11 +29,7 @@ create_cairo_surface_egl (int width, int height)
     return NULL;
   }
 
-  if (!createWindow(state, width, height)) {
-    return NULL;
-  }
-
-  if (!createEGLContextWithWindow(state)) {
+  if (!createEGLContextAndWindow(state, width, height)) {
     cleanup(state);
     return NULL;
   }

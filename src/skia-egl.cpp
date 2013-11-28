@@ -15,15 +15,7 @@ static void
 cleanup (void *data)
 {
   egl_state_t *state = (egl_state_t*)data;
-
-  eglDestroyContext (state->egl_display, state->egl_context);
-  eglDestroySurface (state->egl_display, state->egl_surface);
-  eglTerminate (state->egl_display);
-
-  XUnmapWindow (state->dpy, state->window);
-  XDestroyWindow (state->dpy, state->window);
-  XCloseDisplay (state->dpy);
-
+  destroyEGLContextAndWindow (state);
   free (state);
 }
 
@@ -43,19 +35,15 @@ create_skia_device_egl (int width, int height)
     return NULL;
   }
 
-  if (!createWindow(state, width, height)) {
-    return NULL;
-  }
-
-  if (!createEGLContextWithWindow(state)) {
+  if (!createEGLContextAndWindow(state, width, height)) {
     cleanup(state);
     return NULL;
   }
 
   eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);
 
-  desc.fWidth = 720;
-  desc.fHeight = 1280;
+  desc.fWidth = width;
+  desc.fHeight = height;
   desc.fConfig = kSkia8888_GrPixelConfig;
   desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
   //desc.fOrigin = kTopLeft_GrSurfaceOrigin;

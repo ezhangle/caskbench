@@ -7,26 +7,7 @@
 #include "egl.h"
 
 bool
-createWindow(egl_state_t *state, int width, int height)
-{
-  state->dpy = XOpenDisplay (NULL);
-  if (state->dpy == NULL) {
-    warnx ("Failed to open display: %s\n", XDisplayName (0));
-    return false;
-  }
-
-  state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
-                                       0, 0,
-                                       width, height,
-                                       0,
-                                       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
-                                       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)));
-  XMapWindow (state->dpy, state->window);
-  return true;
-}
-
-bool
-createEGLContextWithWindow(egl_state_t *state)
+createEGLContextAndWindow(egl_state_t *state, int width, int height)
 {
   EGLint attr[] = {
     EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -47,6 +28,20 @@ createEGLContextWithWindow(egl_state_t *state)
   EGLConfig config;
   EGLint num;
   EGLint major, minor;
+
+  state->dpy = XOpenDisplay (NULL);
+  if (state->dpy == NULL) {
+    warnx ("Failed to open display: %s\n", XDisplayName (0));
+    return false;
+  }
+
+  state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
+                                       0, 0,
+                                       width, height,
+                                       0,
+                                       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
+                                       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)));
+  XMapWindow (state->dpy, state->window);
 
   state->egl_display = eglGetDisplay ((EGLNativeDisplayType) state->dpy);
   if (state->egl_display == EGL_NO_DISPLAY) {
@@ -81,4 +76,20 @@ createEGLContextWithWindow(egl_state_t *state)
     return false;
   }
   return true;
+}
+
+void
+destroyEGLContextAndWindow (egl_state_t *state)
+{
+  if (state->egl_display) {
+    eglDestroyContext (state->egl_display, state->egl_context);
+    eglDestroySurface (state->egl_display, state->egl_surface);
+    eglTerminate (state->egl_display);
+  }
+
+  if (state->dpy) {
+    XUnmapWindow (state->dpy, state->window);
+    XDestroyWindow (state->dpy, state->window);
+    XCloseDisplay (state->dpy);
+  }
 }

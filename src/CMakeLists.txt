@@ -1,5 +1,7 @@
 file(GLOB caskbench_SOURCES
   caskbench.cpp
+
+  glx.cpp
   egl.cpp
   cairo-*.cpp
   skia-*.cpp

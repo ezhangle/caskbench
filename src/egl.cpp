@@ -7,6 +7,25 @@
 #include "egl.h"
 
 bool
+createWindow(egl_state_t *state, int width, int height)
+{
+  state->dpy = XOpenDisplay (NULL);
+  if (state->dpy == NULL) {
+    warnx ("Failed to open display: %s\n", XDisplayName (0));
+    return false;
+  }
+
+  state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
+                                       0, 0,
+                                       width, height,
+                                       0,
+                                       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
+                                       BlackPixel (state->dpy, DefaultRootWindow (state->dpy)));
+  XMapWindow (state->dpy, state->window);
+  return true;
+}
+
+bool
 createEGLContextWithWindow(egl_state_t *state)
 {
   EGLint attr[] = {
@@ -27,10 +46,21 @@ createEGLContextWithWindow(egl_state_t *state)
   };
   EGLConfig config;
   EGLint num;
+  EGLint major, minor;
 
   state->egl_display = eglGetDisplay ((EGLNativeDisplayType) state->dpy);
   if (state->egl_display == EGL_NO_DISPLAY) {
     warnx ("Cannot get egl display\n");
+    return false;
+  }
+
+  if (!eglInitialize(state->egl_display, &major, &minor)) {
+    warnx ("Cannot initialize EGL\n");
+    return false;
+  }
+
+  if (!eglBindAPI(EGL_OPENGL_ES_API)) {
+    warnx ("Cannot bind EGL to GLES API\n");
     return false;
   }
 
@@ -50,22 +80,5 @@ createEGLContextWithWindow(egl_state_t *state)
     warnx ("Cannot create EGL window surface\n");
     return false;
   }
-  return true;
-}
-
-bool
-initializeEGL(egl_state_t *state)
-{
-  EGLint major, minor;
-  if (!eglInitialize(state->egl_display, &major, &minor)) {
-    warnx ("Cannot initialize EGL\n");
-    return false;
-  }
-
-  if (!eglBindAPI(EGL_OPENGL_ES_API)) {
-    warnx ("Cannot bind EGL to GLES API\n");
-    return false;
-  }
-
   return true;
 }

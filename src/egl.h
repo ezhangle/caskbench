@@ -10,8 +10,7 @@ typedef struct {
   EGLSurface egl_surface;
 } egl_state_t;
 
-
-bool initializeEGL(egl_state_t *state);
+bool createWindow(egl_state_t *state, int width, int height);
 bool createEGLContextWithWindow(egl_state_t *state);
 
 #endif // __EGL_H__

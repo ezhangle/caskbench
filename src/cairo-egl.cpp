@@ -11,46 +11,46 @@
 static void
 cleanup (void *data)
 {
-  egl_state_t *state = (egl_state_t*)data;
-  destroyEGLContextAndWindow (state);
-  free (state);
+    egl_state_t *state = (egl_state_t*)data;
+    destroyEGLContextAndWindow (state);
+    free (state);
 }
 
 cairo_surface_t *
 create_cairo_surface_egl (int width, int height)
 {
-  egl_state_t *state;
-  cairo_device_t *cairo_device;
-  cairo_surface_t *cairo_surface;
+    egl_state_t *state;
+    cairo_device_t *cairo_device;
+    cairo_surface_t *cairo_surface;
 
-  state = (egl_state_t*) malloc (sizeof (egl_state_t));
-  if (!state) {
-    warnx ("Out of memory\n");
-    return NULL;
-  }
-
-  if (!createEGLContextAndWindow(state, width, height)) {
-    cleanup(state);
-    return NULL;
-  }
-
-  cairo_device = cairo_egl_device_create (state->egl_display, state->egl_context);
-  cairo_gl_device_set_thread_aware (cairo_device, 0);
-  cairo_surface = cairo_gl_surface_create_for_egl (cairo_device,
-						   state->egl_surface,
-						   width, height);
-
-  if (cairo_device_set_user_data (cairo_device,
-                                  (cairo_user_data_key_t *) cleanup,
-                                  state,
-                                  cleanup))
-    {
-      warnx ("Failed to setup cleanup callback closure\n");
-      cleanup (state);
-      return NULL;
+    state = (egl_state_t*) malloc (sizeof (egl_state_t));
+    if (!state) {
+        warnx ("Out of memory\n");
+        return NULL;
     }
 
-  cairo_device_destroy (cairo_device);
+    if (!createEGLContextAndWindow(state, width, height)) {
+        cleanup(state);
+        return NULL;
+    }
 
-  return cairo_surface;
+    cairo_device = cairo_egl_device_create (state->egl_display, state->egl_context);
+    cairo_gl_device_set_thread_aware (cairo_device, 0);
+    cairo_surface = cairo_gl_surface_create_for_egl (cairo_device,
+                                                     state->egl_surface,
+                                                     width, height);
+
+    if (cairo_device_set_user_data (cairo_device,
+                                    (cairo_user_data_key_t *) cleanup,
+                                    state,
+                                    cleanup))
+    {
+        warnx ("Failed to setup cleanup callback closure\n");
+        cleanup (state);
+        return NULL;
+    }
+
+    cairo_device_destroy (cairo_device);
+
+    return cairo_surface;
 }

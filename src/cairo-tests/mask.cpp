@@ -9,23 +9,23 @@ static cairo_pattern_t *mask;
 int
 ca_setup_mask(caskbench_context_t *ctx)
 {
-  mask = cairo_pattern_create_rgba (0, 0, 0, 0.5);
-  return 1;
+    mask = cairo_pattern_create_rgba (0, 0, 0, 0.5);
+    return 1;
 }
 
 void
 ca_teardown_mask(void)
 {
-  cairo_pattern_destroy (mask);
+    cairo_pattern_destroy (mask);
 }
 
 int
 ca_test_mask(caskbench_context_t *ctx)
 {
-  int i;
-  cairo_t *cr = ctx->cairo_cr;
+    int i;
+    cairo_t *cr = ctx->cairo_cr;
 
-  for (i=0; i<ctx->size; i++)
-    cairo_mask (cr, mask);
-  return 1;
+    for (i=0; i<ctx->size; i++)
+        cairo_mask (cr, mask);
+    return 1;
 }

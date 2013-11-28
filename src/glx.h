@@ -1,4 +1,4 @@
-#ifndef __EGL_H__
+#ifndef __EGL_H__    // -*- mode: c++ -*-
 #define __EGL_H__
 
 #include <X11/Xlib.h>
@@ -6,10 +6,10 @@
 
 
 typedef struct {
-  Display   *dpy;
-  Window     window;
+    Display   *dpy;
+    Window     window;
 
-  GLXContext glx_context;
+    GLXContext glx_context;
 } glx_state_t;
 
 bool createGLXContextAndWindow(glx_state_t *state, int width, int height);

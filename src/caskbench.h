@@ -1,4 +1,4 @@
-#ifndef __CASKBENCH_H__
+#ifndef __CASKBENCH_H__    // -*- mode: c++ -*- 
 #define __CASKBENCH_H__
 
 #ifndef M_PI
@@ -22,16 +22,16 @@ class SkCanvas;
 class SkBaseDevice;
 
 typedef struct _caskbench_context {
-  int              size;
-  int              canvas_width;
-  int              canvas_height;
+    int              size;
+    int              canvas_width;
+    int              canvas_height;
 
-  cairo_t         *cairo_cr;
-  cairo_surface_t *cairo_surface;
+    cairo_t         *cairo_cr;
+    cairo_surface_t *cairo_surface;
 
-  SkPaint         *skia_paint;
-  SkCanvas        *skia_canvas;
-  SkBaseDevice    *skia_device;
+    SkPaint         *skia_paint;
+    SkCanvas        *skia_canvas;
+    SkBaseDevice    *skia_device;
 } caskbench_context_t;
 
 // Framework

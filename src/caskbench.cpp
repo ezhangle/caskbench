@@ -53,6 +53,9 @@ create_cairo_surface_egl (int width, int height);
 SkBaseDevice *
 create_skia_device_image (int width, int height);
 
+SkBaseDevice *
+create_skia_device_egl (int width, int height);
+
 
 void
 write_image_file_cairo (const char *fname, caskbench_context_t *context)
@@ -254,6 +257,8 @@ main (int argc, char *argv[])
     } else if (!strncmp(opt.surface_type, "egl", 3)) {
       context.cairo_surface = create_cairo_surface_egl ( context.canvas_width,
 							 context.canvas_height);
+      context.skia_device = create_skia_device_egl ( context.canvas_width,
+						     context.canvas_height);
     }
 
     if (!context.cairo_surface)

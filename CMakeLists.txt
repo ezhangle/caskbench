@@ -10,12 +10,14 @@ set(CASKBENCH_LIBS "")
 set(CASKBENCH_INCS "")
 set(CASKBENCH_INCS_SYS "")
 
+include(CheckIncludeFiles)
 list(APPEND CASKBENCH_INCS
 	${PROJECT_SOURCE_DIR}
 	${PROJECT_SOURCE_DIR}/src
 
 	# Generated includes
-	${CMAKE_BINARY_DIR}/include
+	${CMAKE_BINARY_DIR}
+	${CMAKE_BINARY_DIR}/src
 )
 
 # ----------------------------------------------------------------------
@@ -31,13 +33,17 @@ add_definitions(${POPT_DEFINITIONS})
 
 find_package(X11 REQUIRED)
 
+check_include_files(GLES2/gl2.h HAVE_GLES2_H)
+
 find_package(OpenGLES3)
 list(APPEND CASKBENCH_INCS_SYS ${OPENGLES3_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${OPENGLES3_LIBRARIES})
+check_include_files(GLES3/gl3.h HAVE_GLES3_H)
 
 find_package(Cairo)
 list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
+check_include_files(cairo/cairo-gl.h HAVE_CAIRO_GL_H)
 
 # skia
 set(SKIA_ROOT "$ENV{HOME}/src/skia/trunk" CACHE STRING "Location of skia source tree")
@@ -80,6 +86,10 @@ list(APPEND CASKBENCH_LIBS
 # ----------------------------------------------------------------------
 # Build
 # ----------------------------------------------------------------------
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
 include_directories(${CASKBENCH_INCS})
 include_directories(SYSTEM ${CASKBENCH_INCS_SYS})

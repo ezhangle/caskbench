@@ -3,7 +3,9 @@
 # This defines:
 #
 #    CAIRO_FOUND
+#    CAIRO_GL_FOUND
 #    CAIRO_INCLUDE_DIRS
+#    CAIRO_GL_INCLUDE_DIRS
 #    CAIRO_LIBRARIES
 
 find_library(CAIRO_LIBRARIES
@@ -25,8 +27,23 @@ find_path(CAIRO_INCLUDE_DIRS
     /usr/include
     /opt/include
   )
+find_path(CAIRO_GL_INCLUDE_DIRS
+  NAMES cairo-gl.h
+  PATH_SUFFIXES cairo
+  PATHS
+    $ENV{CAIRO_DIR}/include
+    $ENV{CAIRO_DIR}
+    /usr/local/include
+    /usr/include
+    /opt/include
+  )
 
 set (CAIRO_FOUND "NO")
 if (CAIRO_LIBRARIES AND CAIRO_INCLUDE_DIRS)
   set (CAIRO_FOUND "YES")
 endif (CAIRO_LIBRARIES AND CAIRO_INCLUDE_DIRS)
+
+set (CAIRO_GL_FOUND "NO")
+if (CAIRO_LIBRARIES AND CAIRO_GL_INCLUDE_DIRS)
+  set (CAIRO_GL_FOUND "YES")
+endif (CAIRO_LIBRARIES AND CAIRO_GL_INCLUDE_DIRS)

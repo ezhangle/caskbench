@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -6,7 +8,9 @@
 #include <err.h>
 
 #include <cairo.h>
+#ifdef HAVE_CAIRO_GL_H
 #include <cairo-gl.h>
+#endif
 
 #include <SkBitmap.h>
 #include <SkBitmapDevice.h>
@@ -18,6 +22,7 @@
 typedef struct _caskbench_options {
     int dry_run;
     int iterations;
+    int list_surfaces;
     int size;
     char* output_file;
     char* surface_type;
@@ -44,18 +49,21 @@ typedef struct _caskbench_result {
 cairo_surface_t *
 create_cairo_surface_image (int width, int height);
 
+SkBaseDevice *
+create_skia_device_image (int width, int height);
+
+#ifdef HAVE_CAIRO_GL_H
 cairo_surface_t *
 create_cairo_surface_glx (int width, int height);
+#endif
 
+#ifdef HAVE_GLES3_H
 cairo_surface_t *
 create_cairo_surface_egl (int width, int height);
 
 SkBaseDevice *
-create_skia_device_image (int width, int height);
-
-SkBaseDevice *
 create_skia_device_egl (int width, int height);
-
+#endif
 
 void
 write_image_file_cairo (const char *fname, caskbench_context_t *context)
@@ -136,17 +144,32 @@ _status_to_string(int result)
     }
 }
 
+static void
+print_surfaces_available()
+{
+    printf("image\n");
+#ifdef HAVE_CAIRO_GL_H
+    printf("glx\n");
+#endif
+#ifdef HAVE_GLES3_H
+    printf("egl\n");
+#endif
+}
+
 void
 process_options(caskbench_options_t *opt, int argc, char *argv[])
 {
     int rc;
     poptContext pc;
     struct poptOption po[] = {
+        {"dry-run", 'n', POPT_ARG_NONE, &opt->dry_run, 0,
+         "Just list the selected test case names without executing",
+         NULL},
         {"iterations", 'i', POPT_ARG_INT, &opt->iterations, 0,
          "The number of times each test case should be run",
          NULL},
-        {"dry-run", 'n', POPT_ARG_NONE, &opt->dry_run, 0,
-         "Just list the selected test case names without executing",
+        {"list-surfaces", 'l', POPT_ARG_NONE, &opt->list_surfaces, 0,
+         "List the available surfaces linked in this executable",
          NULL},
         {"output-file", 'o', POPT_ARG_STRING, &opt->output_file, 0,
          "Filename to write JSON output to",
@@ -155,7 +178,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "Controls the complexity of the tests, such as number of drawn elements",
          NULL},
         {"surface-type", 't', POPT_ARG_STRING, &opt->surface_type, 0,
-         "Type of graphics surface to use (image, glx, or egl)",
+         "Type of graphics surface to use (see --list-surfaces for available surfaces)",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -164,8 +187,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     // Initialize options
     opt->dry_run = 0;
     opt->iterations = 64;
-    opt->size = 64;
+    opt->list_surfaces = 0;
     opt->output_file = NULL;
+    opt->size = 64;
     opt->surface_type = NULL;
 
     // Process the command line
@@ -228,6 +252,10 @@ main (int argc, char *argv[])
 
     process_options(&opt, argc, argv);
 
+    if (opt.list_surfaces) {
+        print_surfaces_available();
+        exit(0);
+    }
     if (opt.output_file) {
         // start writing json to output file
         fp = fopen(opt.output_file, "w");
@@ -250,15 +278,19 @@ main (int argc, char *argv[])
             context.skia_device = create_skia_device_image ( context.canvas_width,
                                                              context.canvas_height);
 
+#ifdef HAVE_CAIRO_GL_H
         } else if (!strncmp(opt.surface_type, "glx", 3)) {
             context.cairo_surface = create_cairo_surface_glx ( context.canvas_width,
                                                                context.canvas_height);
+#endif
 
+#ifdef HAVE_GLES3_H
         } else if (!strncmp(opt.surface_type, "egl", 3)) {
             context.cairo_surface = create_cairo_surface_egl ( context.canvas_width,
                                                                context.canvas_height);
             context.skia_device = create_skia_device_egl ( context.canvas_width,
                                                            context.canvas_height);
+#endif
         }
 
         if (!context.cairo_surface)

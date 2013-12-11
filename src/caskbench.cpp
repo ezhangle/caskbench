@@ -23,9 +23,10 @@ typedef struct _caskbench_options {
     int dry_run;
     int iterations;
     int list_surfaces;
-    int size;
     char* output_file;
     char* surface_type;
+    int size;
+    int version;
 } caskbench_options_t;
 
 typedef struct _caskbench_perf_test {
@@ -145,6 +146,14 @@ _status_to_string(int result)
 }
 
 static void
+print_version()
+{
+    printf("%s version %s\n",
+           PACKAGE_NAME,
+           PACKAGE_VERSION);
+}
+
+static void
 print_surfaces_available()
 {
     printf("image\n");
@@ -174,11 +183,14 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"output-file", 'o', POPT_ARG_STRING, &opt->output_file, 0,
          "Filename to write JSON output to",
          NULL},
+        {"surface-type", 't', POPT_ARG_STRING, &opt->surface_type, 0,
+         "Type of graphics surface to use (see --list-surfaces for available surfaces)",
+         NULL},
         {"test-size", 's', POPT_ARG_INT, &opt->size, 0,
          "Controls the complexity of the tests, such as number of drawn elements",
          NULL},
-        {"surface-type", 't', POPT_ARG_STRING, &opt->surface_type, 0,
-         "Type of graphics surface to use (see --list-surfaces for available surfaces)",
+        {"version", 'V', POPT_ARG_NONE, &opt->version, 0,
+         "Display the program version",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -252,6 +264,10 @@ main (int argc, char *argv[])
 
     process_options(&opt, argc, argv);
 
+    if (opt.version) {
+        print_version();
+        exit(0);
+    }
     if (opt.list_surfaces) {
         print_surfaces_available();
         exit(0);

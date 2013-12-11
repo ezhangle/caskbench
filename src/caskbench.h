@@ -1,4 +1,4 @@
-#ifndef __CASKBENCH_H__    // -*- mode: c++ -*- 
+#ifndef __CASKBENCH_H__    // -*- mode: c++ -*-
 #define __CASKBENCH_H__
 
 #ifndef M_PI

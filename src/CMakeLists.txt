@@ -6,6 +6,7 @@ file(GLOB caskbench_SOURCES
 
   cairo-tests/*.cpp
   skia-tests/*.cpp
+  tests.cpp
 )
 
 if (CAIRO_GL_FOUND)

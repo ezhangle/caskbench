@@ -1,0 +1,69 @@
+#!/bin/bash
+
+if [ "x$1" = "x" ] || [ "x$2" = "x" ]; then
+    echo "Usage: $0 <source-dir> <output-file>"
+    exit -1
+fi
+
+source_dir=$1
+out_file=$2
+
+(cat <<EOF
+#include <config.h>
+#include "tests.h"
+
+EOF
+) > $out_file
+
+echo "" >> $out_file
+echo "// Cairo Tests" >> $out_file
+for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
+    test=$(basename ${source_file%.cpp})
+    (cat <<EOF
+int  ca_setup_${test}(struct _caskbench_context *ctx);
+void ca_teardown_${test}();
+int  ca_test_${test}(struct _caskbench_context *ctx);
+
+EOF
+    ) >> $out_file
+done
+
+echo "" >> $out_file
+echo "// Skia Tests" >> $out_file
+for source_file in $(ls ${source_dir}/skia-tests/*.cpp); do
+    test=$(basename ${source_file%.cpp})
+    (cat <<EOF
+int  sk_setup_${test}(struct _caskbench_context *ctx);
+void sk_teardown_${test}();
+int  sk_test_${test}(struct _caskbench_context *ctx);
+
+EOF
+    ) >> $out_file
+done
+
+
+echo "" >> $out_file
+echo "caskbench_perf_test_t perf_tests[] = {" >> $out_file
+
+for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
+    test=$(basename ${source_file%.cpp})
+    if [ ! -e ${source_dir}/skia-tests/${test}.cpp ]; then
+	continue
+    fi
+
+    (cat <<EOF
+    {"cairo-${test}", ca_setup_${test}, ca_teardown_${test}, ca_test_${test}, write_image_file_cairo},
+    {"skia-${test}",  sk_setup_${test}, sk_teardown_${test}, sk_test_${test}, write_image_file_skia },
+
+EOF
+    ) >> $out_file
+
+done
+(cat <<EOF
+};
+
+const int num_perf_tests = sizeof(perf_tests) / sizeof(perf_tests[0]);
+
+EOF
+) >> $out_file
+

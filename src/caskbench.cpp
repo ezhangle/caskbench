@@ -179,6 +179,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->output_file = NULL;
     opt->size = 64;
     opt->surface_type = NULL;
+    opt->version = 0;
 
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);

@@ -11,19 +11,11 @@
 
 #include "egl.h"
 
-static void
-cleanup (void *data)
-{
-    egl_state_t *state = (egl_state_t*)data;
-    destroyEGLContextAndWindow (state);
-    free (state);
-}
+static egl_state_t *state;
 
 SkBaseDevice *
 create_skia_device_egl (int width, int height)
 {
-    egl_state_t *state;
-
     GrBackendRenderTargetDesc desc;
     GrContext* ctx;
     GrRenderTarget* target;
@@ -36,7 +28,7 @@ create_skia_device_egl (int width, int height)
     }
 
     if (!createEGLContextAndWindow(state, width, height)) {
-        cleanup(state);
+        cleanup_state_egl(state);
         return NULL;
     }
 
@@ -54,21 +46,11 @@ create_skia_device_egl (int width, int height)
     target = ctx->wrapBackendRenderTarget(desc);
 
     device = new SkGpuDevice(ctx, target);
-
-    /* TODO: Set cleanup routine to get called
-
-       if (cairo_device_set_user_data (cairo_device,
-       (cairo_user_data_key_t *) cleanup,
-       state,
-       cleanup))
-       {
-       warnx ("Failed to setup cleanup callback closure\n");
-       cleanup (state);
-       return NULL;
-       }
-
-       cairo_device_destroy (cairo_device);
-    */
-
     return device;
+}
+
+void
+destroy_skia_egl(void)
+{
+    cleanup_state_egl(state);
 }

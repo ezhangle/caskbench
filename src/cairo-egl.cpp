@@ -8,18 +8,11 @@
 
 #include "egl.h"
 
-static void
-cleanup (void *data)
-{
-    egl_state_t *state = (egl_state_t*)data;
-    destroyEGLContextAndWindow (state);
-    free (state);
-}
+static egl_state_t *state;
 
 cairo_surface_t *
 create_cairo_surface_egl (int width, int height)
 {
-    egl_state_t *state;
     cairo_device_t *cairo_device;
     cairo_surface_t *cairo_surface;
 
@@ -30,7 +23,7 @@ create_cairo_surface_egl (int width, int height)
     }
 
     if (!createEGLContextAndWindow(state, width, height)) {
-        cleanup(state);
+        cleanup_state_egl(state);
         return NULL;
     }
 
@@ -40,17 +33,13 @@ create_cairo_surface_egl (int width, int height)
                                                      state->egl_surface,
                                                      width, height);
 
-    if (cairo_device_set_user_data (cairo_device,
-                                    (cairo_user_data_key_t *) cleanup,
-                                    state,
-                                    cleanup))
-    {
-        warnx ("Failed to setup cleanup callback closure\n");
-        cleanup (state);
-        return NULL;
-    }
-
     cairo_device_destroy (cairo_device);
 
     return cairo_surface;
+}
+
+void
+destroy_cairo_egl(void)
+{
+    cleanup_state_egl(state);
 }

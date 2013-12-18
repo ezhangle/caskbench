@@ -93,3 +93,11 @@ destroyEGLContextAndWindow (egl_state_t *state)
         XCloseDisplay (state->dpy);
     }
 }
+
+void
+cleanup_state_egl(void *data)
+{
+    egl_state_t *state = (egl_state_t*)data;
+    destroyEGLContextAndWindow(state);
+    free(state);
+}

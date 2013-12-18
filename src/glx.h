@@ -14,5 +14,6 @@ typedef struct {
 
 bool createGLXContextAndWindow(glx_state_t *state, int width, int height);
 void destroyGLXContextAndWindow(glx_state_t *state);
+void cleanup_state_glx(void *state);
 
 #endif // __EGL_H__

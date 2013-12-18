@@ -5,18 +5,11 @@
 
 #include "glx.h"
 
-static void
-cleanup (void *data)
-{
-    glx_state_t *state = (glx_state_t*)data;
-    destroyGLXContextAndWindow(state);
-    free(state);
-}
+static glx_state_t *state;
 
 cairo_surface_t *
 create_cairo_surface_glx (int width, int height)
 {
-    glx_state_t *state;
     cairo_device_t *cairo_device;
     cairo_surface_t *cairo_surface;
 
@@ -28,6 +21,7 @@ create_cairo_surface_glx (int width, int height)
 
     if (!createGLXContextAndWindow(state, width, height)) {
         warnx ("Could not create GLX context and window\n");
+        cleanup_state_glx(state);
         return NULL;
     }
 
@@ -37,17 +31,13 @@ create_cairo_surface_glx (int width, int height)
                                                         state->window,
                                                         width,
                                                         height);
-    if (cairo_device_set_user_data (cairo_device,
-                                    (cairo_user_data_key_t *) cleanup,
-                                    state,
-                                    cleanup))
-    {
-        warnx ("Failed to setup cleanup callback closure\n");
-        cleanup (state);
-        return NULL;
-    }
-
     cairo_device_destroy (cairo_device);
 
     return cairo_surface;
+}
+
+void
+destroy_cairo_glx(void)
+{
+    cleanup_state_glx(state);
 }

@@ -42,21 +42,33 @@ typedef struct _caskbench_result {
 // Backend-specific graphics initialization
 cairo_surface_t *
 create_cairo_surface_image (int width, int height);
+void
+destroy_cairo_image();
 
 SkBaseDevice *
 create_skia_device_image (int width, int height);
+void
+destroy_skia_image();
 
 #ifdef HAVE_CAIRO_GL_H
 cairo_surface_t *
 create_cairo_surface_glx (int width, int height);
+void
+destroy_cairo_glx();
+void
+destroy_skia_glx();
 #endif
 
 #ifdef HAVE_GLES3_H
 cairo_surface_t *
 create_cairo_surface_egl (int width, int height);
+void
+destroy_cairo_egl();
 
 SkBaseDevice *
 create_skia_device_egl (int width, int height);
+void
+destroy_skia_egl();
 #endif
 
 void
@@ -245,6 +257,8 @@ main (int argc, char *argv[])
         caskbench_context_t context;
         caskbench_result_t result;
         SkPaint skia_paint;
+        void (*destroy_cairo)(void);
+        void (*destroy_skia)(void);
 
         context.size = opt.size;
         context.canvas_width = 800;
@@ -257,11 +271,15 @@ main (int argc, char *argv[])
                                                                  context.canvas_height);
             context.skia_device = create_skia_device_image ( context.canvas_width,
                                                              context.canvas_height);
+            destroy_cairo = destroy_cairo_image;
+            destroy_skia = destroy_skia_image;
 
 #ifdef HAVE_CAIRO_GL_H
         } else if (!strncmp(opt.surface_type, "glx", 3)) {
             context.cairo_surface = create_cairo_surface_glx ( context.canvas_width,
                                                                context.canvas_height);
+            destroy_cairo = destroy_cairo_glx;
+            destroy_skia = destroy_skia_glx;
 #endif
 
 #ifdef HAVE_GLES3_H
@@ -270,6 +288,8 @@ main (int argc, char *argv[])
                                                                context.canvas_height);
             context.skia_device = create_skia_device_egl ( context.canvas_width,
                                                            context.canvas_height);
+            destroy_cairo = destroy_cairo_egl;
+            destroy_skia = destroy_skia_egl;
 #endif
         }
 
@@ -378,6 +398,8 @@ main (int argc, char *argv[])
         delete context.skia_device;
         cairo_destroy(context.cairo_cr);
         cairo_surface_destroy(context.cairo_surface);
+        destroy_skia();
+        destroy_cairo();
     }
 
     if (opt.output_file) {

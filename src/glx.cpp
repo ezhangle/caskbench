@@ -66,3 +66,11 @@ destroyGLXContextAndWindow (glx_state_t *state)
         XCloseDisplay (state->dpy);
     }
 }
+
+void
+cleanup_state_glx (void *data)
+{
+    glx_state_t *state = (glx_state_t*)data;
+    destroyGLXContextAndWindow(state);
+    free(state);
+}

@@ -8,19 +8,11 @@
 
 #include "glx.h"
 
-static void
-cleanup (void *data)
-{
-    glx_state_t *state = (glx_state_t*)data;
-    destroyGLXContextAndWindow(state);
-    free(state);
-}
+static glx_state_t *state;
 
 SkBaseDevice *
 create_skia_device_glx (int width, int height)
 {
-    glx_state_t *state;
-
     GrBackendRenderTargetDesc desc;
     GrContext* ctx;
     GrRenderTarget* target;
@@ -28,12 +20,13 @@ create_skia_device_glx (int width, int height)
 
     state = (glx_state_t*) malloc (sizeof (glx_state_t));
     if (!state) {
-        warnx ("Out of memory\n");
+        warnx("Out of memory\n");
         return NULL;
     }
 
     if (!createGLXContextAndWindow(state, width, height)) {
-        warnx ("Could not create GLX context and window\n");
+        warnx("Could not create GLX context and window\n");
+        cleanup_state_glx(state);
         return NULL;
     }
 
@@ -49,19 +42,11 @@ create_skia_device_glx (int width, int height)
     target = ctx->wrapBackendRenderTarget(desc);
 
     device = new SkGpuDevice(ctx, target);
-    /*
-      if (cairo_device_set_user_data (cairo_device,
-      (cairo_user_data_key_t *) cleanup,
-      state,
-      cleanup))
-      {
-      warnx ("Failed to setup cleanup callback closure\n");
-      cleanup (state);
-      return NULL;
-      }
-
-      cairo_device_destroy (cairo_device);
-    */
-
     return device;
+}
+
+void
+destroy_skia_glx(void)
+{
+    cleanup_state_glx(state);
 }

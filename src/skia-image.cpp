@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <SkBitmapDevice.h>
 
+#include "image.h"
+
+static image_state_t *state;
+
 SkBaseDevice *
 create_skia_device_image (int width, int height)
 {
@@ -10,4 +14,10 @@ create_skia_device_image (int width, int height)
                           width, height);
     skia_bitmap.allocPixels();
     return new SkBitmapDevice (skia_bitmap);
+}
+
+void
+destroy_skia_image(void)
+{
+    cleanup_state_image(state);
 }

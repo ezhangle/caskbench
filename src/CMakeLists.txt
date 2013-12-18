@@ -1,6 +1,7 @@
 file(GLOB caskbench_SOURCES
   caskbench.cpp
 
+  image.cpp
   cairo-image.cpp
   skia-image.cpp
 

@@ -55,6 +55,9 @@ cairo_surface_t *
 create_cairo_surface_glx (int width, int height);
 void
 destroy_cairo_glx();
+
+SkBaseDevice *
+create_skia_device_glx (int width, int height);
 void
 destroy_skia_glx();
 #endif
@@ -258,6 +261,8 @@ main (int argc, char *argv[])
         caskbench_context_t context;
         caskbench_result_t result;
         SkPaint skia_paint;
+        cairo_surface_t *(*setup_cairo)(int w, int h);
+        SkBaseDevice *(*setup_skia)(int w, int h);
         void (*destroy_cairo)(void);
         void (*destroy_skia)(void);
 
@@ -268,32 +273,32 @@ main (int argc, char *argv[])
         context.skia_paint = &skia_paint;
 
         if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
-            context.cairo_surface = create_cairo_surface_image ( context.canvas_width,
-                                                                 context.canvas_height);
-            context.skia_device = create_skia_device_image ( context.canvas_width,
-                                                             context.canvas_height);
+            setup_cairo = create_cairo_surface_image;
+            setup_skia = create_skia_device_image;
             destroy_cairo = destroy_cairo_image;
             destroy_skia = destroy_skia_image;
 
 #ifdef HAVE_CAIRO_GL_H
         } else if (!strncmp(opt.surface_type, "glx", 3)) {
-            context.cairo_surface = create_cairo_surface_glx ( context.canvas_width,
-                                                               context.canvas_height);
+            setup_cairo = create_cairo_surface_glx;
+            setup_skia = create_skia_device_glx;
             destroy_cairo = destroy_cairo_glx;
             destroy_skia = destroy_skia_glx;
 #endif
 
 #ifdef HAVE_GLES3_H
         } else if (!strncmp(opt.surface_type, "egl", 3)) {
-            context.cairo_surface = create_cairo_surface_egl ( context.canvas_width,
-                                                               context.canvas_height);
-            context.skia_device = create_skia_device_egl ( context.canvas_width,
-                                                           context.canvas_height);
+            setup_cairo = create_cairo_surface_egl;
+            setup_skia = create_skia_device_egl;
             destroy_cairo = destroy_cairo_egl;
             destroy_skia = destroy_skia_egl;
 #endif
         }
 
+        context.cairo_surface = setup_cairo(context.canvas_width,
+                                            context.canvas_height);
+        context.skia_device = setup_skia(context.canvas_width,
+                                         context.canvas_height);
         if (!context.cairo_surface)
             errx(2, "Could not create a cairo surface\n");
         if (!context.skia_device)

@@ -231,6 +231,68 @@ randomize_color(cairo_t *cr)
     cairo_set_source_rgba (cr, red, green, blue, alpha);
 }
 
+void
+context_init(caskbench_context_t *context, int size, const char* surface_type)
+{
+    assert(context);
+    assert(size > 0);
+
+    context->size = size;
+    context->canvas_width = 800;
+    context->canvas_height = 400;
+    context->skia_device = NULL;
+    context->skia_paint = new SkPaint;
+
+    if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
+        context->setup_cairo = create_cairo_surface_image;
+        context->setup_skia = create_skia_device_image;
+        context->destroy_cairo = destroy_cairo_image;
+        context->destroy_skia = destroy_skia_image;
+
+#ifdef HAVE_CAIRO_GL_H
+    } else if (!strncmp(surface_type, "glx", 3)) {
+        context->setup_cairo = create_cairo_surface_glx;
+        context->setup_skia = create_skia_device_glx;
+        context->destroy_cairo = destroy_cairo_glx;
+        context->destroy_skia = destroy_skia_glx;
+#endif
+
+#ifdef HAVE_GLES3_H
+    } else if (!strncmp(surface_type, "egl", 3)) {
+        context->setup_cairo = create_cairo_surface_egl;
+        context->setup_skia = create_skia_device_egl;
+        context->destroy_cairo = destroy_cairo_egl;
+        context->destroy_skia = destroy_skia_egl;
+#endif
+    }
+
+    context->cairo_surface = context->setup_cairo(context->canvas_width,
+                                                  context->canvas_height);
+    context->skia_device = context->setup_skia(context->canvas_width,
+                                               context->canvas_height);
+    if (!context->cairo_surface)
+        errx(2, "Could not create a cairo surface\n");
+    if (!context->skia_device)
+        errx(2, "Could not create a skia device\n");
+
+    context->cairo_cr = cairo_create(context->cairo_surface);
+    context->skia_canvas = new SkCanvas(context->skia_device);
+}
+
+void
+context_destroy(caskbench_context_t *context)
+{
+    if (!context)
+        return;
+    delete context->skia_paint;
+    delete context->skia_canvas;
+    delete context->skia_device;
+    cairo_destroy(context->cairo_cr);
+    cairo_surface_destroy(context->cairo_surface);
+    context->destroy_skia();
+    context->destroy_cairo();
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -261,53 +323,8 @@ main (int argc, char *argv[])
         caskbench_context_t context;
         caskbench_result_t result;
 
-        context.size = opt.size;
-        context.canvas_width = 800;
-        context.canvas_height = 400;
-        context.skia_device = NULL;
-        context.skia_paint = new SkPaint;
-
-        if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
-            context.setup_cairo = create_cairo_surface_image;
-            context.setup_skia = create_skia_device_image;
-            context.destroy_cairo = destroy_cairo_image;
-            context.destroy_skia = destroy_skia_image;
-
-#ifdef HAVE_CAIRO_GL_H
-        } else if (!strncmp(opt.surface_type, "glx", 3)) {
-            context.setup_cairo = create_cairo_surface_glx;
-            context.setup_skia = create_skia_device_glx;
-            context.destroy_cairo = destroy_cairo_glx;
-            context.destroy_skia = destroy_skia_glx;
-#endif
-
-#ifdef HAVE_GLES3_H
-        } else if (!strncmp(opt.surface_type, "egl", 3)) {
-            context.setup_cairo = create_cairo_surface_egl;
-            context.setup_skia = create_skia_device_egl;
-            context.destroy_cairo = destroy_cairo_egl;
-            context.destroy_skia = destroy_skia_egl;
-#endif
-        }
-
-        context.cairo_surface = context.setup_cairo(context.canvas_width,
-                                                    context.canvas_height);
-        context.skia_device = context.setup_skia(context.canvas_width,
-                                                 context.canvas_height);
-        if (!context.cairo_surface)
-            errx(2, "Could not create a cairo surface\n");
-        if (!context.skia_device)
-            errx(2, "Could not create a skia device\n");
-
-        // If dry run, just list the test cases
-        if (opt.dry_run) {
-            printf("%s\n", perf_tests[c].name);
-            continue;
-        }
-
         srand(0xdeadbeef);
-        context.cairo_cr = cairo_create(context.cairo_surface);
-        context.skia_canvas = new SkCanvas(context.skia_device);
+        context_init(&context, opt.size, opt.surface_type);
 
         result.test_case_name = perf_tests[c].name;
         result.size = 0;
@@ -319,6 +336,12 @@ main (int argc, char *argv[])
                 result.status = CASKBENCH_STATUS_ERROR;
                 goto FINAL;
             }
+
+        // If dry run, just list the test cases
+        if (opt.dry_run) {
+            printf("%s\n", perf_tests[c].name);
+            continue;
+        }
 
         // Run once to warm caches and calibrate
         perf_tests[c].test_case(&context);
@@ -395,13 +418,7 @@ main (int argc, char *argv[])
         if (perf_tests[c].teardown != NULL)
             perf_tests[c].teardown();
 
-        delete context.skia_paint;
-        delete context.skia_canvas;
-        delete context.skia_device;
-        cairo_destroy(context.cairo_cr);
-        cairo_surface_destroy(context.cairo_surface);
-        context.destroy_skia();
-        context.destroy_cairo();
+        context_destroy(&context);
     }
 
     if (opt.output_file) {

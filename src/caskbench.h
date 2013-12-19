@@ -32,6 +32,11 @@ typedef struct _caskbench_context {
     SkPaint         *skia_paint;
     SkCanvas        *skia_canvas;
     SkBaseDevice    *skia_device;
+
+    cairo_surface_t *(*setup_cairo)(int w, int h);
+    SkBaseDevice    *(*setup_skia)(int w, int h);
+    void             (*destroy_cairo)(void);
+    void             (*destroy_skia)(void);
 } caskbench_context_t;
 
 // Framework

@@ -260,45 +260,40 @@ main (int argc, char *argv[])
     for (c=0; c<num_perf_tests; c++) {
         caskbench_context_t context;
         caskbench_result_t result;
-        SkPaint skia_paint;
-        cairo_surface_t *(*setup_cairo)(int w, int h);
-        SkBaseDevice *(*setup_skia)(int w, int h);
-        void (*destroy_cairo)(void);
-        void (*destroy_skia)(void);
 
         context.size = opt.size;
         context.canvas_width = 800;
         context.canvas_height = 400;
         context.skia_device = NULL;
-        context.skia_paint = &skia_paint;
+        context.skia_paint = new SkPaint;
 
         if (opt.surface_type == NULL || !strncmp(opt.surface_type, "image", 5)) {
-            setup_cairo = create_cairo_surface_image;
-            setup_skia = create_skia_device_image;
-            destroy_cairo = destroy_cairo_image;
-            destroy_skia = destroy_skia_image;
+            context.setup_cairo = create_cairo_surface_image;
+            context.setup_skia = create_skia_device_image;
+            context.destroy_cairo = destroy_cairo_image;
+            context.destroy_skia = destroy_skia_image;
 
 #ifdef HAVE_CAIRO_GL_H
         } else if (!strncmp(opt.surface_type, "glx", 3)) {
-            setup_cairo = create_cairo_surface_glx;
-            setup_skia = create_skia_device_glx;
-            destroy_cairo = destroy_cairo_glx;
-            destroy_skia = destroy_skia_glx;
+            context.setup_cairo = create_cairo_surface_glx;
+            context.setup_skia = create_skia_device_glx;
+            context.destroy_cairo = destroy_cairo_glx;
+            context.destroy_skia = destroy_skia_glx;
 #endif
 
 #ifdef HAVE_GLES3_H
         } else if (!strncmp(opt.surface_type, "egl", 3)) {
-            setup_cairo = create_cairo_surface_egl;
-            setup_skia = create_skia_device_egl;
-            destroy_cairo = destroy_cairo_egl;
-            destroy_skia = destroy_skia_egl;
+            context.setup_cairo = create_cairo_surface_egl;
+            context.setup_skia = create_skia_device_egl;
+            context.destroy_cairo = destroy_cairo_egl;
+            context.destroy_skia = destroy_skia_egl;
 #endif
         }
 
-        context.cairo_surface = setup_cairo(context.canvas_width,
-                                            context.canvas_height);
-        context.skia_device = setup_skia(context.canvas_width,
-                                         context.canvas_height);
+        context.cairo_surface = context.setup_cairo(context.canvas_width,
+                                                    context.canvas_height);
+        context.skia_device = context.setup_skia(context.canvas_width,
+                                                 context.canvas_height);
         if (!context.cairo_surface)
             errx(2, "Could not create a cairo surface\n");
         if (!context.skia_device)
@@ -400,12 +395,13 @@ main (int argc, char *argv[])
         if (perf_tests[c].teardown != NULL)
             perf_tests[c].teardown();
 
+        delete context.skia_paint;
         delete context.skia_canvas;
         delete context.skia_device;
         cairo_destroy(context.cairo_cr);
         cairo_surface_destroy(context.cairo_surface);
-        destroy_skia();
-        destroy_cairo();
+        context.destroy_skia();
+        context.destroy_cairo();
     }
 
     if (opt.output_file) {

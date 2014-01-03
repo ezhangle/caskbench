@@ -17,13 +17,13 @@ if (CAIRO_GL_FOUND)
   )
 endif (CAIRO_GL_FOUND)
 
-if (EGL_FOUND)
+if (OPENGLES3_FOUND)
   list(APPEND caskbench_SOURCES
     egl.cpp
     cairo-egl.cpp
     skia-egl.cpp
   )
-endif (EGL_FOUND)
+endif (OPENGLES3_FOUND)
 
 add_executable(generate_tests IMPORTED)
 set_property(TARGET generate_tests PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/generate_tests")

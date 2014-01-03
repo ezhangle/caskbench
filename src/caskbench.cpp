@@ -293,6 +293,17 @@ context_destroy(caskbench_context_t *context)
     context->destroy_cairo();
 }
 
+void
+result_init(caskbench_result_t *result, const char* name)
+{
+    assert(result);
+
+    result->test_case_name = name;
+    result->size = 0;
+    result->min_run_time = -1.0;
+    result->avg_run_time = -1.0;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -325,11 +336,7 @@ main (int argc, char *argv[])
 
         srand(0xdeadbeef);
         context_init(&context, opt.size, opt.surface_type);
-
-        result.test_case_name = perf_tests[c].name;
-        result.size = 0;
-        result.min_run_time = -1.0;
-        result.avg_run_time = -1.0;
+        result_init(&result, perf_tests[c].name);
 
         if (perf_tests[c].setup != NULL)
             if (!perf_tests[c].setup(&context)) {

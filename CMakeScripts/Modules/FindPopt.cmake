@@ -48,6 +48,7 @@ else (POPT_LIBRARIES AND POPT_INCLUDE_DIRS)
       popt
     PATHS
       ${_POPT_LIBDIR}
+      /lib
       /usr/lib
       /usr/local/lib
       /opt/local/lib

@@ -1,13 +1,15 @@
-Name:       caskbench
-Summary:    Cairo and Skia Benchmark
-Version:    0.3
-Release:    1
-Group:      System/Test
-BuildRoot:  %{_tmppath}/%{name}-%{version}-build
-License:    GPL
-URL:        http://www.x.org/
-Source0:    %{name}-%{version}.tar.bz2
-Source1001: packaging/caskbench.manifest
+#
+Name:           caskbench
+Summary:        Cairo and Skia Benchmark
+Version:        0.3
+Release:        1
+Group:          System/Test
+ExcludeArch:    i596
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+License:        GPL
+URL:            http://www.x.org/
+Source0:        %{name}-%{version}.tar.bz2
+Source1001:     packaging/caskbench.manifest
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
@@ -16,10 +18,10 @@ BuildRequires:  popt-devel
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(opengl-es-20)
 BuildRequires:  pkgconfig(cairo) >= 1.12.0
-
+BuildRequires:  skia
 
 %description
-Example
+Cairo and Skia benchmark
 
 %prep
 %setup -q -n %{name}-%{version}

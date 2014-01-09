@@ -11,12 +11,15 @@ URL:            http://www.x.org/
 Source0:        %{name}-%{version}.tar.bz2
 Source1001:     packaging/caskbench.manifest
 
+Requires: xorg-x11-server-Xorg
+
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
 BuildRequires:  rpm-devel
 BuildRequires:  popt-devel
 BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(opengl-es-20)
+BuildRequires:  pkgconfig(gles20)
 BuildRequires:  pkgconfig(cairo) >= 1.12.0
 BuildRequires:  skia
 
@@ -44,11 +47,11 @@ make %{?jobs:-j %jobs} VERBOSE=1
 
 %install
 rm -rf %{buildroot}
-cd build
 mkdir -p %{buildroot}/usr/share/license
-cp COPYING %{buildroot}/usr/share/license/%{name}
+cd build
 make install DESTDIR=$RPM_BUILD_ROOT
 cd ..
+cp COPYING %{buildroot}/usr/share/license/%{name}
 
 
 %clean
@@ -59,3 +62,4 @@ rm -rf "$RPM_BUILD_ROOT"
 %defattr(-,root,root,-)
 %{_bindir}/caskbench
 /usr/share/license/%{name}
+

@@ -9,7 +9,7 @@
 
 #include <cairo.h>
 #ifdef HAVE_CAIRO_GL_H
-#include <cairo-gl.h>
+#  include <cairo-gl.h>
 #endif
 
 #include <SkBitmap.h>
@@ -50,7 +50,7 @@ create_skia_device_image (int width, int height);
 void
 destroy_skia_image();
 
-#ifdef HAVE_CAIRO_GL_H
+#if defined(HAVE_CAIRO_GL_H)
 cairo_surface_t *
 create_cairo_surface_glx (int width, int height);
 void
@@ -62,7 +62,7 @@ void
 destroy_skia_glx();
 #endif
 
-#ifdef HAVE_GLES3_H
+#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
 cairo_surface_t *
 create_cairo_surface_egl (int width, int height);
 void
@@ -136,10 +136,10 @@ static void
 print_surfaces_available()
 {
     printf("image\n");
-#ifdef HAVE_CAIRO_GL_H
+#if defined(HAVE_CAIRO_GL_H)
     printf("glx\n");
 #endif
-#ifdef HAVE_GLES3_H
+#if defined(HAVE_GLES3_H) || defined(HAVE_GLES2_H)
     printf("egl\n");
 #endif
 }
@@ -249,7 +249,7 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
         context->destroy_cairo = destroy_cairo_image;
         context->destroy_skia = destroy_skia_image;
 
-#ifdef HAVE_CAIRO_GL_H
+#if defined(HAVE_GLX_H)
     } else if (!strncmp(surface_type, "glx", 3)) {
         context->setup_cairo = create_cairo_surface_glx;
         context->setup_skia = create_skia_device_glx;
@@ -257,7 +257,7 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
         context->destroy_skia = destroy_skia_glx;
 #endif
 
-#ifdef HAVE_GLES3_H
+#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
     } else if (!strncmp(surface_type, "egl", 3)) {
         context->setup_cairo = create_cairo_surface_egl;
         context->setup_skia = create_skia_device_egl;

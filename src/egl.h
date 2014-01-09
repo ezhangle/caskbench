@@ -1,6 +1,9 @@
 #ifndef __EGL_H__  // -*- mode: c++ -*-
 #define __EGL_H__
 
+#include <X11/Xlib.h>
+#include <EGL/egl.h>
+
 typedef struct {
     Display   *dpy;
     Window     window;

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <err.h>
 #include <stdlib.h>
 
@@ -7,7 +9,12 @@
 #include <SkGpuDevice.h>
 
 #include <EGL/egl.h>
+#if HAVE_GLES3_H
 #include <GLES3/gl3.h>
+#elif HAVE_GLES2_H
+#include <GLES2/gl2.h>
+#endif
+
 
 #include "egl.h"
 

@@ -35,14 +35,32 @@ add_definitions(${POPT_DEFINITIONS})
 
 find_package(X11 REQUIRED)
 
-check_include_files(GLES2/gl2.h HAVE_GLES2_H)
+find_package(OpenGL)
+if (OPENGL_FOUND)
+  message("Using OpenGL libraries for GLX")
+  list(APPEND CASKBENCH_INCS_SYS ${OpenGL_INCLUDE_DIRS})
+  list(APPEND CASKBENCH_LIBS ${OpenGL_LIBRARY_DIRS})
+  check_include_files(GL/glx.h HAVE_GLX_H)
+  add_definitions(${OpenGL_DEFINITIONS})
+endif (OPENGL_FOUND)
+
+find_package(OpenGLES2)
+if (OPENGLES2_FOUND)
+  message("Using OpenGL ES 2 libraries")
+  list(APPEND CASKBENCH_INCS_SYS ${OPENGLES2_INCLUDE_DIRS})
+  list(APPEND CASKBENCH_LIBS ${OPENGLES2_LIBRARIES})
+  check_include_files(GLES2/gl2.h HAVE_GLES2_H)
+endif (OPENGLES2_FOUND)
 
 find_package(OpenGLES3)
-list(APPEND CASKBENCH_INCS_SYS ${OPENGLES3_INCLUDE_DIRS})
-list(APPEND CASKBENCH_LIBS ${OPENGLES3_LIBRARIES})
-check_include_files(GLES3/gl3.h HAVE_GLES3_H)
+if (OPENGLES3_FOUND)
+  message("Using OpenGL ES 3 libraries")
+  list(APPEND CASKBENCH_INCS_SYS ${OPENGLES3_INCLUDE_DIRS})
+  list(APPEND CASKBENCH_LIBS ${OPENGLES3_LIBRARIES})
+  check_include_files(GLES3/gl3.h HAVE_GLES3_H)
+endif (OPENGLES3_FOUND)
 
-find_package(Cairo)
+find_package(Cairo REQUIRED)
 list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
 check_include_files(cairo/cairo-gl.h HAVE_CAIRO_GL_H)
@@ -69,25 +87,19 @@ list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/gpu/)
 list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/gpu/gl/)
 
 list(APPEND CASKBENCH_LIBS
-  skia_core
-  skia_pdf
-  skia_opts
-  skia_utils
-  skia_views
-  skia_xml
-  skia_opts_ssse3
-  skia_ports
-  skia_sfnt
-  skia_effects
-  skia_images
-  skia_skgpu
-  skia_core
+  skia
   freetype
   fontconfig
   pthread
-  EGL
-  GL
 )
+
+if (OPENGL_FOUND)
+  list(APPEND CASKBENCH_LIBS GL)
+endif (OPENGL_FOUND)
+
+if (OPENGLES3_FOUND)
+  list(APPEND CASKBENCH_LIBS EGL)
+endif (OPENGLES3_FOUND)
 
 # ----------------------------------------------------------------------
 # Build
@@ -120,5 +132,6 @@ CONFIGURE_FILE(
   "${CMAKE_CURRENT_SOURCE_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake.in"
   "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake"
   IMMEDIATE @ONLY)
+INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/caskbench DESTINATION bin)
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake") 

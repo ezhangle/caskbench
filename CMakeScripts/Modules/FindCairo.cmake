@@ -41,9 +41,16 @@ find_path(CAIRO_GL_INCLUDE_DIRS
 set (CAIRO_FOUND "NO")
 if (CAIRO_LIBRARIES AND CAIRO_INCLUDE_DIRS)
   set (CAIRO_FOUND "YES")
+else (CAIRO_LIBRARIES AND CAIRO_INCLUDE_DIRS)
+  if (Cairo_FIND_REQUIRED)
+    message(FATAL_ERROR "Could not find Cairo")
+  endif (Cairo_FIND_REQUIRED)
 endif (CAIRO_LIBRARIES AND CAIRO_INCLUDE_DIRS)
 
 set (CAIRO_GL_FOUND "NO")
 if (CAIRO_LIBRARIES AND CAIRO_GL_INCLUDE_DIRS)
   set (CAIRO_GL_FOUND "YES")
 endif (CAIRO_LIBRARIES AND CAIRO_GL_INCLUDE_DIRS)
+
+# TODO: Check for EGL support
+#  - locate symbols cairo_egl_device_create and cairo_gl_surface_create_for_egl

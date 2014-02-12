@@ -61,31 +61,24 @@ if (OPENGLES3_FOUND)
 endif (OPENGLES3_FOUND)
 
 find_package(Cairo REQUIRED)
+message("Using cairo libraries at ${CAIRO_LIBRARIES}")
 list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
 check_include_files(cairo/cairo-gl.h HAVE_CAIRO_GL_H)
 
-# skia
-# TODO: Replace with a find_package() call
-#set(SKIA_ROOT "$ENV{HOME}/src/skia/trunk" CACHE STRING "Location of skia source tree")
-set(SKIA_ROOT /usr)
-set(SKIA_INCLUDE /usr/include/skia)
-message(STATUS "Using skia from ${SKIA_ROOT}")
-set(SKIA_LIB_PATHS 
-  ${SKIA_ROOT}/out/Release/
-  /usr/lib/
-  /usr/lib/x86_64-linux-gnu)
-set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${SKIA_LIB_PATHS})
-link_directories(${SKIA_LIB_PATHS})
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/core/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/config/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/utils/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/tools/flags/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/lazy/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/gpu/)
-list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE}/gpu/gl/)
+find_package(Skia REQUIRED)
+message("Skia found: ${SKIA_FOUND}")
+message("Using skia libraries at ${SKIA_LIBRARIES}")
+list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE_DIRS}/)
+list(APPEND CASKBENCH_LIBS ${SKIA_LIBRARIES})
 
+
+#set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${SKIA_LIB_PATHS})
+#link_directories(${SKIA_LIB_PATHS})
+
+# ----------------------------------------------------------------------
+# Link
+# ----------------------------------------------------------------------
 list(APPEND CASKBENCH_LIBS
   skia
   freetype

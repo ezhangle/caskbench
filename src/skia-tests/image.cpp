@@ -11,21 +11,26 @@ static SkBitmap bitmap;
 int
 sk_setup_image(caskbench_context_t *ctx)
 {
-    int i;
-    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 100, 100);
+    int i, x, y;
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 160, 40);
     bitmap.allocPixels();
     SkBitmapDevice device(bitmap);
     SkCanvas canvas(&device);
     SkPaint paint;
     SkRect r;
 
-    r.set(5, 5, 20, 20);
+    canvas.clear(0);
 
+    x = 5;
     for (i=0; i<16; i++) {
         paint.setARGB(255, 255/(i+1), 255, 16*i);
-        r.offset(5, 5);
+        x += 10;
+        y = (i%2)*10;
+        r.set(x, y, x+10, y+10);
+
         canvas.drawRect(r, paint);
     }
+    canvas.flush();
 
     return 1;
 }
@@ -38,9 +43,12 @@ sk_teardown_image(void)
 int
 sk_test_image(caskbench_context_t *ctx)
 {
-    int i;
+    int i, x, y;
+
     for (i=0; i<ctx->size; i++) {
-        ctx->skia_canvas->drawBitmap(bitmap, 0, 0);
+        y = 50 * (int)(i/4);
+        x = 200 * (i%4);
+        ctx->skia_canvas->drawBitmap(bitmap, x, y);
     }
 
     return 1;

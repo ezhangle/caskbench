@@ -30,6 +30,7 @@ sk_test_paint(caskbench_context_t *ctx)
         alpha = int( 255 * (double)rand()/RAND_MAX );
 
         ctx->skia_paint->setARGB(alpha, red, green, blue);
+        ctx->skia_canvas->drawPaint(*ctx->skia_paint);
     }
 
     return 1;

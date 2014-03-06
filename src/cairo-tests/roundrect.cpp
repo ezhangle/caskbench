@@ -11,8 +11,6 @@ ca_setup_roundrect(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
 
     cairo_set_antialias (cr, CAIRO_ANTIALIAS_BEST);
-    cairo_set_source_rgb (cr, 0, 0, 0);
-    cairo_paint (cr);
     return 1;
 }
 

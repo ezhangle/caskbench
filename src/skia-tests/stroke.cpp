@@ -11,7 +11,6 @@ static int line_length;
 int
 sk_setup_stroke(caskbench_context_t *ctx)
 {
-    ctx->skia_paint->setARGB(255, 255, 255, 255);
     r.set(10, 10, 20, 20);
     line_length = 60;
     return 1;

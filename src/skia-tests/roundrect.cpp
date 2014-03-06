@@ -9,7 +9,6 @@
 int
 sk_setup_roundrect(caskbench_context_t *ctx)
 {
-    ctx->skia_paint->setARGB(255, 0, 0, 0);
     ctx->skia_paint->setAntiAlias(true);
     ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
     return 1;

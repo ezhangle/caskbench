@@ -9,7 +9,6 @@
 int
 sk_setup_rectangles(caskbench_context_t *ctx)
 {
-    ctx->skia_canvas->drawARGB(255, 0, 0, 0);
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
     ctx->skia_paint->setStyle(SkPaint::kStroke_Style);

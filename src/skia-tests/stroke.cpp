@@ -24,11 +24,17 @@ sk_teardown_stroke(void)
 int
 sk_test_stroke(caskbench_context_t *ctx)
 {
+    unsigned char red, green, blue, alpha;
     int i, x, w, prev_w;
     x = 0;
     prev_w = 0;
     for (i=0; i<ctx->size; i++) {
-        ctx->skia_paint->setColor(rand());
+        red = int( 255 * (double)rand()/RAND_MAX );
+        green = int( 255 * (double)rand()/RAND_MAX );
+        blue = int( 255 * (double)rand()/RAND_MAX );
+        alpha = int( 255 * (double)rand()/RAND_MAX );
+        ctx->skia_paint->setARGB(alpha, red, green, blue);
+
         w = ((double)ctx->size*rand())/RAND_MAX + 1;
         x += 4 + (prev_w + w)/2.0;
         ctx->skia_paint->setStrokeWidth(w);

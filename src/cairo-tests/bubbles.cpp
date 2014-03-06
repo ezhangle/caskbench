@@ -25,10 +25,11 @@ ca_test_bubbles(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
 
     for (i=0; i<ctx->size; i++) {
+        randomize_color (cr);
+
         r = ((double)max_dim*rand())/RAND_MAX + 1;
         x = (0.5*(double)ctx->canvas_width*rand())/RAND_MAX;
         y = (0.5*(double)ctx->canvas_height*rand())/RAND_MAX;
-        randomize_color (cr);
         cairo_arc (cr, x, y, r, 0, 2*M_PI);
         cairo_fill (cr);
     }

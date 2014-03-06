@@ -21,9 +21,15 @@ sk_teardown_paint(void)
 int
 sk_test_paint(caskbench_context_t *ctx)
 {
+    unsigned char red, green, blue, alpha;
     int i;
     for (i=0; i<ctx->size; i++) {
-        ctx->skia_canvas->drawColor(rand());
+        red = int( 255 * (double)rand()/RAND_MAX );
+        green = int( 255 * (double)rand()/RAND_MAX );
+        blue = int( 255 * (double)rand()/RAND_MAX );
+        alpha = int( 255 * (double)rand()/RAND_MAX );
+
+        ctx->skia_paint->setARGB(alpha, red, green, blue);
     }
 
     return 1;

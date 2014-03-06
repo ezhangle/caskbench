@@ -31,6 +31,7 @@ sk_teardown_multishape(void)
 int
 sk_test_multishape(caskbench_context_t *ctx)
 {
+    unsigned char red, green, blue, alpha;
     int i, j, x, y, r;
 
     r = 0.9 * element_spacing / 2;
@@ -40,7 +41,11 @@ sk_test_multishape(caskbench_context_t *ctx)
             x = i * element_spacing;
 
             // TODO: Select a pre-defined paint object at random
-            ctx->skia_paint->setColor(rand());
+            red = int( 255 * (double)rand()/RAND_MAX );
+            green = int( 255 * (double)rand()/RAND_MAX );
+            blue = int( 255 * (double)rand()/RAND_MAX );
+            alpha = int( 255 * (double)rand()/RAND_MAX );
+            ctx->skia_paint->setARGB(alpha, red, green, blue);
 
             // TODO: Randomly select different shapes to be drawn
             ctx->skia_canvas->drawCircle(x, y, r, *ctx->skia_paint);

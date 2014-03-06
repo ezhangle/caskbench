@@ -282,10 +282,12 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
     context->skia_canvas->clear(0);
     context->skia_paint->setARGB(255, 0, 0, 0);
     context->skia_canvas->drawPaint(*context->skia_paint);
+    context->skia_paint->setAntiAlias(true);
 
     // Clear Cairo background to black
     cairo_set_source_rgb (context->cairo_cr, 0, 0, 0);
     cairo_paint (context->cairo_cr);
+    cairo_set_antialias (context->cairo_cr, CAIRO_ANTIALIAS_DEFAULT);
 
 }
 

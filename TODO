@@ -1,0 +1,4 @@
+
+ * Add support for comparing with OpenVG
+ * Add support for comparing with fog - http://code.google.com/p/fog/
+ * Add support for comparing with Azure

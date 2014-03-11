@@ -278,17 +278,21 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
     context->cairo_cr = cairo_create(context->cairo_surface);
     context->skia_canvas = new SkCanvas(context->skia_device);
 
-    // Clear Skia background to black
+    // Clear background to black
     context->skia_canvas->clear(0);
     context->skia_paint->setARGB(255, 0, 0, 0);
     context->skia_canvas->drawPaint(*context->skia_paint);
-    context->skia_paint->setAntiAlias(true);
 
-    // Clear Cairo background to black
     cairo_set_source_rgb (context->cairo_cr, 0, 0, 0);
     cairo_paint (context->cairo_cr);
+
+    // Enable anti-aliasing
+    context->skia_paint->setAntiAlias(true);
+
     cairo_set_antialias (context->cairo_cr, CAIRO_ANTIALIAS_DEFAULT);
 
+    // Ease up Cairo's tessellation tolerance (default is 0.001)
+    cairo_set_tolerance (context->cairo_cr, 0.25);
 }
 
 void

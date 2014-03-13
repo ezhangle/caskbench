@@ -7,12 +7,13 @@ bool
 createGLXContextAndWindow(glx_state_t *state, int width, int height)
 {
     int rgba_attribs[] = {
-        GLX_RGBA,
-        GLX_RED_SIZE, 1,
-        GLX_GREEN_SIZE, 1,
-        GLX_BLUE_SIZE, 1,
-        GLX_ALPHA_SIZE, 1,
-        GLX_DOUBLEBUFFER,
+        GLX_RGBA         ,
+        GLX_RED_SIZE     , 1,
+        GLX_GREEN_SIZE   , 1,
+        GLX_BLUE_SIZE    , 1,
+        GLX_ALPHA_SIZE   , 1,
+        //GLX_STENCIL_SIZE , 8,
+        //GLX_DOUBLEBUFFER , True,
         None
     };
     XVisualInfo *visinfo;
@@ -38,11 +39,14 @@ createGLXContextAndWindow(glx_state_t *state, int width, int height)
     state->window = XCreateWindow (state->dpy,
                                    DefaultRootWindow (state->dpy),
                                    100, 50,
-                                   width, height, 0, visinfo->depth,
+                                   width, height,
+                                   0, // border width
+                                   visinfo->depth,
                                    InputOutput, visinfo->visual,
-                                   CWBorderPixel | CWColormap,
+                                   CWBorderPixel | CWColormap, // | CWEventMask ?
                                    &xattr);
     XMapWindow (state->dpy, state->window);
+    //gc = XCreateGC(state->dpy, state->window, 0, NULL);
 
     state->glx_context = glXCreateContext (state->dpy, visinfo, NULL, True);
     XFree (visinfo);

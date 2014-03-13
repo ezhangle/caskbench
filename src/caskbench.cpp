@@ -243,28 +243,43 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
     context->skia_device = NULL;
     context->skia_paint = new SkPaint;
 
+    context->setup_cairo = NULL;
+    context->setup_skia = NULL;
+    context->destroy_cairo = NULL;
+    context->destroy_skia = NULL;
+
     if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
         context->setup_cairo = create_cairo_surface_image;
         context->setup_skia = create_skia_device_image;
         context->destroy_cairo = destroy_cairo_image;
         context->destroy_skia = destroy_skia_image;
 
-#if defined(HAVE_GLX_H)
     } else if (!strncmp(surface_type, "glx", 3)) {
+#if defined(HAVE_GLX_H)
+        printf("Setting up glx\n");
         context->setup_cairo = create_cairo_surface_glx;
         context->setup_skia = create_skia_device_glx;
         context->destroy_cairo = destroy_cairo_glx;
         context->destroy_skia = destroy_skia_glx;
+#else
+        errx(1, "glx unsupported in this build\n");
 #endif
 
-#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
     } else if (!strncmp(surface_type, "egl", 3)) {
+#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
+        printf("Setting up egl\n");
         context->setup_cairo = create_cairo_surface_egl;
         context->setup_skia = create_skia_device_egl;
         context->destroy_cairo = destroy_cairo_egl;
         context->destroy_skia = destroy_skia_egl;
+#else
+        errx(1, "egl unsupported in this build\n");
 #endif
     }
+    assert (context->setup_cairo);
+    assert (context->setup_skia);
+    assert (context->destroy_cairo);
+    assert (context->destroy_skia);
 
     context->cairo_surface = context->setup_cairo(context->canvas_width,
                                                   context->canvas_height);

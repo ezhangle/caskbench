@@ -3,6 +3,7 @@
 
 #cmakedefine HAVE_GLES2_H 1
 #cmakedefine HAVE_GLES3_H 1
+#cmakedefine HAVE_GLX_H 1
 #cmakedefine HAVE_CAIRO_GL_H 1
 
 #define PACKAGE "${PROJECT_NAME}"

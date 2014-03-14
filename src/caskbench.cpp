@@ -78,6 +78,11 @@ void
 write_image_file_cairo (const char *fname, caskbench_context_t *context)
 {
     assert (context->cairo_surface);
+    cairo_status_t status = cairo_surface_status (context->cairo_surface);
+    if (status != CAIRO_STATUS_SUCCESS) {
+      printf("Error writing cairo surface to file: %s\n", cairo_status_to_string(status));
+      return;
+    }
     cairo_surface_write_to_png (context->cairo_surface, fname);
 }
 
@@ -95,6 +100,11 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
                                                                    bitmap.width(), bitmap.height(),
                                                                    bitmap.rowBytes());
 
+    cairo_status_t status = cairo_surface_status (surface);
+    if (status != CAIRO_STATUS_SUCCESS) {
+      printf("Error writing skia surface to file: %s\n", cairo_status_to_string(status));
+      return;
+    }
     cairo_surface_write_to_png (surface, fname);
     cairo_surface_destroy(surface);
 }
@@ -415,6 +425,7 @@ main (int argc, char *argv[])
 
         // Write image to file
         if (perf_tests[c].write_image) {
+	    printf("Writing %s.png\n", perf_tests[c].name);
             snprintf(fname, sizeof(fname), "%s.png", perf_tests[c].name);
             perf_tests[c].write_image (fname, &context);
         }

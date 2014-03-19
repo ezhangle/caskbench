@@ -75,7 +75,7 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
         return false;
     }
 
-    state->egl_surface = eglCreateWindowSurface (state->egl_display, config, state->window, NULL);
+    state->egl_surface = eglCreateWindowSurface (state->egl_display, config, (void*)state->window, NULL);
     if (state->egl_surface == EGL_NO_SURFACE) {
         warnx ("Cannot create EGL window surface\n");
         return false;

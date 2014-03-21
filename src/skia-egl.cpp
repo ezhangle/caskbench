@@ -49,6 +49,12 @@ create_skia_device_egl (int width, int height)
     desc.fStencilBits = 1;
     desc.fRenderTargetHandle = 0;
     ctx = GrContext::Create(kOpenGL_GrBackend, 0);
+    if (ctx == NULL) {
+        warnx("Could not establish a graphics context for Skia EGL\n");
+        cleanup_state_egl(state);
+        return NULL;
+    }
+
     target = ctx->wrapBackendRenderTarget(desc);
     device = new SkGpuDevice(ctx, target);
 

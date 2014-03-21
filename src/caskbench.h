@@ -37,6 +37,8 @@ typedef struct _caskbench_context {
     SkBaseDevice    *(*setup_skia)(int w, int h);
     void             (*destroy_cairo)(void);
     void             (*destroy_skia)(void);
+    void             (*update_cairo)(void);
+    void             (*update_skia)(void);
 
 } caskbench_context_t;
 

@@ -39,3 +39,7 @@ destroy_cairo_image(void)
     cleanup_state_image(state);
 }
 
+void
+update_cairo_image(void)
+{
+}

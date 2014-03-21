@@ -85,3 +85,9 @@ destroy_skia_glx(void)
 {
     cleanup_state_glx(state);
 }
+
+void
+update_skia_glx(void)
+{
+}
+

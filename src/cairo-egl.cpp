@@ -48,3 +48,8 @@ destroy_cairo_egl(void)
 {
     cleanup_state_egl(state);
 }
+
+void
+update_cairo_egl(void)
+{
+}

@@ -41,3 +41,8 @@ destroy_cairo_glx(void)
 {
     cleanup_state_glx(state);
 }
+
+void
+update_cairo_glx(void)
+{
+}

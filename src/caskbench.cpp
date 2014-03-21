@@ -42,24 +42,30 @@ typedef struct _caskbench_result {
 // Backend-specific graphics initialization
 cairo_surface_t * create_cairo_surface_image (int width, int height);
 void destroy_cairo_image();
+void update_cairo_image();
 
 SkBaseDevice * create_skia_device_image (int width, int height);
 void destroy_skia_image();
+void update_skia_image();
 
 #if defined(HAVE_CAIRO_GL_H)
 cairo_surface_t *create_cairo_surface_glx (int width, int height);
 void destroy_cairo_glx();
+void update_cairo_glx();
 
 SkBaseDevice * create_skia_device_glx (int width, int height);
 void destroy_skia_glx();
+void update_skia_glx();
 #endif
 
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
 cairo_surface_t * create_cairo_surface_egl (int width, int height);
 void destroy_cairo_egl();
+void update_cairo_egl();
 
 SkBaseDevice * create_skia_device_egl (int width, int height);
 void destroy_skia_egl();
+void update_skia_egl();
 #endif
 
 void
@@ -245,6 +251,8 @@ context_init(caskbench_context_t *context, int size)
     context->setup_skia = NULL;
     context->destroy_cairo = NULL;
     context->destroy_skia = NULL;
+    context->update_cairo = NULL;
+    context->update_skia = NULL;
 }
 
 void
@@ -253,11 +261,13 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
     if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
         context->setup_cairo = create_cairo_surface_image;
         context->destroy_cairo = destroy_cairo_image;
+        context->update_cairo = update_cairo_image;
     } else if (!strncmp(surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
         printf("Setting up glx\n");
         context->setup_cairo = create_cairo_surface_glx;
         context->destroy_cairo = destroy_cairo_glx;
+        context->update_cairo = update_cairo_glx;
 #else
         errx(1, "glx unsupported in this build\n");
 #endif
@@ -267,12 +277,14 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
         printf("Setting up egl\n");
         context->setup_cairo = create_cairo_surface_egl;
         context->destroy_cairo = destroy_cairo_egl;
+        context->update_cairo = update_cairo_egl;
 #else
         errx(1, "egl unsupported in this build\n");
 #endif
     }
     assert (context->setup_cairo);
     assert (context->destroy_cairo);
+    assert (context->update_cairo);
 
     context->cairo_surface = context->setup_cairo(context->canvas_width,
                                                   context->canvas_height);
@@ -299,11 +311,13 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
     if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
         context->setup_skia = create_skia_device_image;
         context->destroy_skia = destroy_skia_image;
+        context->update_skia = update_skia_image;
     } else if (!strncmp(surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
         printf("Setting up glx\n");
         context->setup_skia = create_skia_device_glx;
         context->destroy_skia = destroy_skia_glx;
+        context->update_skia = update_skia_glx;
 #else
         errx(1, "glx unsupported in this build\n");
 #endif
@@ -313,6 +327,7 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
         printf("Setting up egl\n");
         context->setup_skia = create_skia_device_egl;
         context->destroy_skia = destroy_skia_egl;
+        context->update_skia = update_skia_egl;
 #else
         errx(1, "egl unsupported in this build\n");
 #endif
@@ -320,6 +335,7 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
 
     assert (context->setup_skia);
     assert (context->destroy_skia);
+    assert (context->update_skia);
 
     context->skia_device = context->setup_skia(context->canvas_width,
                                                context->canvas_height);
@@ -338,6 +354,19 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
     context->skia_paint->setAntiAlias(true);
 
 }
+
+void
+context_update_cairo(caskbench_context_t *context)
+{
+    context->update_cairo();
+}
+
+void
+context_update_skia(caskbench_context_t *context)
+{
+    context->update_skia();
+}
+
 
 void
 context_destroy_skia(caskbench_context_t *context)
@@ -435,6 +464,7 @@ main (int argc, char *argv[])
                     result.status = CASKBENCH_STATUS_PASS;
                 else
                     result.status = CASKBENCH_STATUS_FAIL;
+                perf_tests[c].context_update(&context);
 
                 stop_time = get_tick();
                 run_time = stop_time - start_time;

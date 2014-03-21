@@ -61,3 +61,9 @@ destroy_skia_egl(void)
 {
     cleanup_state_egl(state);
 }
+
+void
+update_skia_egl(void)
+{
+}
+

@@ -21,3 +21,8 @@ destroy_skia_image(void)
 {
     cleanup_state_image(state);
 }
+
+void
+update_skia_image(void)
+{
+}

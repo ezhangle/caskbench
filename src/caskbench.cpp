@@ -242,7 +242,7 @@ randomize_color(cairo_t *cr)
 }
 
 void
-context_init(caskbench_context_t *context, int size, const char* surface_type)
+context_init(caskbench_context_t *context, int size)
 {
     assert(context);
     assert(size > 0);
@@ -251,26 +251,25 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
     context->canvas_width = 800;
     context->canvas_height = 400;
     context->skia_device = NULL;
-    context->skia_paint = new SkPaint;
+    context->skia_paint = NULL;
 
     context->setup_cairo = NULL;
     context->setup_skia = NULL;
     context->destroy_cairo = NULL;
     context->destroy_skia = NULL;
+}
 
+void
+context_setup_cairo(caskbench_context_t *context, const char* surface_type)
+{
     if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
         context->setup_cairo = create_cairo_surface_image;
-        context->setup_skia = create_skia_device_image;
         context->destroy_cairo = destroy_cairo_image;
-        context->destroy_skia = destroy_skia_image;
-
     } else if (!strncmp(surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
         printf("Setting up glx\n");
         context->setup_cairo = create_cairo_surface_glx;
-        context->setup_skia = create_skia_device_glx;
         context->destroy_cairo = destroy_cairo_glx;
-        context->destroy_skia = destroy_skia_glx;
 #else
         errx(1, "glx unsupported in this build\n");
 #endif
@@ -279,28 +278,69 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
         printf("Setting up egl\n");
         context->setup_cairo = create_cairo_surface_egl;
-        context->setup_skia = create_skia_device_egl;
         context->destroy_cairo = destroy_cairo_egl;
-        context->destroy_skia = destroy_skia_egl;
 #else
         errx(1, "egl unsupported in this build\n");
 #endif
     }
     assert (context->setup_cairo);
-    assert (context->setup_skia);
     assert (context->destroy_cairo);
-    assert (context->destroy_skia);
 
     context->cairo_surface = context->setup_cairo(context->canvas_width,
                                                   context->canvas_height);
-    context->skia_device = context->setup_skia(context->canvas_width,
-                                               context->canvas_height);
     if (!context->cairo_surface)
         errx(2, "Could not create a cairo surface\n");
+
+    context->cairo_cr = cairo_create(context->cairo_surface);
+
+    // Clear background to black
+    cairo_set_source_rgb (context->cairo_cr, 0, 0, 0);
+    cairo_paint (context->cairo_cr);
+
+    // Enable anti-aliasing
+    cairo_set_antialias (context->cairo_cr, CAIRO_ANTIALIAS_DEFAULT);
+
+    // Ease up Cairo's tessellation tolerance (default is 0.001)
+    cairo_set_tolerance (context->cairo_cr, 0.25);
+}
+
+
+void
+context_setup_skia(caskbench_context_t *context, const char* surface_type)
+{
+    context->skia_paint = new SkPaint;
+
+    if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
+        context->setup_skia = create_skia_device_image;
+        context->destroy_skia = destroy_skia_image;
+    } else if (!strncmp(surface_type, "glx", 3)) {
+#if defined(HAVE_GLX_H)
+        printf("Setting up glx\n");
+        context->setup_skia = create_skia_device_glx;
+        context->destroy_skia = destroy_skia_glx;
+#else
+        errx(1, "glx unsupported in this build\n");
+#endif
+
+    } else if (!strncmp(surface_type, "egl", 3)) {
+#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
+        printf("Setting up egl\n");
+        context->setup_skia = create_skia_device_egl;
+        context->destroy_skia = destroy_skia_egl;
+#else
+        errx(1, "egl unsupported in this build\n");
+#endif
+    }
+
+    assert (context->setup_skia);
+    assert (context->destroy_skia);
+
+    context->skia_device = context->setup_skia(context->canvas_width,
+                                               context->canvas_height);
+
     if (!context->skia_device)
         errx(2, "Could not create a skia device\n");
 
-    context->cairo_cr = cairo_create(context->cairo_surface);
     context->skia_canvas = new SkCanvas(context->skia_device);
 
     // Clear background to black
@@ -308,16 +348,9 @@ context_init(caskbench_context_t *context, int size, const char* surface_type)
     context->skia_paint->setARGB(255, 0, 0, 0);
     context->skia_canvas->drawPaint(*context->skia_paint);
 
-    cairo_set_source_rgb (context->cairo_cr, 0, 0, 0);
-    cairo_paint (context->cairo_cr);
-
     // Enable anti-aliasing
     context->skia_paint->setAntiAlias(true);
 
-    cairo_set_antialias (context->cairo_cr, CAIRO_ANTIALIAS_DEFAULT);
-
-    // Ease up Cairo's tessellation tolerance (default is 0.001)
-    cairo_set_tolerance (context->cairo_cr, 0.25);
 }
 
 void
@@ -376,8 +409,11 @@ main (int argc, char *argv[])
         caskbench_result_t result;
 
         srand(0xdeadbeef);
-        context_init(&context, opt.size, opt.surface_type);
+        context_init(&context, opt.size);
         result_init(&result, perf_tests[c].name);
+
+        context_setup_cairo(&context, opt.surface_type);
+        context_setup_skia(&context, opt.surface_type);
 
         if (perf_tests[c].setup != NULL)
             if (!perf_tests[c].setup(&context)) {
@@ -425,7 +461,6 @@ main (int argc, char *argv[])
 
         // Write image to file
         if (perf_tests[c].write_image) {
-	    printf("Writing %s.png\n", perf_tests[c].name);
             snprintf(fname, sizeof(fname), "%s.png", perf_tests[c].name);
             perf_tests[c].write_image (fname, &context);
         }

@@ -22,4 +22,7 @@ void   write_image_file_skia(const char *fname, struct _caskbench_context *conte
 void   context_setup_cairo(struct _caskbench_context *context, const char *surface_type);
 void   context_setup_skia(struct _caskbench_context *context, const char *surface_type);
 
+void   context_destroy_cairo(struct _caskbench_context *context);
+void   context_destroy_skia(struct _caskbench_context *context);
+
 #endif // __TESTS_H__

@@ -340,23 +340,26 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
 }
 
 void
-context_destroy(caskbench_context_t *context)
+context_destroy_skia(caskbench_context_t *context)
 {
     if (!context)
         return;
-    if (context->skia_device) {
-        delete context->skia_paint;
-        delete context->skia_canvas;
-        delete context->skia_device;
-        context->destroy_skia();
-        context->skia_device = NULL;
-    }
-    if (context->cairo_cr) {
-        cairo_destroy(context->cairo_cr);
-        cairo_surface_destroy(context->cairo_surface);
-        context->destroy_cairo();
-        context->cairo_cr = NULL;
-    }
+    delete context->skia_paint;
+    delete context->skia_canvas;
+    delete context->skia_device;
+    context->destroy_skia();
+    context->skia_device = NULL;
+}
+
+void
+context_destroy_cairo(caskbench_context_t *context)
+{
+    if (!context)
+        return;
+    cairo_destroy(context->cairo_cr);
+    cairo_surface_destroy(context->cairo_surface);
+    context->destroy_cairo();
+    context->cairo_cr = NULL;
 }
 
 void
@@ -493,7 +496,7 @@ main (int argc, char *argv[])
         if (perf_tests[c].teardown != NULL)
             perf_tests[c].teardown();
 
-        context_destroy(&context);
+        perf_tests[c].context_destroy(&context);
     }
 
     if (opt.output_file) {

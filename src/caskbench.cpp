@@ -40,38 +40,26 @@ typedef struct _caskbench_result {
 } caskbench_result_t;
 
 // Backend-specific graphics initialization
-cairo_surface_t *
-create_cairo_surface_image (int width, int height);
-void
-destroy_cairo_image();
+cairo_surface_t * create_cairo_surface_image (int width, int height);
+void destroy_cairo_image();
 
-SkBaseDevice *
-create_skia_device_image (int width, int height);
-void
-destroy_skia_image();
+SkBaseDevice * create_skia_device_image (int width, int height);
+void destroy_skia_image();
 
 #if defined(HAVE_CAIRO_GL_H)
-cairo_surface_t *
-create_cairo_surface_glx (int width, int height);
-void
-destroy_cairo_glx();
+cairo_surface_t *create_cairo_surface_glx (int width, int height);
+void destroy_cairo_glx();
 
-SkBaseDevice *
-create_skia_device_glx (int width, int height);
-void
-destroy_skia_glx();
+SkBaseDevice * create_skia_device_glx (int width, int height);
+void destroy_skia_glx();
 #endif
 
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
-cairo_surface_t *
-create_cairo_surface_egl (int width, int height);
-void
-destroy_cairo_egl();
+cairo_surface_t * create_cairo_surface_egl (int width, int height);
+void destroy_cairo_egl();
 
-SkBaseDevice *
-create_skia_device_egl (int width, int height);
-void
-destroy_skia_egl();
+SkBaseDevice * create_skia_device_egl (int width, int height);
+void destroy_skia_egl();
 #endif
 
 void
@@ -308,8 +296,6 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
 void
 context_setup_skia(caskbench_context_t *context, const char* surface_type)
 {
-    context->skia_paint = new SkPaint;
-
     if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
         context->setup_skia = create_skia_device_image;
         context->destroy_skia = destroy_skia_image;
@@ -337,10 +323,10 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
 
     context->skia_device = context->setup_skia(context->canvas_width,
                                                context->canvas_height);
-
     if (!context->skia_device)
         errx(2, "Could not create a skia device\n");
 
+    context->skia_paint = new SkPaint;
     context->skia_canvas = new SkCanvas(context->skia_device);
 
     // Clear background to black
@@ -358,13 +344,19 @@ context_destroy(caskbench_context_t *context)
 {
     if (!context)
         return;
-    delete context->skia_paint;
-    delete context->skia_canvas;
-    delete context->skia_device;
-    cairo_destroy(context->cairo_cr);
-    cairo_surface_destroy(context->cairo_surface);
-    context->destroy_skia();
-    context->destroy_cairo();
+    if (context->skia_device) {
+        delete context->skia_paint;
+        delete context->skia_canvas;
+        delete context->skia_device;
+        context->destroy_skia();
+        context->skia_device = NULL;
+    }
+    if (context->cairo_cr) {
+        cairo_destroy(context->cairo_cr);
+        cairo_surface_destroy(context->cairo_surface);
+        context->destroy_cairo();
+        context->cairo_cr = NULL;
+    }
 }
 
 void
@@ -412,8 +404,7 @@ main (int argc, char *argv[])
         context_init(&context, opt.size);
         result_init(&result, perf_tests[c].name);
 
-        context_setup_cairo(&context, opt.surface_type);
-        context_setup_skia(&context, opt.surface_type);
+        perf_tests[c].context_setup(&context, opt.surface_type);
 
         if (perf_tests[c].setup != NULL)
             if (!perf_tests[c].setup(&context)) {

@@ -52,8 +52,10 @@ for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
     fi
 
     (cat <<EOF
-    {"cairo-${test}", ca_setup_${test}, ca_teardown_${test}, ca_test_${test}, write_image_file_cairo},
-    {"skia-${test}",  sk_setup_${test}, sk_teardown_${test}, sk_test_${test}, write_image_file_skia },
+    {"cairo-${test}", ca_setup_${test}, ca_teardown_${test}, ca_test_${test},
+      write_image_file_cairo, context_setup_cairo },
+    {"skia-${test}",  sk_setup_${test}, sk_teardown_${test}, sk_test_${test},
+      write_image_file_skia,  context_setup_skia },
 
 EOF
     ) >> $out_file

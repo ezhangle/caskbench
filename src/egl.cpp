@@ -8,6 +8,7 @@
 #include <GLES2/gl2.h>
 #endif
 
+#include <unistd.h>
 
 #include "egl.h"
 
@@ -27,7 +28,7 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
         EGL_NONE
     };
     EGLint ctx_attr[] = {
-        EGL_CONTEXT_CLIENT_VERSION, 3,
+        EGL_CONTEXT_CLIENT_VERSION, 2,
         EGL_NONE
     };
     EGLConfig config;
@@ -87,8 +88,11 @@ void
 destroyEGLContextAndWindow (egl_state_t *state)
 {
     if (state->egl_display) {
+        eglMakeCurrent (state->egl_display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         eglDestroyContext (state->egl_display, state->egl_context);
         eglDestroySurface (state->egl_display, state->egl_surface);
+        state->egl_context = EGL_NO_CONTEXT;
+        state->egl_surface = EGL_NO_SURFACE;
         eglTerminate (state->egl_display);
     }
 

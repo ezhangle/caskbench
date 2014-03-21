@@ -19,12 +19,12 @@
 #include "egl.h"
 
 static egl_state_t *state;
+static GrContext* ctx;
 
 SkBaseDevice *
 create_skia_device_egl (int width, int height)
 {
     GrBackendRenderTargetDesc desc;
-    GrContext* ctx;
     GrRenderTarget* target;
     SkGpuDevice *device;
 
@@ -45,25 +45,30 @@ create_skia_device_egl (int width, int height)
     desc.fHeight = height;
     desc.fConfig = kSkia8888_GrPixelConfig;
     desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-    //desc.fOrigin = kTopLeft_GrSurfaceOrigin;
     desc.fSampleCnt = 4;
     desc.fStencilBits = 1;
     desc.fRenderTargetHandle = 0;
     ctx = GrContext::Create(kOpenGL_GrBackend, 0);
     target = ctx->wrapBackendRenderTarget(desc);
-
     device = new SkGpuDevice(ctx, target);
+
+    glClearColor(1, 1, 1, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     return device;
 }
 
 void
 destroy_skia_egl(void)
 {
+    delete ctx;
     cleanup_state_egl(state);
 }
 
 void
 update_skia_egl(void)
 {
+    ctx->flush();
+    eglSwapBuffers(state->egl_display, state->egl_surface);
 }
 

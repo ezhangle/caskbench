@@ -9,6 +9,7 @@
 #include "glx.h"
 
 static glx_state_t *state;
+GrContext* ctx;
 
 static bool ctxErrorOccurred = false;
 static int ctxErrorHandler(Display *dpy, XErrorEvent *ev)
@@ -21,7 +22,6 @@ SkBaseDevice *
 create_skia_device_glx (int width, int height)
 {
     GrBackendRenderTargetDesc desc;
-    GrContext* ctx;
     GrRenderTarget* target;
     SkGpuDevice *device;
 
@@ -83,11 +83,13 @@ create_skia_device_glx (int width, int height)
 void
 destroy_skia_glx(void)
 {
+    delete ctx;
     cleanup_state_glx(state);
 }
 
 void
 update_skia_glx(void)
 {
+    ctx->flush();
 }
 

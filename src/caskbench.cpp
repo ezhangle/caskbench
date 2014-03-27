@@ -74,7 +74,7 @@ write_image_file_cairo (const char *fname, caskbench_context_t *context)
     assert (context->cairo_surface);
     cairo_status_t status = cairo_surface_status (context->cairo_surface);
     if (status != CAIRO_STATUS_SUCCESS) {
-      printf("Error writing cairo surface to file: %s\n", cairo_status_to_string(status));
+      warnx("Error writing cairo surface to file: %s\n", cairo_status_to_string(status));
       return;
     }
     cairo_surface_write_to_png (context->cairo_surface, fname);
@@ -96,7 +96,7 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
 
     cairo_status_t status = cairo_surface_status (surface);
     if (status != CAIRO_STATUS_SUCCESS) {
-      printf("Error writing skia surface to file: %s\n", cairo_status_to_string(status));
+      warnx("Error writing skia surface to file: %s\n", cairo_status_to_string(status));
       return;
     }
     cairo_surface_write_to_png (surface, fname);
@@ -264,7 +264,6 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
         context->update_cairo = update_cairo_image;
     } else if (!strncmp(surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
-        printf("Setting up glx\n");
         context->setup_cairo = create_cairo_surface_glx;
         context->destroy_cairo = destroy_cairo_glx;
         context->update_cairo = update_cairo_glx;
@@ -274,7 +273,6 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
 
     } else if (!strncmp(surface_type, "egl", 3)) {
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
-        printf("Setting up egl\n");
         context->setup_cairo = create_cairo_surface_egl;
         context->destroy_cairo = destroy_cairo_egl;
         context->update_cairo = update_cairo_egl;
@@ -314,7 +312,6 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
         context->update_skia = update_skia_image;
     } else if (!strncmp(surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
-        printf("Setting up glx\n");
         context->setup_skia = create_skia_device_glx;
         context->destroy_skia = destroy_skia_glx;
         context->update_skia = update_skia_glx;
@@ -324,7 +321,6 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
 
     } else if (!strncmp(surface_type, "egl", 3)) {
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
-        printf("Setting up egl\n");
         context->setup_skia = create_skia_device_egl;
         context->destroy_skia = destroy_skia_egl;
         context->update_skia = update_skia_egl;

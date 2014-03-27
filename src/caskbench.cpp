@@ -84,15 +84,26 @@ write_image_file_cairo (const char *fname, caskbench_context_t *context)
 void
 write_image_file_skia (const char *fname, caskbench_context_t *context)
 {
-    SkBaseDevice *device = context->skia_device;
-    assert (device);
+    SkBitmap bitmap;
+    void * data;
+    cairo_surface_t* surface;
 
-    const SkBitmap &bitmap = device->accessBitmap(false);
-    SkAutoLockPixels image_lock(bitmap);
-    cairo_surface_t* surface = cairo_image_surface_create_for_data((unsigned char*)bitmap.getPixels(),
-                                                                   CAIRO_FORMAT_ARGB32,
-                                                                   bitmap.width(), bitmap.height(),
-                                                                   bitmap.rowBytes());
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config,
+                     context->canvas_width, context->canvas_height,
+                     4 * context->canvas_width, // TODO: Get from context->skia_device
+                     kPremul_SkAlphaType);
+    context->skia_canvas->flush();
+    if (!context->skia_canvas->readPixels(&bitmap, 0, 0, SkCanvas::kRGBA_Unpremul_Config8888)) {
+        warnx("Could not read pixels from skia device\n");
+        return;
+    }
+
+    data = bitmap.getPixels();
+    assert(data);
+    surface = cairo_image_surface_create_for_data((unsigned char*)data,
+                                                  CAIRO_FORMAT_ARGB32,
+                                                  context->canvas_width, context->canvas_height,
+                                                  4 * context->canvas_width);
 
     cairo_status_t status = cairo_surface_status (surface);
     if (status != CAIRO_STATUS_SUCCESS) {

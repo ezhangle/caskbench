@@ -42,7 +42,7 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
     }
 
     state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
-                                         0, 0,
+                                         200, 200,
                                          width, height,
                                          0,
                                          BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
@@ -67,6 +67,11 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
 
     if (! eglChooseConfig (state->egl_display, attr, &config, 1, &num)) {
         warnx ("Cannot choose EGL configuration\n");
+        return false;
+    }
+
+    if (!config or num < 1) {
+        warnx ("No valid EGL configuration could be found\n");
         return false;
     }
 

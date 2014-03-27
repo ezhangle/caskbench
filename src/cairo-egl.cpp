@@ -35,6 +35,10 @@ create_cairo_surface_egl (int width, int height)
     eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);
 
     cairo_device = cairo_egl_device_create (state->egl_display, state->egl_context);
+    cairo_status_t status = cairo_device_status (cairo_device);
+    if (status != CAIRO_STATUS_SUCCESS)
+        errx (-1, "Could not create EGL device: (%d) %s\n", status, cairo_status_to_string (status) );
+
     cairo_gl_device_set_thread_aware (cairo_device, 0);
     cairo_surface = cairo_gl_surface_create_for_egl (cairo_device,
                                                      state->egl_surface,

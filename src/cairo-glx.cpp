@@ -4,11 +4,12 @@
 #include <cairo-gl.h>
 
 #include "glx.h"
+#include "device_config.h"
 
 static glx_state_t *state;
 
 cairo_surface_t *
-create_cairo_surface_glx (int width, int height)
+create_cairo_surface_glx (const device_config_t& config)
 {
     cairo_device_t *cairo_device;
     cairo_surface_t *cairo_surface;
@@ -19,7 +20,7 @@ create_cairo_surface_glx (int width, int height)
         return NULL;
     }
 
-    if (!createGLXContextAndWindow(state, width, height)) {
+    if (!createGLXContextAndWindow(state, config.width, config.height)) {
         warnx ("Could not create GLX context and window\n");
         cleanup_state_glx(state);
         return NULL;
@@ -29,8 +30,8 @@ create_cairo_surface_glx (int width, int height)
     cairo_gl_device_set_thread_aware (cairo_device, 0);
     cairo_surface = cairo_gl_surface_create_for_window (cairo_device,
                                                         state->window,
-                                                        width,
-                                                        height);
+                                                        config.width,
+                                                        config.height);
     cairo_device_destroy (cairo_device);
 
     return cairo_surface;

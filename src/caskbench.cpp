@@ -18,6 +18,7 @@
 #include <SkCanvas.h>
 
 #include "caskbench.h"
+#include "device_config.h"
 #include "tests.h"
 
 typedef struct _caskbench_options {
@@ -40,30 +41,30 @@ typedef struct _caskbench_result {
 } caskbench_result_t;
 
 // Backend-specific graphics initialization
-cairo_surface_t * create_cairo_surface_image (int width, int height);
+cairo_surface_t * create_cairo_surface_image (const device_config_t& config);
 void destroy_cairo_image();
 void update_cairo_image();
 
-SkBaseDevice * create_skia_device_image (int width, int height);
+SkBaseDevice * create_skia_device_image (const device_config_t& config);
 void destroy_skia_image();
 void update_skia_image();
 
 #if defined(HAVE_CAIRO_GL_H)
-cairo_surface_t *create_cairo_surface_glx (int width, int height);
+cairo_surface_t *create_cairo_surface_glx (const device_config_t& config);
 void destroy_cairo_glx();
 void update_cairo_glx();
 
-SkBaseDevice * create_skia_device_glx (int width, int height);
+SkBaseDevice * create_skia_device_glx (const device_config_t& config);
 void destroy_skia_glx();
 void update_skia_glx();
 #endif
 
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
-cairo_surface_t * create_cairo_surface_egl (int width, int height);
+cairo_surface_t * create_cairo_surface_egl (const device_config_t& config);
 void destroy_cairo_egl();
 void update_cairo_egl();
 
-SkBaseDevice * create_skia_device_egl (int width, int height);
+SkBaseDevice * create_skia_device_egl (const device_config_t& config);
 void destroy_skia_egl();
 void update_skia_egl();
 #endif
@@ -267,13 +268,13 @@ context_init(caskbench_context_t *context, int size)
 }
 
 void
-context_setup_cairo(caskbench_context_t *context, const char* surface_type)
+context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
 {
-    if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
+    if (config.surface_type == NULL || !strncmp(config.surface_type, "image", 5)) {
         context->setup_cairo = create_cairo_surface_image;
         context->destroy_cairo = destroy_cairo_image;
         context->update_cairo = update_cairo_image;
-    } else if (!strncmp(surface_type, "glx", 3)) {
+    } else if (!strncmp(config.surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
         context->setup_cairo = create_cairo_surface_glx;
         context->destroy_cairo = destroy_cairo_glx;
@@ -282,7 +283,7 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
         errx(1, "glx unsupported in this build\n");
 #endif
 
-    } else if (!strncmp(surface_type, "egl", 3)) {
+    } else if (!strncmp(config.surface_type, "egl", 3)) {
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
         context->setup_cairo = create_cairo_surface_egl;
         context->destroy_cairo = destroy_cairo_egl;
@@ -295,8 +296,7 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
     assert (context->destroy_cairo);
     assert (context->update_cairo);
 
-    context->cairo_surface = context->setup_cairo(context->canvas_width,
-                                                  context->canvas_height);
+    context->cairo_surface = context->setup_cairo(config);
     if (!context->cairo_surface)
         errx(2, "Could not create a cairo surface\n");
 
@@ -315,13 +315,13 @@ context_setup_cairo(caskbench_context_t *context, const char* surface_type)
 
 
 void
-context_setup_skia(caskbench_context_t *context, const char* surface_type)
+context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 {
-    if (surface_type == NULL || !strncmp(surface_type, "image", 5)) {
+    if (config.surface_type == NULL || !strncmp(config.surface_type, "image", 5)) {
         context->setup_skia = create_skia_device_image;
         context->destroy_skia = destroy_skia_image;
         context->update_skia = update_skia_image;
-    } else if (!strncmp(surface_type, "glx", 3)) {
+    } else if (!strncmp(config.surface_type, "glx", 3)) {
 #if defined(HAVE_GLX_H)
         context->setup_skia = create_skia_device_glx;
         context->destroy_skia = destroy_skia_glx;
@@ -330,7 +330,7 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
         errx(1, "glx unsupported in this build\n");
 #endif
 
-    } else if (!strncmp(surface_type, "egl", 3)) {
+    } else if (!strncmp(config.surface_type, "egl", 3)) {
 #if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
         context->setup_skia = create_skia_device_egl;
         context->destroy_skia = destroy_skia_egl;
@@ -344,8 +344,7 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
     assert (context->destroy_skia);
     assert (context->update_skia);
 
-    context->skia_device = context->setup_skia(context->canvas_width,
-                                               context->canvas_height);
+    context->skia_device = context->setup_skia(config);
     if (!context->skia_device)
         errx(2, "Could not create a skia device\n");
 
@@ -359,7 +358,6 @@ context_setup_skia(caskbench_context_t *context, const char* surface_type)
 
     // Enable anti-aliasing
     context->skia_paint->setAntiAlias(true);
-
 }
 
 void
@@ -419,6 +417,7 @@ main (int argc, char *argv[])
     double perf_improvement = 0.0;
     FILE *fp;
     char fname[256];
+    device_config_t config;
 
     process_options(&opt, argc, argv);
 
@@ -442,8 +441,11 @@ main (int argc, char *argv[])
         srand(0xdeadbeef);
         context_init(&context, opt.size);
         result_init(&result, perf_tests[c].name);
+        config.width = context.canvas_width;
+        config.height = context.canvas_height;
+        config.surface_type = opt.surface_type;
 
-        perf_tests[c].context_setup(&context, opt.surface_type);
+        perf_tests[c].context_setup(&context, config);
 
         if (perf_tests[c].setup != NULL)
             if (!perf_tests[c].setup(&context)) {

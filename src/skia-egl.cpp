@@ -17,12 +17,13 @@
 
 
 #include "egl.h"
+#include "device_config.h"
 
 static egl_state_t *state;
 static GrContext* ctx;
 
 SkBaseDevice *
-create_skia_device_egl (int width, int height)
+create_skia_device_egl (const device_config_t& config)
 {
     GrBackendRenderTargetDesc desc;
     GrRenderTarget* target;
@@ -34,15 +35,15 @@ create_skia_device_egl (int width, int height)
         return NULL;
     }
 
-    if (!createEGLContextAndWindow(state, width, height)) {
+    if (!createEGLContextAndWindow(state, config.width, config.height)) {
         cleanup_state_egl(state);
         return NULL;
     }
 
     eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);
 
-    desc.fWidth = width;
-    desc.fHeight = height;
+    desc.fWidth = config.width;
+    desc.fHeight = config.height;
     desc.fConfig = kSkia8888_GrPixelConfig;
     desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
     desc.fSampleCnt = 4;

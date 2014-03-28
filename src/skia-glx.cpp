@@ -7,6 +7,7 @@
 #include <SkGpuDevice.h>
 
 #include "glx.h"
+#include "device_config.h"
 
 static glx_state_t *state;
 GrContext* ctx;
@@ -19,7 +20,7 @@ static int ctxErrorHandler(Display *dpy, XErrorEvent *ev)
 }
 
 SkBaseDevice *
-create_skia_device_glx (int width, int height)
+create_skia_device_glx (const device_config_t& config)
 {
     GrBackendRenderTargetDesc desc;
     GrRenderTarget* target;
@@ -37,7 +38,7 @@ create_skia_device_glx (int width, int height)
         XSetErrorHandler(&ctxErrorHandler);
 
     printf("Creating GLX context\n");
-    if (!createGLXContextAndWindow(state, width, height)) {
+    if (!createGLXContextAndWindow(state, config.width, config.height)) {
         warnx("Could not create GLX context and window\n");
         cleanup_state_glx(state);
         return NULL;
@@ -66,8 +67,8 @@ create_skia_device_glx (int width, int height)
 
     // TODO: See SkOSWindow_Unix.cpp
 
-    desc.fWidth = width;
-    desc.fHeight = height;
+    desc.fWidth = config.width;
+    desc.fHeight = config.height;
     desc.fConfig = kSkia8888_GrPixelConfig;
     desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
     //desc.fOrigin = kTopLeft_GrSurfaceOrigin;

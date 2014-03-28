@@ -4,11 +4,12 @@
 #include <cairo-gl.h>
 
 #include "image.h"
+#include "device_config.h"
 
 static image_state_t *state;
 
 cairo_surface_t *
-create_cairo_surface_image (int width, int height)
+create_cairo_surface_image (const device_config_t& config)
 {
     cairo_surface_t *cairo_surface;
 
@@ -27,8 +28,8 @@ create_cairo_surface_image (int width, int height)
     */
 
     cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
-                                                width,
-                                                height);
+                                                config.width,
+                                                config.height);
 
     return cairo_surface;
 }

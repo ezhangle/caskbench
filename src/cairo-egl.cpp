@@ -15,12 +15,12 @@
 #include "device_config.h"
 
 static egl_state_t *state;
+static cairo_surface_t *cairo_surface;
 
 cairo_surface_t *
 create_cairo_surface_egl (const device_config_t& config)
 {
     cairo_device_t *cairo_device;
-    cairo_surface_t *cairo_surface;
 
     state = (egl_state_t*) malloc (sizeof (egl_state_t));
     if (!state) {
@@ -56,11 +56,13 @@ create_cairo_surface_egl (const device_config_t& config)
 void
 destroy_cairo_egl(void)
 {
-    cleanup_state_egl(state);
+    //cairo_surface_destroy (cairo_surface);
+    cleanup_state_egl (state);
 }
 
 void
 update_cairo_egl(void)
 {
-    eglSwapBuffers(state->egl_display, state->egl_surface);
+    //eglSwapBuffers(state->egl_display, state->egl_surface);
+    cairo_gl_surface_swapbuffers (cairo_surface);
 }

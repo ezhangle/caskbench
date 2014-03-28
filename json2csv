@@ -1,0 +1,17 @@
+#!/usr/bin/python
+
+import sys
+import csv
+import json
+
+json_file = sys.argv[1]
+
+with open(json_file) as file:
+     data = json.load(file)
+
+with open("results.csv", "w") as file:
+     csv_file = csv.writer(file)
+     for item in data:
+         csv_file.writerow([item['test case'], item['size'],
+             item['iterations'], item['minimum run time (s)'],
+	     item['average run time (s)']])

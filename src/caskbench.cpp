@@ -189,7 +189,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"version", 'V', POPT_ARG_NONE, &opt->version, 0,
          "Display the program version",
          NULL},
-        {"enable-egl-sample-buffers", NULL, POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
+        {"enable-egl-sample-buffers", '\0', POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
          "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
          NULL},
         POPT_AUTOHELP
@@ -198,7 +198,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
     // Initialize options
     opt->dry_run = 0;
-    opt->iterations = 64;
+    opt->iterations = 10;
     opt->list_surfaces = 0;
     opt->output_file = NULL;
     opt->size = 64;

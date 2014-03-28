@@ -1,0 +1,61 @@
+== Test Suite Usage ==
+
+Four use cases are supported:
+
+  A.  Quick check.  All test cases are run with just randomized
+      settings.  Objective is full functional coverage in short period
+      of time to identify bugs in the code.  We use pre-defined seed
+      value(s) in order to ensure reproducibility.
+
+  B.  Detailed survey. Several or all test cases are run at a series of
+      different setting values, and multiple iterations, using a
+      specified seed.  These are intended to generate graphable data for
+      analysis, and to cover corner-cases that may not have a relation
+      to real-world cases.
+
+  C.  Individual study.  One test is run with specific settings and a
+      pre-defined seed to study a specific performance issue.
+
+  D.  Benchmark.  Test cases and settings are selected that more closely
+      resemble real-world use cases.  Corner-cases are avoided.  The
+      tests are iterated many times to get good performance averages,
+      and the seed is randomized.  Objective is for comparing different
+      rendering technologies, backends, or algorithms for their impact
+      on end user experience.
+
+
+== Test Case Design Focus ==
+
+1.  Draws lots of shapes of varying sizes and styles.  Goal of this test
+    is to test raw basic drawing performance.
+
+2.  Performs masking operations on an existing bitmap.  The type of mask
+    can be specified or a random assortment applied.  Goal is exercising
+    of mask effects and measuring performance of different mask
+    operations.
+
+3.  Draws text at different sizes, angles, lengths, paths, etc.  The
+    font used can be specified, or a random set will be used.  Unicode
+    characters can be included.  Goal is exercising text drawing
+    capabilities and measuring performance of text drawing under various
+    conditions.
+
+4.  Draws lots of multi-point lines.  Can vary line width, minimum and
+    maximum number of points, dash style, line join, end caps, stroke
+    color, etc.  Line segments can either be straight, or curves, or a
+    random assortment.
+
+5.  Fills shapes of different geometries.  The test probably should
+    allow specifying which type of shape to fill.  Could include options
+    for drawing it at varying sizes, orientations, line styles, colors,
+    etc.  Maybe also permit applying gradients.  Goal is to exercise
+    fill specifically, and spot situations where it may be slow.
+
+6.  Draws shadow under different kinds of shapes.  Goal is to measure
+    performance of shadow under different conditions.
+
+7.  Animates a number of shapes that move at constant speeds along
+    randomly directed paths.  Can include rotations, color or opacity
+    changes, size changes, etc.  Goal is to explore optimizations for
+    drawing sequences.
+

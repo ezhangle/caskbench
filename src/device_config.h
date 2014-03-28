@@ -8,6 +8,10 @@ typedef struct _device_config {
     int width;
     int height;
 
+    // EGL Settings
+    int egl_samples;
+    int egl_sample_buffers;
+
 } device_config_t;
 
 #endif // __DEVICE_CONFIG_H__

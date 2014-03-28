@@ -28,7 +28,7 @@ create_cairo_surface_egl (const device_config_t& config)
         return NULL;
     }
 
-    if (!createEGLContextAndWindow(state, config.width, config.height)) {
+    if (!createEGLContextAndWindow(state, config)) {
         cleanup_state_egl(state);
         return NULL;
     }

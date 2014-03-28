@@ -11,9 +11,10 @@
 #include <unistd.h>
 
 #include "egl.h"
+#include "device_config.h"
 
 bool
-createEGLContextAndWindow(egl_state_t *state, int width, int height)
+createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_config)
 {
     EGLint attr[] = {
         EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
@@ -23,17 +24,30 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
         EGL_BLUE_SIZE, 1,
         EGL_ALPHA_SIZE, 1,
         EGL_STENCIL_SIZE, 1,
-        EGL_SAMPLES, 4,
-        EGL_SAMPLE_BUFFERS, 1,
+        EGL_SAMPLES, 0,
+        EGL_SAMPLE_BUFFERS, 0,
         EGL_NONE
     };
     EGLint ctx_attr[] = {
         EGL_CONTEXT_CLIENT_VERSION, 2,
         EGL_NONE
     };
-    EGLConfig config;
+    EGLConfig egl_config;
     EGLint num;
     EGLint major, minor;
+
+    // TODO: Hack
+    // User configuration settings
+    for (int i=0; i<18; i+=2) {
+        switch (attr[i]) {
+        case EGL_SAMPLES:
+            attr[i+1] = device_config.egl_samples;
+            break;
+        case EGL_SAMPLE_BUFFERS:
+            attr[i+1] = device_config.egl_sample_buffers;
+            break;
+        }
+    }
 
     state->dpy = XOpenDisplay (NULL);
     if (state->dpy == NULL) {
@@ -43,7 +57,7 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
 
     state->window = XCreateSimpleWindow (state->dpy, DefaultRootWindow (state->dpy),
                                          200, 200,
-                                         width, height,
+                                         device_config.width, device_config.height,
                                          0,
                                          BlackPixel (state->dpy, DefaultRootWindow (state->dpy)),
                                          BlackPixel (state->dpy, DefaultRootWindow (state->dpy)));
@@ -65,23 +79,23 @@ createEGLContextAndWindow(egl_state_t *state, int width, int height)
         return false;
     }
 
-    if (! eglChooseConfig (state->egl_display, attr, &config, 1, &num)) {
+    if (! eglChooseConfig (state->egl_display, attr, &egl_config, 1, &num)) {
         warnx ("Cannot choose EGL configuration\n");
         return false;
     }
 
-    if (!config or num < 1) {
+    if (!egl_config or num < 1) {
         warnx ("No valid EGL configuration could be found\n");
         return false;
     }
 
-    state->egl_context = eglCreateContext (state->egl_display, config, NULL, ctx_attr);
+    state->egl_context = eglCreateContext (state->egl_display, egl_config, NULL, ctx_attr);
     if (state->egl_context == EGL_NO_CONTEXT) {
         warnx ("Cannot create EGL context\n");
         return false;
     }
 
-    state->egl_surface = eglCreateWindowSurface (state->egl_display, config, (EGLNativeWindowType)state->window, NULL);
+    state->egl_surface = eglCreateWindowSurface (state->egl_display, egl_config, (EGLNativeWindowType)state->window, NULL);
     if (state->egl_surface == EGL_NO_SURFACE) {
         warnx ("Cannot create EGL window surface\n");
         return false;

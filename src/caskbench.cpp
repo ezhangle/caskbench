@@ -29,6 +29,8 @@ typedef struct _caskbench_options {
     char* surface_type;
     int size;
     int version;
+
+    unsigned int enable_egl_sample_buffers;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -187,6 +189,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"version", 'V', POPT_ARG_NONE, &opt->version, 0,
          "Display the program version",
          NULL},
+        {"enable-egl-sample-buffers", NULL, POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
+         "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
+         NULL},
         POPT_AUTOHELP
         {NULL}
     };
@@ -199,6 +204,8 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->size = 64;
     opt->surface_type = NULL;
     opt->version = 0;
+
+    opt->enable_egl_sample_buffers = 0;
 
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
@@ -421,6 +428,11 @@ main (int argc, char *argv[])
 
     process_options(&opt, argc, argv);
 
+    config.width = 0;
+    config.height = 0;
+    config.egl_samples = 0;
+    config.egl_sample_buffers = 0;
+
     if (opt.version) {
         print_version();
         exit(0);
@@ -433,6 +445,10 @@ main (int argc, char *argv[])
         // start writing json to output file
         fp = fopen(opt.output_file, "w");
         fprintf(fp, "[\n");
+    }
+    if (opt.enable_egl_sample_buffers) {
+        config.egl_samples = 4;
+        config.egl_sample_buffers = 1;
     }
     for (c=0; c<num_perf_tests; c++) {
         caskbench_context_t context;

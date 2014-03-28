@@ -537,10 +537,10 @@ main (int argc, char *argv[])
             fprintf(fp, "   {\n");
             fprintf(fp, "       \"test case\": \"%s\",\n", result.test_case_name);
             fprintf(fp, "       \"size\": \"%d\",\n", result.size);
-            fprintf(fp, "       \"status\": \"%s\"\n", _status_to_string(result.status));
+            fprintf(fp, "       \"status\": \"%s\",\n", _status_to_string(result.status));
             fprintf(fp, "       \"iterations\": %d,\n", result.iterations);
             fprintf(fp, "       \"minimum run time (s)\": %f,\n", result.min_run_time);
-            fprintf(fp, "       \"average run time (s)\": %f,\n", result.avg_run_time);
+            fprintf(fp, "       \"average run time (s)\": %f\n", result.avg_run_time);
             fprintf(fp, "   }");
 
             if (c != num_perf_tests-1)

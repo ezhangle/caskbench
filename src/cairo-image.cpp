@@ -1,7 +1,6 @@
 #include <err.h>
 #include <stdlib.h>
 #include <cairo.h>
-#include <cairo-gl.h>
 
 #include "image.h"
 #include "device_config.h"

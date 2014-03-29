@@ -51,7 +51,7 @@ SkBaseDevice * create_skia_device_image (const device_config_t& config);
 void destroy_skia_image();
 void update_skia_image();
 
-#if defined(HAVE_CAIRO_GL_H)
+#if defined(HAVE_GLX_H)
 cairo_surface_t *create_cairo_surface_glx (const device_config_t& config);
 void destroy_cairo_glx();
 void update_cairo_glx();

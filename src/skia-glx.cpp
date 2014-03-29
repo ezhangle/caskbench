@@ -37,7 +37,7 @@ create_skia_device_glx (const device_config_t& config)
     int (*oldHandler)(Display*, XErrorEvent*) =
         XSetErrorHandler(&ctxErrorHandler);
 
-    printf("Creating GLX context\n");
+    warnx("Creating GLX context\n");
     if (!createGLXContextAndWindow(state, config.width, config.height)) {
         warnx("Could not create GLX context and window\n");
         cleanup_state_glx(state);

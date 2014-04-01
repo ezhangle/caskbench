@@ -35,7 +35,7 @@ sk_test_text(caskbench_context_t *ctx)
 	green = int( 255 * (double)rand()/RAND_MAX );
 	blue = int( 255 * (double)rand()/RAND_MAX );
 	alpha = int( 255 * (double)rand()/RAND_MAX );
-	ctx->skia_paint->setLCDRenderText(true);
+	ctx->skia_paint->setLCDRenderText(false);
 	ctx->skia_paint->setARGB(alpha, red, green, blue);
 	ctx->skia_canvas->drawText(text.c_str(), text.size(), 150, 50, *ctx->skia_paint);
     }

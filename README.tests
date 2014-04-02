@@ -1,29 +1,3 @@
-== Test Suite Usage ==
-
-Four use cases are supported:
-
-  A.  Quick check.  All test cases are run with just randomized
-      settings.  Objective is full functional coverage in short period
-      of time to identify bugs in the code.  We use pre-defined seed
-      value(s) in order to ensure reproducibility.
-
-  B.  Detailed survey. Several or all test cases are run at a series of
-      different setting values, and multiple iterations, using a
-      specified seed.  These are intended to generate graphable data for
-      analysis, and to cover corner-cases that may not have a relation
-      to real-world cases.
-
-  C.  Individual study.  One test is run with specific settings and a
-      pre-defined seed to study a specific performance issue.
-
-  D.  Benchmark.  Test cases and settings are selected that more closely
-      resemble real-world use cases.  Corner-cases are avoided.  The
-      tests are iterated many times to get good performance averages,
-      and the seed is randomized.  Objective is for comparing different
-      rendering technologies, backends, or algorithms for their impact
-      on end user experience.
-
-
 == Test Case Design Focus ==
 
 1.  Draws lots of shapes of varying sizes and styles.  Goal of this test

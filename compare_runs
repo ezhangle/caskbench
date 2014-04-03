@@ -2,13 +2,16 @@
 
 import sys
 import json
+from os.path import (basename, dirname)
 
 run_ids = []
 data = {}
 for json_file in sys.argv[1:]:
      with open(json_file) as file:
-          run_ids.append(json_file)
-          data[json_file] = json.load(file)
+          run_id = basename(dirname(json_file))
+          run_ids.append(run_id)
+          data[run_id] = json.load(file)
+          print run_id
 
 results = {}
 for run_id in run_ids:

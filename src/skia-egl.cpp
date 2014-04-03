@@ -46,7 +46,11 @@ create_skia_device_egl (const device_config_t& config)
     desc.fHeight = config.height;
     desc.fConfig = kSkia8888_GrPixelConfig;
     desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-    desc.fSampleCnt = 4;
+
+    if (config.egl_sample_buffers > 0)
+        desc.fSampleCnt = config.egl_samples;
+    else
+        desc.fSampleCnt = 0;
     desc.fStencilBits = 1;
     desc.fRenderTargetHandle = 0;
     ctx = GrContext::Create(kOpenGL_GrBackend, 0);

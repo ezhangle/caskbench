@@ -11,6 +11,7 @@ typedef struct _device_config {
     // EGL Settings
     int egl_samples;
     int egl_sample_buffers;
+    int egl_msaa_sample_count;
 
 } device_config_t;
 

@@ -2,33 +2,67 @@
 
 # This script assumes you've built caskbench in a sub-directory named
 # "build-HOST".  It invokes the executable from that build tree, and
-# stores the results in a directory named results-HOST-SURFACE-NNN.
+# stores the results in a directories named results-NNN/HOST-SURFACE.
 
 iterations=100
 size=256
 host=$(hostname -s)
+build_dir="build-${host}"
 
+run_caskbench() {
+    out=$1
+    surface=$2
+    options=$3
 
-cd build-${host}
-
-surfaces=$(src/caskbench -l)
-
-for surface in ${surfaces}; do
-    id=0
-    out=.
-    while [ -d "${out}" ]; do
-	id=$(( id + 1 ))
-	out=$(printf "../results-${host}-${surface}-%03d" $id)
-    done
     outjson="${out}/results.json"
     outtxt="${out}/results.txt"
+    outcsv="${out}/results.csv"
+
     rm -f cairo*.png skia*.png
-    mkdir ${out}
-    cp ../index.html ${out}/
-    echo "== ${surface^^} ==" | tee ${outtxt}
-    src/caskbench -t ${surface} -i ${iterations} -s ${size} -o ${outjson} | tee -a ${outtxt}
-    if [ $? == 0 ]; then
-	mv cairo*.png skia*.png ${out}/
+    mkdir -p ${out}
+    if [ $? != 0 ]; then
+	echo "Error creating ${out}: $?"
+	return 1
     fi
-    echo | tee ${outtxt}
+    cp ./index.html ${out}/
+    echo "== ${surface^^} ==" | tee ${outtxt}
+    ${build_dir}/src/caskbench -t ${surface} -i ${iterations} -s ${size} -o ${outjson} ${options} | tee -a ${outtxt}
+    if [ $? == 0 ]; then
+	mv -f cairo*.png skia*.png ${out}/
+    fi
+    echo | tee -a ${outtxt}
+
+    # Add csv version of data
+    ./json2csv ${outjson} ${outcsv}
+    return 0
+}
+
+id=0
+results_dir=${build_dir}
+today=$(date +%Y%m%d)
+while [ -d "${results_dir}" ]; do
+    id=$(( id + 1 ))
+    results_dir=$(printf "results-${today}-%02d" $id)
 done
+
+surfaces=$(${build_dir}/src/caskbench -l)
+for surface in ${surfaces}; do
+    run_caskbench "${results_dir}/${host}-${surface}" "${surface}"
+done
+echo "No MSAA" >> ${results_dir}/comparison.txt
+export CAIRO_GL_COMPOSITOR=
+./compare_runs "${results_dir}/${host}-image/results.json" "${results_dir}/${host}-egl/results.json" \
+    >> ${results_dir}/comparison.txt
+echo >> ${results_dir}/comparison.txt
+
+echo "MSAA (--enable-egl-sample-buffers)" >> ${results_dir}/comparison.txt
+export CAIRO_GL_COMPOSITOR=msaa
+for surface in ${surfaces}; do
+    run_caskbench "${results_dir}/${host}-${surface}-msaa" "${surface}" "--enable-egl-sample-buffers"
+done
+./compare_runs "${results_dir}/${host}-image-msaa/results.json" "${results_dir}/${host}-egl-msaa/results.json" \
+    >> ${results_dir}/comparison.txt
+echo >> ${results_dir}/comparison.txt
+
+
+tar czf "${results_dir}.tar" ${results_dir}

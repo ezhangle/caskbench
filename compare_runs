@@ -11,7 +11,6 @@ for json_file in sys.argv[1:]:
           run_id = basename(dirname(json_file))
           run_ids.append(run_id)
           data[run_id] = json.load(file)
-          print run_id
 
 results = {}
 for run_id in run_ids:
@@ -28,8 +27,8 @@ for run_id in run_ids:
 # First header
 print("%-12s " %('')),
 for run_id in run_ids:
-     label = run_id.split('-')[2].upper()
-     print(" ==== %-16s ====     " %(label)),
+    label = run_id.split('-')[1].upper()
+    print(" ==== %-16s ====     " %(label)),
 print("\n"),
 
 # Second header

@@ -64,5 +64,3 @@ done
     >> ${results_dir}/comparison.txt
 echo >> ${results_dir}/comparison.txt
 
-
-tar czf "${results_dir}.tar" ${results_dir}

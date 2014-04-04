@@ -42,3 +42,4 @@ core
 # Test output
 cairo-*.png
 skia-*.png
+results-*

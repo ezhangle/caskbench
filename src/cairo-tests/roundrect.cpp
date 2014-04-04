@@ -44,7 +44,10 @@ ca_test_roundrect(caskbench_context_t *ctx)
 
         x = 10 + trunc( (((double)ctx->canvas_width-20.0)*rand())/RAND_MAX );
         y = 10 + trunc( (((double)ctx->canvas_height-20.0)*rand())/RAND_MAX );
-        rounded_rectangle (cr, x, y, 100, 40, 4);
+        //rounded_rectangle (cr, x, y, 100, 40, 4);
+
+        // TODO: This requires cairogles
+        cairo_rounded_rectangle (cr, x, y, 100, 40, 4, 4, 4, 4);
 
         line_width = trunc( ((double)ctx->size*rand())/RAND_MAX ) + 1;
         cairo_set_line_width (cr, line_width);

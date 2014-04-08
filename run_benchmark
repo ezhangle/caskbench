@@ -33,6 +33,9 @@ run_caskbench() {
     echo | tee -a ${outtxt}
 
     # Add csv version of data
+    if [ ! -e ${outjson} ]; then
+	return 1
+    fi
     ./json2csv ${outjson} ${outcsv}
     return 0
 }

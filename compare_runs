@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys
 import json
@@ -56,8 +56,14 @@ for testcase in testcases:
           ca1 = results[testcase][run_ids[1]]['cairo']
           sk0 = results[testcase][run_ids[0]]['skia']
           sk1 = results[testcase][run_ids[1]]['skia']
-          ca_ca_improvement = 100*(ca0 - ca1)/ca0
-          sk_sk_improvement = 100*(sk0 - sk1)/sk0
+          if ca0 == 0:
+              ca_ca_improvement = 0
+          else:
+              ca_ca_improvement = 100*(ca0 - ca1)/ca0
+          if sk0 == 0:
+              sk_sk_improvement = 0
+          else:
+              sk_sk_improvement = 100*(sk0 - sk1)/sk0
           print("  %7.1f%%  %7.1f%%" %(ca_ca_improvement, sk_sk_improvement)),
 
      print("\n"),

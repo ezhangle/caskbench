@@ -10,11 +10,9 @@ scale randomized testing of a broad range of drawing features, but
 document the parameters so that particular problem cases can easily be
 run in isolation for performance work.
 
-This test strives for a higher level of complexity than Cairo's micro
-performance benchmarks.  Instead of focusing on one discrete
-functionality and testing it repeatedly, this suite covers a set of
-drawing operations, much like would be done in a real world
-application.
+This test suite strives to provide a flexible performance testing
+toolbox useful for a range of test cases from low level performance
+optimization work to high level benchmarking of devices.
 
 
 == Building ==
@@ -32,9 +30,8 @@ To build this testsuite, use these commands:
  $ cmake .
  $ make
 
-The build system assumes skia has been unpacked and built in the
-directory ~/src/skia/trunk.  You can override this via the SKIA_ROOT
-option:
+The build system looks for skia in /usr/lib and /usr/local/lib.  You can
+override this via the SKIA_ROOT option:
 
  $ cmake . -DSKIA_ROOT=/your/path/to/skia
  $ make
@@ -42,13 +39,15 @@ option:
 
 == Usage ==
 
-Caskbench builds to a single executable which you can run directly:
+Caskbench builds to a single executable which you can run directly
+(using the software renderer):
 
   $ ./src/caskbench
 
   cairo-bubbles        64     PASS  64  0.005676  0.006731
   skia-bubbles         64     PASS  64  0.000987  0.001234  81.66%
   cairo-fill           64     PASS  64  0.000789  0.000851
+  ...
 
 The testing will alternate between cairo and skia versions of each
 test.  The second column indicates the test size, the fourth column is
@@ -57,83 +56,22 @@ a pass, something's seriously wrong.  The fifth column is the minimum
 run time, and sixth is an average.  The last column calculates the
 percent difference that skia is faster than cairo on average.
 
-By default caskbench tests using the image backend, which may or may not
-be that interesting.  Different backends can be specified via the -t
-parameter, and available backends discovered by running:
+For hardware acceleration, specify the surface type to use (e.g. glx or
+egl) via the -t parameter.
+
+  $ ./src/caskbench -t egl
+
+You can learn the available surface types via --list-surfaces:
 
   $ ./src/caskbench --list-surfaces
 
   image
-  glx
   egl
 
 The --iterations and --size parameters can be used to increase the
 intensity of the testing.
 
-  $ ./src/caskbench -t glx --iterations 100 --size 42
+  $ ./src/caskbench -t egl --iterations 100 --size 42
 
 Run it with the '-?' flag to see usage directions with explanations of
 all available options.
-
-
-== Design ==
-
-The benchmark comprises several individual tests, each of which provides
-a set of inputs that can be varied to exercise drawing functionality in
-different ways.
-
-Random permutation of test case inputs are used in order to increase
-coverage to unusual cases.  These inputs are pre-generated, and then
-provided to both the cairo and skia implementations of the tests.  In
-this way, the graphical output by each library should theoretically
-be visually (if not bitwise) identical.  The inputs can control the
-number of items drawn, their style, and so forth.
-
-The quantity of different input sets to use is user-specified; more
-input sets gives more thorough testing, but will take longer to test.
-
-For each input set, the test suite will run the test for a defined
-number of iterations.  This is intended to help even out any variation
-due to external factors by increasing the number of iterations.
-
-foreach test:
-  generate the range of input sets we're going to test
-  foreach input set:
-    foreach graphics_lib:
-      setup test with inputs
-      foreach iteration:
-        run test case
-      cleanup
-
-== Tests ==
-
-Stroke:  Tests different stroke styles on lines, circles, and
-rectangles.
-
-Curves:  Tests drawing curved lines in various ways.
-See cairo perf's curve.c, many-curves.c
-
-Fill:  Fills
-
-== Original Request ==
-
-Bryce - can you start make benchmarks to compare cairogles vs. skia?
-The benchmarks would cover fill, stroke, paint, mask and test.  Both
-with constant constant colors and alpha colors, and image as source and
-masks.  For example, one of the benchmark for stroke would be run stroke
-with random line width, join style, cap style, and random dash length on
-randomly generated circles, rectangles.  The benchmarks would use msaa,
-and on PC first and identify which areas of skia can be further
-optimized.  Then we will port benchmarks to android and tizen and do
-further comparison.
-
-We would like to see where the strength and weakness of cairogles or
-skia (please use GL backend for both).
-
-* objectives:
-  - Cover fill, stroke, paint, mask, and test
-  - Constant colors, alpha colors
-  - Image as source and masks
-  - Use MSAA and focus on PC first
-  - Port benchmarks to tizen and android
-* Post to github when ready to be public

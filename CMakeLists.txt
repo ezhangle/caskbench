@@ -112,8 +112,6 @@ endif (ENABLE_EGL)
 # ----------------------------------------------------------------------
 list(APPEND CASKBENCH_LIBS
   skia
-  freetype
-  fontconfig
   pthread
 )
 

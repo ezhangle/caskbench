@@ -2,18 +2,15 @@
 Name:           caskbench
 Summary:        Cairo and Skia Benchmark
 Version:        0.3.9
-Release:        1
+Release:        1.0
 Group:          Graphics & UI Framework/Testing
 ExcludeArch:    i596
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 License:        GPL
 URL:            http://www.x.org/
 Source0:        %{name}-%{version}.tar.bz2
 Source1001:     packaging/caskbench.manifest
 
-Requires: xorg-x11-server-Xorg
-Requires(post): /sbin/ldconfig
-Requires(postun): /sbin/ldconfig
+Requires:       xorg-x11-server-Xorg
 
 BuildRequires:  cmake
 BuildRequires:  gcc-c++
@@ -26,6 +23,8 @@ BuildRequires:  pkgconfig(opengl-es-20)
 BuildRequires:  pkgconfig(gles20)
 BuildRequires:  pkgconfig(cairo) >= 1.12.0
 BuildRequires:  skia
+
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-build
 
 %description
 Cairo and Skia benchmark

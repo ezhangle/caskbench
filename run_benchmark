@@ -1,13 +1,29 @@
 #!/bin/bash
 
-# This script assumes you've built caskbench in a sub-directory named
-# "build-HOST".  It invokes the executable from that build tree, and
-# stores the results in a directories named results-NNN/HOST-SURFACE.
-
 iterations=100
 size=256
-host=$(hostname -s)
-build_dir="build-${host}"
+
+if [ -z "$HOSTNAME" ]; then
+    host=$(hostname -s)
+else
+    host=$HOSTNAME
+fi
+if [ -z "$host" ]; then
+    echo "Error: Could not determine hostname"
+    exit 1
+fi
+
+which caskbench > /dev/null
+if [ $? = 0 ]; then
+    CASKBENCH=caskbench
+else
+    # This script assumes you've built caskbench in a sub-directory
+    # named "build-HOST".  It invokes the executable from that build
+    # tree, and stores the results in a directories named
+    # results-NNN/HOST-SURFACE.
+    CASKBENCH="build-${host}/src/caskbench"
+fi
+
 
 run_caskbench() {
     out=$1
@@ -26,7 +42,7 @@ run_caskbench() {
     fi
     cp ./index.html ${out}/
     echo "== ${surface^^} ==" | tee ${outtxt}
-    ${build_dir}/src/caskbench -t ${surface} -i ${iterations} -s ${size} -o ${outjson} ${options} | tee -a ${outtxt}
+    ${CASKBENCH} -t ${surface} -i ${iterations} -s ${size} -o ${outjson} ${options} | tee -a ${outtxt}
     if [ $? == 0 ]; then
 	mv -f cairo*.png skia*.png ${out}/
     fi
@@ -41,14 +57,14 @@ run_caskbench() {
 }
 
 id=0
-results_dir=${build_dir}
+results_dir=.
 today=$(date +%Y%m%d)
 while [ -d "${results_dir}" ]; do
     id=$(( id + 1 ))
     results_dir=$(printf "results-${today}-%02d" $id)
 done
 
-surfaces=$(${build_dir}/src/caskbench -l)
+surfaces=$(${CASKBENCH} -l)
 for surface in ${surfaces}; do
     run_caskbench "${results_dir}/${host}-${surface}" "${surface}"
 done

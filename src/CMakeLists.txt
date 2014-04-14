@@ -9,23 +9,21 @@ file(GLOB caskbench_SOURCES
   skia-tests/*.cpp
 )
 
-if (CAIRO_GL_FOUND)
-  if (OPENGL_FOUND)
-    list(APPEND caskbench_SOURCES
-      glx.cpp
-      cairo-glx.cpp
-      skia-glx.cpp
+if (USE_GLX)
+  list(APPEND caskbench_SOURCES
+    glx.cpp
+    cairo-glx.cpp
+    skia-glx.cpp
     )
-  endif (OPENGL_FOUND)
+endif (USE_GLX)
 
-  if (OPENGLES2_FOUND)
-    list(APPEND caskbench_SOURCES
-      egl.cpp
-      cairo-egl.cpp
-      skia-egl.cpp
+if (USE_EGL)
+  list(APPEND caskbench_SOURCES
+    egl.cpp
+    cairo-egl.cpp
+    skia-egl.cpp
     )
-  endif (OPENGLES2_FOUND)
-endif (CAIRO_GL_FOUND)
+endif (USE_EGL)
 
 add_executable(generate_tests IMPORTED)
 set_property(TARGET generate_tests PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/generate_tests")

@@ -3,7 +3,8 @@ cmake_minimum_required(VERSION 2.8)
 project(caskbench)
 set(CASKBENCH_VERSION_MAJOR 0)
 set(CASKBENCH_VERSION_MINOR 3)
-set(PROJECT_VERSION "${CASKBENCH_VERSION_MAJOR}.${CASKBENCH_VERSION_MINOR}")
+set(CASKBENCH_VERSION_MICRO 9)
+set(PROJECT_VERSION "${CASKBENCH_VERSION_MAJOR}.${CASKBENCH_VERSION_MINOR}.${CASKBENCH_VERSION_MICRO}")
 set(ARCHIVE_NAME ${CMAKE_PROJECT_NAME}-${PROJECT_VERSION})
 set(CMAKE_SCRIPTS "CMakeScripts")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/${CMAKE_SCRIPTS}/Modules/")
@@ -23,6 +24,12 @@ list(APPEND CASKBENCH_INCS
 )
 
 # ----------------------------------------------------------------------
+# Command line options
+# ----------------------------------------------------------------------
+option(ENABLE_GLX "Build against GLX for OpenGL" OFF)
+option(ENABLE_EGL "Build against EGL for OpenGL" ON)
+
+# ----------------------------------------------------------------------
 # Dependencies
 # ----------------------------------------------------------------------
 
@@ -34,31 +41,6 @@ list(APPEND CASKBENCH_LIBS ${POPT_LIBRARIES})
 add_definitions(${POPT_DEFINITIONS})
 
 find_package(X11 REQUIRED)
-
-find_package(OpenGL)
-if (OPENGL_FOUND)
-  message("Using OpenGL libraries for GLX")
-  list(APPEND CASKBENCH_INCS_SYS ${OpenGL_INCLUDE_DIRS})
-  list(APPEND CASKBENCH_LIBS ${OpenGL_LIBRARY_DIRS})
-  check_include_files(GL/glx.h HAVE_GLX_H)
-  add_definitions(${OpenGL_DEFINITIONS})
-endif (OPENGL_FOUND)
-
-find_package(OpenGLES2)
-if (OPENGLES2_FOUND)
-  message("Using OpenGL ES 2 libraries")
-  list(APPEND CASKBENCH_INCS_SYS ${OPENGLES2_INCLUDE_DIRS})
-  list(APPEND CASKBENCH_LIBS ${OPENGLES2_LIBRARIES})
-  check_include_files(GLES2/gl2.h HAVE_GLES2_H)
-endif (OPENGLES2_FOUND)
-
-find_package(OpenGLES3)
-if (OPENGLES3_FOUND)
-  message("Using OpenGL ES 3 libraries")
-  list(APPEND CASKBENCH_INCS_SYS ${OPENGLES3_INCLUDE_DIRS})
-  list(APPEND CASKBENCH_LIBS ${OPENGLES3_LIBRARIES})
-  check_include_files(GLES3/gl3.h HAVE_GLES3_H)
-endif (OPENGLES3_FOUND)
 
 find_package(Cairo REQUIRED)
 message("Using cairo libraries at ${CAIRO_LIBRARIES}")
@@ -72,6 +54,54 @@ message("Using skia libraries at ${SKIA_LIBRARIES}")
 list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE_DIRS}/)
 list(APPEND CASKBENCH_LIBS ${SKIA_LIBRARIES})
 
+set(USE_GLX 0)
+if (ENABLE_GLX)
+  if (NOT HAVE_CAIRO_GL_H)
+    message( FATAL_ERROR "For GLX support, cairo must be compiled with GL enabled" )
+  endif (NOT HAVE_CAIRO_GL_H)
+
+  find_package(OpenGL)
+  if (NOT OPENGL_FOUND)
+    message( FATAL_ERROR "GLX requires OpenGL, but none found" )
+  endif (NOT OPENGL_FOUND)
+
+  message("Using OpenGL libraries for GLX")
+  list(APPEND CASKBENCH_INCS_SYS ${OpenGL_INCLUDE_DIRS})
+  list(APPEND CASKBENCH_LIBS ${OpenGL_LIBRARY_DIRS})
+  check_include_files(GL/glx.h HAVE_GLX_H)
+  add_definitions(${OpenGL_DEFINITIONS})
+  set(USE_GLX 1)
+endif (ENABLE_GLX)
+
+set(USE_EGL 0)
+if (ENABLE_EGL)
+  if (NOT HAVE_CAIRO_GL_H)
+    message( FATAL_ERROR "For EGL support, cairo must be compiled with GL enabled" )
+  endif (NOT HAVE_CAIRO_GL_H)
+
+  find_package(OpenGL)
+  if (NOT OPENGL_FOUND)
+    message( FATAL_ERROR "EGL requires OpenGL, but none found" )
+  endif (NOT OPENGL_FOUND)
+
+  find_package(OpenGLES2)
+  if (OPENGLES2_FOUND)
+    message("Using OpenGL ES 2 libraries")
+    list(APPEND CASKBENCH_INCS_SYS ${OPENGLES2_INCLUDE_DIRS})
+    list(APPEND CASKBENCH_LIBS ${OPENGLES2_LIBRARIES})
+    check_include_files(GLES2/gl2.h HAVE_GLES2_H)
+    set(USE_EGL 1)
+  endif (OPENGLES2_FOUND)
+
+  find_package(OpenGLES3)
+  if (OPENGLES3_FOUND)
+    message("Using OpenGL ES 3 libraries")
+    list(APPEND CASKBENCH_INCS_SYS ${OPENGLES3_INCLUDE_DIRS})
+    list(APPEND CASKBENCH_LIBS ${OPENGLES3_LIBRARIES})
+    check_include_files(GLES3/gl3.h HAVE_GLES3_H)
+    set(USE_EGL 1)
+  endif (OPENGLES3_FOUND)
+endif (ENABLE_EGL)
 
 #set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${SKIA_LIB_PATHS})
 #link_directories(${SKIA_LIB_PATHS})
@@ -86,9 +116,11 @@ list(APPEND CASKBENCH_LIBS
   pthread
 )
 
-if (OPENGL_FOUND)
-  list(APPEND CASKBENCH_LIBS GL)
-endif (OPENGL_FOUND)
+if (ENABLE_GLX)
+  if (OPENGL_FOUND)
+    list(APPEND CASKBENCH_LIBS GL)
+  endif (OPENGL_FOUND)
+endif (ENABLE_GLX)
 
 if (OPENGLES3_FOUND)
   list(APPEND CASKBENCH_LIBS EGL)
@@ -128,3 +160,30 @@ CONFIGURE_FILE(
 INSTALL(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/src/caskbench DESTINATION bin)
 ADD_CUSTOM_TARGET(uninstall
   "${CMAKE_COMMAND}" -P "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SCRIPTS}/cmake_uninstall.cmake") 
+
+# ----------------------------------------------------------------------
+# Information Summary
+# ----------------------------------------------------------------------
+# cmake info
+message("------------------------------------------------------------------------")
+message("CMAKE_BINARY_DIR:        ${CMAKE_BINARY_DIR}")
+message("CMAKE_SYSTEM_NAME:       ${CMAKE_SYSTEM_NAME}")
+message("CMAKE_SYSTEM_VERSION:    ${CMAKE_SYSTEM_VERSION}")
+message("CMAKE_SYSTEM_PROCESSOR:  ${CMAKE_SYSTEM_PROCESSOR}")
+message("CMAKE_C_COMPILER:        ${CMAKE_C_COMPILER}")
+message("CMAKE_CXX_COMPILER:      ${CMAKE_CXX_COMPILER}")
+message("CMAKE_BUILD_TYPE:        ${CMAKE_BUILD_TYPE}")
+
+# project info
+message("PROJECT_VERSION:         ${PROJECT_VERSION}")
+message("ARCHIVE_NAME:            ${ARCHIVE_NAME}")
+
+# dependency info
+message("GLX:                     ${ENABLE_GLX}")
+message("EGL:                     ${ENABLE_EGL}")
+message("OPENGLES2:               ${OPENGLES2_FOUND}")
+message("OPENGLES3:               ${OPENGLES3_FOUND}")
+message("CAIRO:                   ${CAIRO_INCLUDE_DIRS}")
+message("SKIA:                    ${SKIA_INCLUDE_DIRS}")
+message("------------------------------------------------------------------------")
+

@@ -5,6 +5,8 @@
 #cmakedefine HAVE_GLES3_H 1
 #cmakedefine HAVE_GLX_H 1
 #cmakedefine HAVE_CAIRO_GL_H 1
+#cmakedefine USE_EGL 1
+#cmakedefine USE_GLX 0
 
 #define PACKAGE "${PROJECT_NAME}"
 #define PACKAGE_NAME "${PROJECT_NAME}"

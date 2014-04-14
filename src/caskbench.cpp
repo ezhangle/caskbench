@@ -21,6 +21,9 @@
 #include "device_config.h"
 #include "tests.h"
 
+/* TODO: skia-sra doesn't appear to provide this definition - ?!? */
+int32_t SkToS32(intmax_t x) { return (int32_t)x; }
+
 typedef struct _caskbench_options {
     int dry_run;
     int iterations;
@@ -51,7 +54,7 @@ SkBaseDevice * create_skia_device_image (const device_config_t& config);
 void destroy_skia_image();
 void update_skia_image();
 
-#if defined(HAVE_GLX_H)
+#if USE_GLX
 cairo_surface_t *create_cairo_surface_glx (const device_config_t& config);
 void destroy_cairo_glx();
 void update_cairo_glx();
@@ -61,7 +64,7 @@ void destroy_skia_glx();
 void update_skia_glx();
 #endif
 
-#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
+#if USE_EGL
 cairo_surface_t * create_cairo_surface_egl (const device_config_t& config);
 void destroy_cairo_egl();
 void update_cairo_egl();
@@ -154,10 +157,10 @@ static void
 print_surfaces_available()
 {
     printf("image\n");
-#if defined(HAVE_CAIRO_GL_H)
+#if USE_GLX
     printf("glx\n");
 #endif
-#if defined(HAVE_GLES3_H) || defined(HAVE_GLES2_H)
+#if USE_EGL
     printf("egl\n");
 #endif
 }
@@ -282,7 +285,7 @@ context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
         context->destroy_cairo = destroy_cairo_image;
         context->update_cairo = update_cairo_image;
     } else if (!strncmp(config.surface_type, "glx", 3)) {
-#if defined(HAVE_GLX_H)
+#if USE_GLX
         context->setup_cairo = create_cairo_surface_glx;
         context->destroy_cairo = destroy_cairo_glx;
         context->update_cairo = update_cairo_glx;
@@ -291,7 +294,7 @@ context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
 #endif
 
     } else if (!strncmp(config.surface_type, "egl", 3)) {
-#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
+#if USE_EGL
         context->setup_cairo = create_cairo_surface_egl;
         context->destroy_cairo = destroy_cairo_egl;
         context->update_cairo = update_cairo_egl;
@@ -329,7 +332,7 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
         context->destroy_skia = destroy_skia_image;
         context->update_skia = update_skia_image;
     } else if (!strncmp(config.surface_type, "glx", 3)) {
-#if defined(HAVE_GLX_H)
+#if USE_GLX
         context->setup_skia = create_skia_device_glx;
         context->destroy_skia = destroy_skia_glx;
         context->update_skia = update_skia_glx;
@@ -338,7 +341,7 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 #endif
 
     } else if (!strncmp(config.surface_type, "egl", 3)) {
-#if defined(HAVE_GLES2_H) || defined(HAVE_GLES3_H)
+#if USE_EGL
         context->setup_skia = create_skia_device_egl;
         context->destroy_skia = destroy_skia_egl;
         context->update_skia = update_skia_egl;

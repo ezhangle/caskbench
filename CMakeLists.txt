@@ -28,6 +28,7 @@ list(APPEND CASKBENCH_INCS
 # ----------------------------------------------------------------------
 option(ENABLE_GLX "Build against GLX for OpenGL" OFF)
 option(ENABLE_EGL "Build against EGL for OpenGL" ON)
+option(ENABLE_CAIROGLES "Use the cairogles fork API additions" OFF)
 
 # ----------------------------------------------------------------------
 # Dependencies
@@ -183,6 +184,7 @@ message("GLX:                     ${ENABLE_GLX}")
 message("EGL:                     ${ENABLE_EGL}")
 message("OPENGLES2:               ${OPENGLES2_FOUND}")
 message("OPENGLES3:               ${OPENGLES3_FOUND}")
+message("CAIROGLES:               ${ENABLE_CAIROGLES}")
 message("CAIRO:                   ${CAIRO_INCLUDE_DIRS}")
 message("SKIA:                    ${SKIA_INCLUDE_DIRS}")
 message("------------------------------------------------------------------------")

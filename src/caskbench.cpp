@@ -21,8 +21,9 @@
 #include "device_config.h"
 #include "tests.h"
 
-/* TODO: skia-sra doesn't appear to provide this definition - ?!? */
+#ifndef SkToS32
 int32_t SkToS32(intmax_t x) { return (int32_t)x; }
+#endif
 
 typedef struct _caskbench_options {
     int dry_run;

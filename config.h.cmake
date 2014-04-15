@@ -15,4 +15,8 @@
 #define PACKAGE_VERSION "${PROJECT_VERSION}"
 #define PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}"
 
+#if !defined(USE_LEGACY_SKIA_SRA) || (USE_LEGACY_SKIA_SRA != 0)
+# define SK_ENABLE_INST_COUNT 0
+#endif
+
 #endif /* _CONFIG_H_ */

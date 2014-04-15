@@ -17,6 +17,7 @@
 # define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 #endif
 
+#include "Shapes.h"
 class SkPaint;
 class SkCanvas;
 class SkBaseDevice;
@@ -42,6 +43,8 @@ typedef struct _caskbench_context {
     void             (*destroy_skia)(void);
     void             (*update_cairo)(void);
     void             (*update_skia)(void);
+
+	shapes_t shape_args;
 
 } caskbench_context_t;
 

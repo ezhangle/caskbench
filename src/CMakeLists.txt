@@ -1,9 +1,11 @@
 file(GLOB caskbench_SOURCES
   caskbench.cpp
-
+  kinetics.cpp
   image.cpp
   cairo-image.cpp
   skia-image.cpp
+  cairo-shapes.cpp
+  skia-shapes.cpp
 
   cairo-tests/*.cpp
   skia-tests/*.cpp

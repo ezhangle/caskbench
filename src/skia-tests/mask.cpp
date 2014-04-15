@@ -1,3 +1,5 @@
+#include "config.h"
+
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <effects/SkStippleMaskFilter.h>
@@ -8,7 +10,11 @@
 int
 sk_setup_mask(caskbench_context_t *ctx)
 {
+#if USE_LEGACY_SKIA_SRA
     SkMaskFilter *mask = new SkStippleMaskFilter();
+#else
+    SkMaskFilter *mask = SkStippleMaskFilter::Create();
+#endif
     ctx->skia_paint->setMaskFilter(mask);
     return 1;
 }

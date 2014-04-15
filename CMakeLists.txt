@@ -29,6 +29,7 @@ list(APPEND CASKBENCH_INCS
 option(ENABLE_GLX "Build against GLX for OpenGL" OFF)
 option(ENABLE_EGL "Build against EGL for OpenGL" ON)
 option(ENABLE_CAIROGLES "Use the cairogles fork API additions" OFF)
+option(ENABLE_LEGACY_SKIA_SRA "Use the old version of skia-sra" OFF)
 
 # ----------------------------------------------------------------------
 # Dependencies
@@ -49,11 +50,17 @@ list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
 list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
 check_include_files(cairo/cairo-gl.h HAVE_CAIRO_GL_H)
 
+set(USE_LEGACY_SKIA_SRA 0)
 find_package(Skia REQUIRED)
 message("Skia found: ${SKIA_FOUND}")
 message("Using skia libraries at ${SKIA_LIBRARIES}")
 list(APPEND CASKBENCH_INCS ${SKIA_INCLUDE_DIRS}/)
 list(APPEND CASKBENCH_LIBS ${SKIA_LIBRARIES})
+if (ENABLE_LEGACY_SKIA_SRA)
+  # TODO: Hacky.  Really, should autodetect skia api version.
+  #       But this is just for temporary backwards compatibility.
+  set(USE_LEGACY_SKIA_SRA 1)
+endif (ENABLE_LEGACY_SKIA_SRA)
 
 set(USE_GLX 0)
 if (ENABLE_GLX)
@@ -178,12 +185,13 @@ message("PROJECT_VERSION:         ${PROJECT_VERSION}")
 message("ARCHIVE_NAME:            ${ARCHIVE_NAME}")
 
 # dependency info
-message("GLX:                     ${ENABLE_GLX}")
-message("EGL:                     ${ENABLE_EGL}")
+message("GLX:                     ${ENABLE_GLX} -> ${USE_GLX}")
+message("EGL:                     ${ENABLE_EGL} -> ${USE_EGL}")
 message("OPENGLES2:               ${OPENGLES2_FOUND}")
 message("OPENGLES3:               ${OPENGLES3_FOUND}")
 message("CAIROGLES:               ${ENABLE_CAIROGLES}")
 message("CAIRO:                   ${CAIRO_INCLUDE_DIRS}")
+message("SKIA-SRA (legacy):       ${ENABLE_LEGACY_SKIA_SRA} -> ${USE_LEGACY_SKIA_SRA}")
 message("SKIA:                    ${SKIA_INCLUDE_DIRS}")
 message("------------------------------------------------------------------------")
 

@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <err.h>
 #include <stdlib.h>
 

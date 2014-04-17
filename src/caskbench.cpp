@@ -99,10 +99,19 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
     void * data;
     cairo_surface_t* surface;
 
+#ifdef USE_LEGACY_SKIA_SRA
     bitmap.setConfig(SkBitmap::kARGB_8888_Config,
                      context->canvas_width, context->canvas_height,
                      4 * context->canvas_width, // TODO: Get from context->skia_device
                      kPremul_SkAlphaType);
+#else
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config,
+                     context->canvas_width, context->canvas_height);
+    SkImageInfo info = SkImageInfo::Make(context->canvas_width, context->canvas_height,
+                                         kBGRA_8888_SkColorType,
+                                         kPremul_SkAlphaType);
+    bitmap.allocPixels(info);
+#endif
     context->skia_canvas->flush();
     if (!context->skia_canvas->readPixels(&bitmap, 0, 0, SkCanvas::kRGBA_Unpremul_Config8888)) {
         warnx("Could not read pixels from skia device\n");

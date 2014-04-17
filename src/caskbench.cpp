@@ -39,31 +39,28 @@ typedef struct _caskbench_options {
     int version;
 
     unsigned int enable_egl_sample_buffers;
-	int shape_id;
-	int x_position;
-	int y_position;
-	int width;
-	int height;
-	char* fill_type;
-	double red;
-	double green;
-	double blue;
-	double alpha;
-	int animation;	
-	char *image_path;
-	int stroke_width;
-	int multi_shapes;
+    int shape_id;
+    int x_position;
+    int y_position;
+    int width;
+    int height;
+    char* fill_type;
+    double red;
+    double green;
+    double blue;
+    double alpha;
+    int animation;
+    char *image_path;
+    int stroke_width;
+    int multi_shapes;
 
-	double stroke_red;
-	double stroke_green;
-	double stroke_blue;
+    double stroke_red;
+    double stroke_green;
+    double stroke_blue;
 
-	int cap_style;
-	int join_style;
-	int dash_style;
-
-
-
+    int cap_style;
+    int join_style;
+    int dash_style;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -312,7 +309,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
     opt->enable_egl_sample_buffers = 0;
     opt->shape_id = 0;
-	opt->x_position = 0;
+    opt->x_position = 0;
     opt->y_position = 0;
     opt->width = 0;
     opt->height = 0;
@@ -331,9 +328,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->cap_style = 0;
     opt->join_style = 0;
     opt->dash_style = 0;
-
-
-
 
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
@@ -448,7 +442,6 @@ context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
     cairo_set_tolerance (context->cairo_cr, 0.25);
 }
 
-
 void
 context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 {
@@ -506,7 +499,6 @@ context_update_skia(caskbench_context_t *context)
 {
     context->update_skia();
 }
-
 
 void
 context_destroy_skia(caskbench_context_t *context)
@@ -586,27 +578,27 @@ main (int argc, char *argv[])
         context_init(&context, opt.size);
 
 //Command line setup for shapes
-		context.shape_args.centre_x = opt.x_position;
-		context.shape_args.centre_y = opt.y_position;
-		context.shape_args.width = opt.width;
-		context.shape_args.height = opt.height;
-		context.shape_args.shape_id = opt.shape_id;
-		context.shape_args.fill_type = opt.fill_type;
-		context.shape_args.red = opt.red;
-		context.shape_args.green = opt.green;
-		context.shape_args.blue = opt.blue;
-		context.shape_args.alpha = opt.alpha;
-		context.shape_args.image_path = opt.image_path;
-		context.shape_args.stroke_width = opt.stroke_width;
-		context.shape_args.multi_shapes = opt.multi_shapes;
-		context.shape_args.animation = opt.animation;
-		context.shape_args.stroke_width = opt.stroke_width;
-		context.shape_args.stroke_red = opt.stroke_red;
-		context.shape_args.stroke_green = opt.stroke_green;
-		context.shape_args.stroke_blue = opt.stroke_blue;
-		context.shape_args.cap_style = opt.cap_style;
-		context.shape_args.join_style = opt.join_style;
-		context.shape_args.dash_style = opt.dash_style;
+        context.shape_args.centre_x = opt.x_position;
+        context.shape_args.centre_y = opt.y_position;
+        context.shape_args.width = opt.width;
+        context.shape_args.height = opt.height;
+        context.shape_args.shape_id = opt.shape_id;
+        context.shape_args.fill_type = opt.fill_type;
+        context.shape_args.red = opt.red;
+        context.shape_args.green = opt.green;
+        context.shape_args.blue = opt.blue;
+        context.shape_args.alpha = opt.alpha;
+        context.shape_args.image_path = opt.image_path;
+        context.shape_args.stroke_width = opt.stroke_width;
+        context.shape_args.multi_shapes = opt.multi_shapes;
+        context.shape_args.animation = opt.animation;
+        context.shape_args.stroke_width = opt.stroke_width;
+        context.shape_args.stroke_red = opt.stroke_red;
+        context.shape_args.stroke_green = opt.stroke_green;
+        context.shape_args.stroke_blue = opt.stroke_blue;
+        context.shape_args.cap_style = opt.cap_style;
+        context.shape_args.join_style = opt.join_style;
+        context.shape_args.dash_style = opt.dash_style;
 
         result_init(&result, perf_tests[c].name);
         config.width = context.canvas_width;

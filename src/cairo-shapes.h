@@ -1,7 +1,7 @@
 #ifndef __CAIRO_SHAPES_H_
 #define __CAIRO_SHAPES_H_
 
-#include "Shapes.h" 
+#include "Shapes.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
@@ -20,8 +20,5 @@ void cairoDrawStar(caskbench_context_t *ctx, shapes_t *args);
 void cairoDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args);
 
 extern void (*cairoShapes[5])(caskbench_context_t *ctx , shapes_t *args);
-
- 
-
 
 #endif

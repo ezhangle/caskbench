@@ -1,6 +1,8 @@
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
+
 #include <SkPath.h>
+
 typedef struct shapes
 {
     double centre_x;
@@ -10,8 +12,8 @@ typedef struct shapes
     double height;
     int numpoints;
     double (*points)[2];
-	SkPath path;
-	SkRect rect;
+    SkPath path;
+    SkRect rect;
 
     int shape_id;
     char* fill_type;
@@ -24,24 +26,22 @@ typedef struct shapes
     int stroke_width;
     int multi_shapes;
 
-	double stroke_red;
-	double stroke_green;
-	double stroke_blue;
+    double stroke_red;
+    double stroke_green;
+    double stroke_blue;
 
-	int dash_style;
-	int cap_style;
-	int join_style;
-
-
+    int dash_style;
+    int cap_style;
+    int join_style;
 } shapes_t;
 
-enum Shapes  
+enum Shapes
 {
-	Circle,
-	Rectangle,
-	Triangle,
-	Star,
-	RoundedRectangle
-}; 
+    Circle,
+    Rectangle,
+    Triangle,
+    Star,
+    RoundedRectangle
+};
 
 #endif

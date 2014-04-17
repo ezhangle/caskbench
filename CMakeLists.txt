@@ -15,12 +15,12 @@ set(CASKBENCH_INCS_SYS "")
 
 include(CheckIncludeFiles)
 list(APPEND CASKBENCH_INCS
-	${PROJECT_SOURCE_DIR}
-	${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_SOURCE_DIR}
+  ${PROJECT_SOURCE_DIR}/src
 
-	# Generated includes
-	${CMAKE_BINARY_DIR}
-	${CMAKE_BINARY_DIR}/src
+  # Generated includes
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/src
 )
 
 # ----------------------------------------------------------------------
@@ -194,4 +194,3 @@ message("CAIRO:                   ${CAIRO_INCLUDE_DIRS}")
 message("SKIA-SRA (legacy):       ${ENABLE_LEGACY_SKIA_SRA} -> ${USE_LEGACY_SKIA_SRA}")
 message("SKIA:                    ${SKIA_INCLUDE_DIRS}")
 message("------------------------------------------------------------------------")
-

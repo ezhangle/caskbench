@@ -82,4 +82,3 @@ update_skia_egl(void)
     ctx->flush();
     eglSwapBuffers(state->egl_display, state->egl_surface);
 }
-

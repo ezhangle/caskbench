@@ -95,4 +95,3 @@ update_skia_glx(void)
 {
     ctx->flush();
 }
-

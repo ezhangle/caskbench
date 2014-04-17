@@ -1,4 +1,5 @@
 #include <kinetics.h>
+
 void
 generate_color (double *color)
 {
@@ -12,6 +13,7 @@ void kinetics_destroy (kinetics_t *kinetics)
 {
     free(kinetics);
 }
+
 void kinetics_init (kinetics_t *kinetics)
 {
     kinetics->angle = drand48 () * 2 * M_PI;
@@ -29,8 +31,7 @@ void kinetics_init (kinetics_t *kinetics)
 
     generate_color (kinetics->shadow_color);
     kinetics->rotation = drand48 () * 2 * M_PI;
-
-    kinetics->line_width = 20;//drand48() * 20;
+    kinetics->line_width = 20; //drand48() * 20;
 
     /* inset shadow */
     kinetics->shadow_color[0] = 0;
@@ -62,7 +63,6 @@ void kinetics_init (kinetics_t *kinetics)
     kinetics->drop_x_offset = -30;
     kinetics->drop_y_offset = -5;
     kinetics->drop_line_width = kinetics->line_width;
-
 }
 
 void kinetics_update (kinetics_t *kinetics, double delta)
@@ -73,31 +73,31 @@ void kinetics_update (kinetics_t *kinetics, double delta)
     double height = kinetics->height/2;
 
     if (x + w > WIDTH) {
-    if (kinetics->angle >= 0 && kinetics->angle < M_PI / 2)
-        kinetics->angle =  M_PI - kinetics->angle;
-    else if (kinetics->angle > M_PI / 2 * 3)
-        kinetics->angle -= (kinetics->angle - M_PI /2 * 3) * 2;
-    x = WIDTH - w;
+        if (kinetics->angle >= 0 && kinetics->angle < M_PI / 2)
+            kinetics->angle =  M_PI - kinetics->angle;
+        else if (kinetics->angle > M_PI / 2 * 3)
+            kinetics->angle -= (kinetics->angle - M_PI /2 * 3) * 2;
+        x = WIDTH - w;
     }
 
     if (x - w < 0) {
-    if (kinetics->angle > M_PI / 2 && kinetics->angle <  M_PI)
-        kinetics->angle = M_PI - kinetics->angle;
-    else if (kinetics->angle > M_PI && kinetics->angle < M_PI / 2 * 3)
-        kinetics->angle += (M_PI / 2 * 3 - kinetics->angle) * 2;
-    x = w;
+        if (kinetics->angle > M_PI / 2 && kinetics->angle <  M_PI)
+            kinetics->angle = M_PI - kinetics->angle;
+        else if (kinetics->angle > M_PI && kinetics->angle < M_PI / 2 * 3)
+            kinetics->angle += (M_PI / 2 * 3 - kinetics->angle) * 2;
+        x = w;
     }
 
     if (y + w > HEIGHT) {
-    if (kinetics->angle > 0 && kinetics->angle < 2 * M_PI)
-        kinetics->angle = M_PI * 2 - kinetics->angle;
-    y = HEIGHT - w;
+        if (kinetics->angle > 0 && kinetics->angle < 2 * M_PI)
+            kinetics->angle = M_PI * 2 - kinetics->angle;
+        y = HEIGHT - w;
     }
 
     if (y - w < 0) {
-    if (kinetics->angle > M_PI && kinetics->angle < M_PI * 2)
-        kinetics->angle = kinetics->angle - (kinetics->angle - M_PI) * 2;
-    y = w;
+        if (kinetics->angle > M_PI && kinetics->angle < M_PI * 2)
+            kinetics->angle = kinetics->angle - (kinetics->angle - M_PI) * 2;
+        y = w;
     }
 
     kinetics->x = x;
@@ -105,7 +105,5 @@ void kinetics_update (kinetics_t *kinetics, double delta)
 
     kinetics->rotation += M_PI / 9;
     if (kinetics->rotation > 2 * M_PI)
-    kinetics->rotation -= 2 * M_PI;
+        kinetics->rotation -= 2 * M_PI;
 }
-
-

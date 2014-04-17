@@ -41,11 +41,8 @@ typedef struct _kinetics
     double drop_x_offset;
     double drop_y_offset;
     double drop_line_width;
-
-
-}kinetics_t;
+} kinetics_t;
 
 void kinetics_init (kinetics_t *kinetics);
 void kinetics_update (kinetics_t *kinetics, double delta);
 void kinetics_destroy(kinetics_t *kinetics);
-

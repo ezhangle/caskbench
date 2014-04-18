@@ -76,6 +76,7 @@ if (ENABLE_GLX)
   message("Using OpenGL libraries for GLX")
   list(APPEND CASKBENCH_INCS_SYS ${OpenGL_INCLUDE_DIRS})
   list(APPEND CASKBENCH_LIBS ${OpenGL_LIBRARY_DIRS})
+  list(APPEND CASKBENCH_LIBS GL)
   check_include_files(GL/glx.h HAVE_GLX_H)
   add_definitions(${OpenGL_DEFINITIONS})
   set(USE_GLX 1)
@@ -83,6 +84,8 @@ endif (ENABLE_GLX)
 
 set(USE_EGL 0)
 if (ENABLE_EGL)
+  set(EGL_LIBRARIES "")
+
   if (NOT HAVE_CAIRO_GL_H)
     message( FATAL_ERROR "For EGL support, cairo must be compiled with GL enabled" )
   endif (NOT HAVE_CAIRO_GL_H)
@@ -96,7 +99,7 @@ if (ENABLE_EGL)
   if (OPENGLES2_FOUND)
     message("Using OpenGL ES 2 libraries")
     list(APPEND CASKBENCH_INCS_SYS ${OPENGLES2_INCLUDE_DIRS})
-    list(APPEND CASKBENCH_LIBS ${OPENGLES2_LIBRARIES})
+    list(APPEND EGL_LIBRARIES ${OPENGLES2_LIBRARIES})
     check_include_files(GLES2/gl2.h HAVE_GLES2_H)
     set(USE_EGL 1)
   endif (OPENGLES2_FOUND)
@@ -105,32 +108,17 @@ if (ENABLE_EGL)
   if (OPENGLES3_FOUND)
     message("Using OpenGL ES 3 libraries")
     list(APPEND CASKBENCH_INCS_SYS ${OPENGLES3_INCLUDE_DIRS})
-    list(APPEND CASKBENCH_LIBS ${OPENGLES3_LIBRARIES})
+    list(APPEND EGL_LIBRARIES ${OPENGLES3_LIBRARIES})
     check_include_files(GLES3/gl3.h HAVE_GLES3_H)
     set(USE_EGL 1)
   endif (OPENGLES3_FOUND)
+
+  if (EGL_LIBRARIES)
+    list(REMOVE_DUPLICATES EGL_LIBRARIES)
+    list(APPEND CASKBENCH_LIBS ${EGL_LIBRARIES})
+    list(APPEND CASKBENCH_LIBS EGL)
+  endif (EGL_LIBRARIES)
 endif (ENABLE_EGL)
-
-#set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH} ${SKIA_LIB_PATHS})
-#link_directories(${SKIA_LIB_PATHS})
-
-# ----------------------------------------------------------------------
-# Link
-# ----------------------------------------------------------------------
-list(APPEND CASKBENCH_LIBS
-  skia
-  pthread
-)
-
-if (ENABLE_GLX)
-  if (OPENGL_FOUND)
-    list(APPEND CASKBENCH_LIBS GL)
-  endif (OPENGL_FOUND)
-endif (ENABLE_GLX)
-
-if (OPENGLES3_FOUND)
-  list(APPEND CASKBENCH_LIBS EGL)
-endif (OPENGLES3_FOUND)
 
 # ----------------------------------------------------------------------
 # Build
@@ -193,4 +181,10 @@ message("CAIROGLES:               ${ENABLE_CAIROGLES}")
 message("CAIRO:                   ${CAIRO_INCLUDE_DIRS}")
 message("SKIA-SRA (legacy):       ${ENABLE_LEGACY_SKIA_SRA} -> ${USE_LEGACY_SKIA_SRA}")
 message("SKIA:                    ${SKIA_INCLUDE_DIRS}")
+message("------------------------------------------------------------------------")
+
+message("LIBS:")
+foreach (lib ${CASKBENCH_LIBS})
+  message("                         ${lib}")
+endforeach (lib)
 message("------------------------------------------------------------------------")

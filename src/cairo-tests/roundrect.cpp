@@ -33,7 +33,6 @@ rounded_rectangle (cairo_t *cr,
     cairo_arc (cr, x+radius,   y+radius,   radius, M_PI,            270 * M_PI / 180);
 }
 
-
 int
 ca_test_roundrect(caskbench_context_t *ctx)
 {

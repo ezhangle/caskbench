@@ -3,9 +3,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
+
 #include "caskbench.h"
 #include "kinetics.h"
 #include "cairo-shapes.h"
+
 static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
@@ -66,7 +68,6 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
                 ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*(isClip?clipr:r);
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*(isClip?clipr:r);
                 cairoShapes[Rectangle](ctx,&ctx->shape_args);
-
                 break;
 
             case 3:
@@ -106,7 +107,6 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
 }
 void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
 {
-
     int i, r,j;
     int  w, h;
     double x,y;

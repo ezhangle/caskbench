@@ -10,7 +10,6 @@
 static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
-
 static int star_points[11][2] = {
     { 0, 85 },
     { 75, 75 },

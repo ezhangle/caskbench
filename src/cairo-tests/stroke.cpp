@@ -3,13 +3,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
+
 #include "caskbench.h"
 #include "kinetics.h"
 #include "cairo-shapes.h"
+
 static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
-
 static kinetics_t *particles;
 const double dashes[] = { 2, 4 };
 static int line_length;

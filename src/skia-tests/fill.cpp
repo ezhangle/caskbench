@@ -2,26 +2,23 @@
 
 #include <SkCanvas.h>
 #include <SkPaint.h>
-#include <cairo.h>
 #include <math.h>
+#include <unistd.h>
+
+#include <effects/SkGradientShader.h>
+#include <SkUnitMappers.h>
+#include <SkDraw.h>
+#include <effects/SkGradientShader.h>
+#include <SkGraphics.h>
+#include <SkImageDecoder.h>
+#include <SkDashPathEffect.h>
 
 #include "caskbench.h"
 #include "skia-shapes.h"
 #include "kinetics.h"
 
-#include "effects/SkGradientShader.h"
-#include "unistd.h"
-#include "SkUnitMappers.h"
-#include "SkDraw.h"
-#include "effects/SkGradientShader.h"
-#include "SkGraphics.h"
-#include "SkImageDecoder.h"
-#include <SkDashPathEffect.h>
-
 SkAutoTUnref<SkPathEffect> pE;
-
 static kinetics_t *skia_particles;
-
 static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;

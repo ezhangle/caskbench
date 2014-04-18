@@ -3,13 +3,12 @@
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <SkRect.h>
-#include <cairo.h>
 #include <SkDashPathEffect.h>
+#include <SkParsePath.h>
 
 #include "kinetics.h"
 #include "caskbench.h"
 #include "skia-shapes.h"
-#include "SkParsePath.h"
 
 static kinetics_t *particles;
 static int element_spacing;

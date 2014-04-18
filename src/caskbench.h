@@ -22,6 +22,12 @@ class SkPaint;
 class SkCanvas;
 class SkBaseDevice;
 
+struct _cairo;
+typedef struct _cairo cairo_t;
+
+struct _cairo_surface;
+typedef struct _cairo_surface cairo_surface_t;
+
 struct _device_config;
 typedef struct _device_config device_config_t;
 

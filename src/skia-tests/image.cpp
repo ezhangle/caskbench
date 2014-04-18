@@ -4,7 +4,6 @@
 #include <SkPaint.h>
 #include <SkBitmap.h>
 #include <SkBitmapDevice.h>
-#include <cairo.h>
 
 #include "caskbench.h"
 

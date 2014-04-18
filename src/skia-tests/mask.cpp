@@ -3,7 +3,6 @@
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <effects/SkStippleMaskFilter.h>
-#include <cairo.h>
 
 #include "caskbench.h"
 

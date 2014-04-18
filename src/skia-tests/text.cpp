@@ -3,7 +3,6 @@
 
 #include <SkCanvas.h>
 #include <SkPaint.h>
-#include <cairo.h>
 #include <unistd.h>
 
 #include "SkGpuDevice.h"

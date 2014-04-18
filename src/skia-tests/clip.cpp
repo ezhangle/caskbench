@@ -5,7 +5,6 @@
 #include <SkPaint.h>
 #include <SkOSFile.h>
 #include <SkImageDecoder.h>
-#include <cairo.h>
 
 #include "kinetics.h"
 #include "caskbench.h"
@@ -32,7 +31,6 @@ static int star_points[11][2] = {
 
 static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
 {
-    cairo_t *cr = ctx->cairo_cr;
     int old_x, old_y,old_width, old_height;
     old_width = ctx->shape_args.width;
     old_height = ctx->shape_args.height;
@@ -111,7 +109,6 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
 
 static void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0)
 {
-    cairo_t *cr = ctx->cairo_cr;
     int old_x, old_y,old_width, old_height;
     old_width = ctx->shape_args.width;
     old_height = ctx->shape_args.height;

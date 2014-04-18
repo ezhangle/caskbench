@@ -2,7 +2,6 @@
 
 #include <SkCanvas.h>
 #include <SkPaint.h>
-#include <cairo.h>
 #include <math.h>
 
 #include "caskbench.h"

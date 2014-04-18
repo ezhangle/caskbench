@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <SkBitmap.h>

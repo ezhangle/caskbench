@@ -1,4 +1,5 @@
 // From http://www.atoker.com/blog/2008/09/06/skia-graphics-library-in-chrome-first-impressions/
+#include <config.h>
 
 #include <SkCanvas.h>
 #include <SkPaint.h>

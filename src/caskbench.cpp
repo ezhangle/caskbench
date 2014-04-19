@@ -12,6 +12,8 @@
 #  include <cairo-gl.h>
 #endif
 
+#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
+#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkBitmap.h>
 #include <SkBitmapDevice.h>
 #include <SkPaint.h>
@@ -126,6 +128,11 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
                      context->canvas_width, context->canvas_height,
                      4 * context->canvas_width, // TODO: Get from context->skia_device
                      kPremul_SkAlphaType);
+    context->skia_canvas->flush();
+    if (!context->skia_canvas->readPixels(&bitmap, 0, 0, SkCanvas::kRGBA_Unpremul_Config8888)) {
+        warnx("Could not read pixels from skia device\n");
+        return;
+    }
 #else
     bitmap.setConfig(SkBitmap::kARGB_8888_Config,
                      context->canvas_width, context->canvas_height);
@@ -133,12 +140,12 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
                                          kBGRA_8888_SkColorType,
                                          kPremul_SkAlphaType);
     bitmap.allocPixels(info);
-#endif
     context->skia_canvas->flush();
-    if (!context->skia_canvas->readPixels(&bitmap, 0, 0, SkCanvas::kRGBA_Unpremul_Config8888)) {
+    if (!context->skia_canvas->readPixels(&bitmap, 0, 0)) {
         warnx("Could not read pixels from skia device\n");
         return;
     }
+#endif
 
     data = bitmap.getPixels();
     assert(data);

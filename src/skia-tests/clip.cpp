@@ -1,6 +1,8 @@
 // From http://www.atoker.com/blog/2008/09/06/skia-graphics-library-in-chrome-first-impressions/
 #include <config.h>
 
+#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
+#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <SkOSFile.h>

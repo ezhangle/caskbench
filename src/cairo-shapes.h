@@ -2,10 +2,12 @@
 #define __CAIRO_SHAPES_H_
 
 #include "Shapes.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
 #include <math.h>
+
 #include "cairo-shapes.h"
 #include "caskbench.h"
 

@@ -2,6 +2,9 @@
 
 #include <err.h>
 #include <stdlib.h>
+
+#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
+#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkBitmapDevice.h>
 
 #include "image.h"

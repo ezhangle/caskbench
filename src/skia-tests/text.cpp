@@ -1,19 +1,21 @@
 // From http://www.atoker.com/blog/2008/09/06/skia-graphics-library-in-chrome-first-impressions/
 #include <config.h>
 
-#include <SkCanvas.h>
-#include <SkPaint.h>
 #include <unistd.h>
 
-#include "SkGpuDevice.h"
-#include "SkString.h"
-#include "SkTemplates.h"
-#include "SkTypeface.h"
-#include "effects/SkGradientShader.h"
-#include "SkUnitMappers.h"
-#include "SkDraw.h"
-#include "effects/SkGradientShader.h"
-#include "SkGraphics.h"
+#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
+#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
+#include <SkCanvas.h>
+#include <SkPaint.h>
+#include <SkGpuDevice.h>
+#include <SkString.h>
+#include <SkTemplates.h>
+#include <SkTypeface.h>
+#include <effects/SkGradientShader.h>
+#include <SkUnitMappers.h>
+#include <SkDraw.h>
+#include <effects/SkGradientShader.h>
+#include <SkGraphics.h>
 
 #include "caskbench.h"
 

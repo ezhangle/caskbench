@@ -1,3 +1,5 @@
+#include <config.h>
+
 #include "cairo-shapes.h"
 
 void cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args)

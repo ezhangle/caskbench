@@ -114,8 +114,13 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
         ctx->skia_paint->setStrokeCap((SkPaint::Cap)ctx->shape_args.cap_style);
         if(ctx->shape_args.dash_style == 0)
         {
+#if USE_LEGACY_SKIA_SRA
             pE.reset(new SkDashPathEffect(vals, 2, 0));
             ctx->skia_paint->setPathEffect(new SkDashPathEffect(vals, 2, 0));
+#else
+            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
+            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0));
+#endif
             ctx->skia_paint->setPathEffect(pE);
         }
         else if(ctx->shape_args.dash_style == 1)

@@ -17,7 +17,8 @@
 # define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 #endif
 
-#include "Shapes.h"
+#include "shapes.h"
+
 class SkPaint;
 class SkCanvas;
 class SkBaseDevice;

@@ -1,11 +1,12 @@
 #ifndef __SKIA_SHAPES_H_
 #define __SKIA_SHAPES_H_
 
-#include "Shapes.h"
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <cairo.h>
 #include <math.h>
+
+#include "shapes.h"
 #include "caskbench.h"
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args);

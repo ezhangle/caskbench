@@ -1,14 +1,12 @@
 #ifndef __CAIRO_SHAPES_H_
 #define __CAIRO_SHAPES_H_
 
-#include "Shapes.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
 #include <math.h>
 
-#include "cairo-shapes.h"
+#include "shapes.h"
 #include "caskbench.h"
 
 void cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args);

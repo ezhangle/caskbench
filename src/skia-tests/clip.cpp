@@ -1,8 +1,6 @@
 // From http://www.atoker.com/blog/2008/09/06/skia-graphics-library-in-chrome-first-impressions/
 #include <config.h>
 
-#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
-#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <SkOSFile.h>
@@ -178,13 +176,16 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0)
     ctx->skia_canvas->flush();
 }
 
-static void draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
+static bool
+draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
     SkShader* shader;
     SkBitmap    bm;
     int clipr = 30;
 //    canvas->save();
 //    canvas->translate(SkIntToScalar(x), SkIntToScalar(y));
 
+    if (ctx->shape_args.image_path == NULL)
+        return false;
     SkImageDecoder::DecodeFile(ctx->shape_args.image_path, &bm);
     shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
                                           SkShader::kClamp_TileMode);
@@ -200,9 +201,11 @@ static void draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y
         delete shader;
     }
     ctx->shape_args.path.reset();
+    return true;
 }
 
-static void draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles) {
+static bool
+draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles) {
     int i,j,x,y;
     double red,green,blue,alpha;
 
@@ -215,9 +218,11 @@ static void draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_
             blue = int( 255 * (double)rand()/RAND_MAX );
             alpha = int( 255 * (double)rand()/RAND_MAX );
             ctx->skia_paint->setARGB(alpha,red, green, blue );
-            draw_square(ctx,canvas, x,y);
+            if (!draw_square(ctx,canvas, x,y))
+                return false;
         }
     }
+    return true;
 }
 
 int
@@ -253,13 +258,16 @@ sk_test_clip(caskbench_context_t *ctx)
             ctx->skia_canvas->drawColor(SK_ColorBLACK);
             for (i = 0; i < num_particles; i++) {
                 kinetics_update(&particles[i], 0.1);
-                draw_clip_tests(ctx,ctx->skia_canvas,&particles[i]);
+                if (!draw_clip_tests(ctx,ctx->skia_canvas,&particles[i]))
+                    return 0;
             }
         }
     }
     /* Static clip */
-    else
-        draw_clip_tests(ctx,ctx->skia_canvas,NULL);
+    else {
+        if (!draw_clip_tests(ctx,ctx->skia_canvas,NULL))
+            return 0;
+    }
 
     return 1;
 }

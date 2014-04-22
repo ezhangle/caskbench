@@ -1,3 +1,7 @@
+#include <config.h>
+
+#include <SkCanvas.h>
+
 #include "skia-shapes.h"
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)

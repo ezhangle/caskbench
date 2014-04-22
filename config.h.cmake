@@ -15,6 +15,10 @@
 #define PACKAGE_VERSION "${PROJECT_VERSION}"
 #define PACKAGE_STRING "${PROJECT_NAME} ${PROJECT_VERSION}"
 
+// Workarounds for skia packaging bug
+#define SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
+#define SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
+
 #if !defined(USE_LEGACY_SKIA_SRA) || (USE_LEGACY_SKIA_SRA != 0)
 # define SK_ENABLE_INST_COUNT 0
 #endif

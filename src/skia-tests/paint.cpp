@@ -4,7 +4,6 @@
 #define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkCanvas.h>
 #include <SkPaint.h>
-#include <SkRect.h>
 
 #include "caskbench.h"
 

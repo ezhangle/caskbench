@@ -1,11 +1,7 @@
 #ifndef __TESTS_H__
 #define __TESTS_H__
 
-struct _caskbench_context;
-
-struct _device_config;
-typedef struct _device_config device_config_t;
-
+#include "forward.h"
 
 typedef struct _caskbench_perf_test {
   const char *name;

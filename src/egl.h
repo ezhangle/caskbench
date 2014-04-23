@@ -4,8 +4,7 @@
 #include <X11/Xlib.h>
 #include <EGL/egl.h>
 
-struct _device_config;
-typedef struct _device_config device_config_t;
+#include "forward.h"
 
 typedef struct {
     Display   *dpy;

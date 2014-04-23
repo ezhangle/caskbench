@@ -1,11 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#define WIDTH 800
-#define HEIGHT 400
-
-#define MAX_VELOCITY WIDTH / 2
+#ifndef __KINETICS_H__
+#define __KINETICS_H__
 
 typedef struct _kinetics
 {
@@ -46,3 +40,5 @@ typedef struct _kinetics
 void kinetics_init (kinetics_t *kinetics);
 void kinetics_update (kinetics_t *kinetics, double delta);
 void kinetics_destroy(kinetics_t *kinetics);
+
+#endif // __KINETICS_H__

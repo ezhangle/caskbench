@@ -1,4 +1,15 @@
-#include <kinetics.h>
+#include <config.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#define WIDTH 800
+#define HEIGHT 400
+
+#define MAX_VELOCITY WIDTH / 2
+
+#include "kinetics.h"
 
 void
 generate_color (double *color)
@@ -9,12 +20,14 @@ generate_color (double *color)
         color[i] = (int) (drand48 () * 2) / 2.0;
 }
 
-void kinetics_destroy (kinetics_t *kinetics)
+void
+kinetics_destroy (kinetics_t *kinetics)
 {
     free(kinetics);
 }
 
-void kinetics_init (kinetics_t *kinetics)
+void
+kinetics_init (kinetics_t *kinetics)
 {
     kinetics->angle = drand48 () * 2 * M_PI;
     kinetics->velocity = MAX_VELOCITY / 8.0 * 7 * drand48 () + MAX_VELOCITY / 8.0;
@@ -65,7 +78,8 @@ void kinetics_init (kinetics_t *kinetics)
     kinetics->drop_line_width = kinetics->line_width;
 }
 
-void kinetics_update (kinetics_t *kinetics, double delta)
+void
+kinetics_update (kinetics_t *kinetics, double delta)
 {
     double x = kinetics->x + cos (kinetics->angle) * kinetics->velocity * delta;
     double y = kinetics->y + sin (kinetics->angle) * kinetics->velocity * delta;

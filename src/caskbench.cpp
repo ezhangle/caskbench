@@ -277,9 +277,12 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"stroke-width", 'w', POPT_ARG_INT, &opt->stroke_width, 0,
          "represents stroke width of the object",
          NULL},
+#if 0
+        // TODO: Crashes
         {"multi-shapes", 'm', POPT_ARG_INT, &opt->multi_shapes, 0,
          "represents stroke width of the object",
          NULL},
+#endif
 #if 0
         {"stroke-red", "SR", POPT_ARG_INT, &opt->multi_shapes, 0,
          "represents r value for stroke color",

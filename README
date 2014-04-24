@@ -23,18 +23,16 @@ Prerequisites include popt and gles3.  To install these on Ubuntu 13.04:
 
 You will also need Skia and a GL-enabled version of libcairo installed.
 These aren't packaged for Ubuntu currently, so you'll need to build from
-source or find a PPA.
+source.
 
 To build this testsuite, use these commands:
 
  $ cmake .
  $ make
 
-The build system looks for skia in /usr/lib and /usr/local/lib.  You can
-override this via the SKIA_ROOT option:
-
- $ cmake . -DSKIA_ROOT=/your/path/to/skia
- $ make
+The build system looks for the skia library in /usr/lib and
+/usr/local/lib, and header files in /usr/include/skia and
+/usr/local/include/skia.
 
 
 == Usage ==

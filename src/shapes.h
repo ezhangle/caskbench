@@ -1,8 +1,6 @@
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
 
-#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
-#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkPath.h>
 #include <SkRect.h>
 

@@ -12,8 +12,6 @@
 #  include <cairo-gl.h>
 #endif
 
-#define  SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
-#define  SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
 #include <SkBitmap.h>
 #include <SkBitmapDevice.h>
 #include <SkPaint.h>

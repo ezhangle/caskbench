@@ -41,50 +41,28 @@ void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 
 void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->shape_args.numpoints = 3;
-    ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-    ctx->shape_args.points[0][0] = ctx->shape_args.centre_x;
-    ctx->shape_args.points[0][1] = ctx->shape_args.centre_y+2*ctx->shape_args.radius;
-    ctx->shape_args.points[1][0] = 2*ctx->shape_args.radius;
-    ctx->shape_args.points[1][1] = 0;
-    ctx->shape_args.points[2][0] = -ctx->shape_args.radius;
-    ctx->shape_args.points[2][1] = -2*ctx->shape_args.radius;
+    SkPath path;
+    path.moveTo(args->centre_x, args->centre_y+2*args->radius);
+    path.rLineTo(2*args->radius, 0);
+    path.rLineTo(-args->radius, -2*args->radius);
 
-
-    for (int p = 0; p < ctx->shape_args.numpoints ; p++ ) {
-        if(p == 0)
-            args->path.moveTo(args->points[p][0], args->points[p][1]);
-        else
-            args->path.rLineTo(args->points[p][0], args->points[p][1]);
-    }
-
-    ctx->skia_canvas->drawPath(args->path,
-                               *(ctx->skia_paint));
-    free (ctx->shape_args.points);
-
+    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 }
 
 void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->shape_args.numpoints = 10;
-    ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
+    int px = args->centre_x + 2*args->radius * star_points[0][0]/200.0;
+    int py = args->centre_y + 2*args->radius * star_points[0][1]/200.0;
+    SkPath path;
+    path.moveTo(px, py);
 
-    for (int p = 0; p < 10; p++ ) {
-        int px = ctx->shape_args.centre_x + 2*ctx->shape_args.radius * star_points[p][0]/200.0;
-        int py = ctx->shape_args.centre_y + 2*ctx->shape_args.radius * star_points[p][1]/200.0;
-        ctx->shape_args.points[p][0] = px;
-        ctx->shape_args.points[p][1] = py;
+    for (int p = 1; p < 10; p++ ) {
+        px = args->centre_x + 2*args->radius * star_points[p][0]/200.0;
+        py = args->centre_y + 2*args->radius * star_points[p][1]/200.0;
+        path.lineTo(px, py);
     }
 
-      for (int p = 0; p < args->numpoints; p++ ) {
-        if(p == 0)
-            args->path.moveTo(args->points[p][0], args->points[p][1]);
-        else
-            args->path.lineTo(args->points[p][0], args->points[p][1]);
-    }
-    ctx->skia_canvas->drawPath(args->path,
-                               *(ctx->skia_paint));
-    free (ctx->shape_args.points);
+    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 }
 
 void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
@@ -92,7 +70,6 @@ void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
     args->rect.set(args->centre_x, args->centre_y, args->width, args->height);
 
     ctx->skia_canvas->drawRoundRect(args->rect, 4.0, 4.0, *(ctx->skia_paint));
-
 }
 
 void (*skiaShapes[5])(caskbench_context_t *ctx , shapes_t *args) = {

@@ -566,6 +566,11 @@ main (int argc, char *argv[])
         caskbench_context_t context;
         caskbench_result_t result;
 
+        /* Disable stroke: Displays no output to file */
+        if (!strncmp(perf_tests[c].name, "cairo-stroke", 12) ||
+            !strncmp(perf_tests[c].name, "skia-stroke", 11))
+            continue;
+
         srand(0xdeadbeef);
         context_init(&context, opt.size);
 

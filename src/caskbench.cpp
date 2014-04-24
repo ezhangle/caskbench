@@ -254,6 +254,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"fill-type", 'f', POPT_ARG_STRING, &opt->fill_type, 0,
          "Controls the fill type of the objects draw either solid, gradient, image pattern type",
          NULL},
+#if 0
         {"red", 'R', POPT_ARG_DOUBLE, &opt->red, 0,
          "R Color Value",
          NULL},
@@ -266,6 +267,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"alpha", 'A', POPT_ARG_DOUBLE, &opt->alpha, 0,
          "Transparency value for the solid fill",
          NULL},
+#endif
         {"animation", 'g', POPT_ARG_INT, &opt->animation, 0,
          "Controls the kinematics of the objects drawn",
          NULL},
@@ -579,7 +581,7 @@ main (int argc, char *argv[])
         srand(0xdeadbeef);
         context_init(&context, opt.size);
 
-//Command line setup for shapes
+        // Command line setup for shapes
         context.shape_args.centre_x = opt.x_position;
         context.shape_args.centre_y = opt.y_position;
         context.shape_args.width = opt.width;

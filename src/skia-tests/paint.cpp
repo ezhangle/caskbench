@@ -4,6 +4,7 @@
 #include <SkPaint.h>
 
 #include "caskbench.h"
+#include "skia-shapes.h"
 
 static SkRect r;
 
@@ -24,12 +25,7 @@ sk_test_paint(caskbench_context_t *ctx)
     unsigned char red, green, blue, alpha;
     int i;
     for (i=0; i<ctx->size; i++) {
-        red = int( 255 * (double)rand()/RAND_MAX );
-        green = int( 255 * (double)rand()/RAND_MAX );
-        blue = int( 255 * (double)rand()/RAND_MAX );
-        alpha = int( 255 * (double)rand()/RAND_MAX );
-
-        ctx->skia_paint->setARGB(alpha, red, green, blue);
+        skiaRandomizeColor(ctx);
         ctx->skia_canvas->drawPaint(*ctx->skia_paint);
     }
 

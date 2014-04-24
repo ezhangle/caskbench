@@ -4,6 +4,17 @@
 
 #include "skia-shapes.h"
 
+void
+skiaRandomizeColor(caskbench_context_t *ctx)
+{
+    unsigned int red, blue, green, alpha;
+    red = int( 255 * (double)rand()/RAND_MAX );
+    green = int( 255 * (double)rand()/RAND_MAX );
+    blue = int( 255 * (double)rand()/RAND_MAX );
+    alpha = int( 255 * (double)rand()/RAND_MAX );
+    ctx->skia_paint->setARGB(alpha,red, green, blue );
+}
+
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
     ctx->skia_canvas->drawCircle(args->centre_x, args->centre_y, args->radius,

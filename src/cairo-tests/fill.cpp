@@ -91,7 +91,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     cairo_set_source_rgba(cr, (double)ctx->shape_args.red, (double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0, ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0, (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1);
                 }
                 else
-                    randomize_color (cr);
+                    cairoRandomizeColor(ctx);
             }
             else if((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
             {
@@ -100,7 +100,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     cairo_set_source_rgba(cr,  (double)ctx->shape_args.red, (double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0, ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0, (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1);
                 }
                 else
-                    randomize_color (cr);
+                    cairoRandomizeColor(ctx);
             }
             else if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
             {
@@ -287,7 +287,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     cairo_set_source_rgba(cr,  (double)ctx->shape_args.red, (double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0, ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0, (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1);
                 }
                 else
-                    randomize_color (cr);
+                    cairoRandomizeColor(ctx);
 
                 cairo_stroke(cr);
             }

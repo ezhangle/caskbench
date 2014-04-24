@@ -16,6 +16,7 @@
 #include <SkGraphics.h>
 
 #include "caskbench.h"
+#include "skia-shapes.h"
 
 static int max_dim;
 static char rand_text_array[19][100];
@@ -72,11 +73,7 @@ sk_test_text(caskbench_context_t *ctx)
         for(font_size = 18; font_size <= 36; font_size++)
         {
             ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
-            red = int( 255 * (double)rand()/RAND_MAX );
-            green = int( 255 * (double)rand()/RAND_MAX );
-            blue = int( 255 * (double)rand()/RAND_MAX );
-            alpha = int( 255 * (double)rand()/RAND_MAX );
-            ctx->skia_paint->setARGB (alpha,red,green,blue);
+            skiaRandomizeColor(ctx);
 
             SkPaint newpaint (*ctx->skia_paint);;
             newpaint.setTextEncoding (SkPaint::kGlyphID_TextEncoding);
@@ -95,11 +92,7 @@ sk_test_text(caskbench_context_t *ctx)
         for(font_size = 36; font_size >= 18; font_size--)
         {
             ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
-            red = int( 255 * (double)rand()/RAND_MAX );
-            green = int( 255 * (double)rand()/RAND_MAX );
-            blue = int( 255 * (double)rand()/RAND_MAX );
-            alpha = int( 255 * (double)rand()/RAND_MAX );
-            ctx->skia_paint->setARGB (alpha,red,green,blue);
+            skiaRandomizeColor(ctx);
 
             SkPaint localPaint (*ctx->skia_paint);;
             localPaint.setTextEncoding (SkPaint::kGlyphID_TextEncoding);

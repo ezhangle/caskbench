@@ -1,13 +1,11 @@
 #ifndef __CAIRO_SHAPES_H_
 #define __CAIRO_SHAPES_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <cairo.h>
-#include <math.h>
-
+#include "forward.h"
 #include "shapes.h"
 #include "caskbench.h"
+
+void cairoRandomizeColor(caskbench_context_t *cr);
 
 void cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args);
 

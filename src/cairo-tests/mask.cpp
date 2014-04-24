@@ -5,6 +5,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "cairo-shapes.h"
 
 static cairo_pattern_t *mask;
 
@@ -42,12 +43,7 @@ ca_test_mask(caskbench_context_t *ctx)
 
     for (i=0; i<ctx->size; i++) {
         // Apply mask on a circle
-        double red, green, blue, alpha;
-        red = (double)rand()/RAND_MAX;
-        green = (double)rand()/RAND_MAX;
-        blue = (double)rand()/RAND_MAX;
-        alpha = (double)rand()/RAND_MAX;
-        cairo_set_source_rgba (cr, red, green, blue, alpha);
+        cairoRandomizeColor(ctx);
 
         cairo_arc (cr, 40*i, 40, 30, 0, 2*M_PI);
         cairo_save (cr);

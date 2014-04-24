@@ -6,6 +6,7 @@
 #include <SkPaint.h>
 
 #include "caskbench.h"
+#include "skia-shapes.h"
 
 static int element_spacing;
 static int num_x_elements;
@@ -56,11 +57,7 @@ sk_test_multishape(caskbench_context_t *ctx)
             x = i * element_spacing;
 
             // TODO: Select a pre-defined paint object at random
-            red = int( 255 * (double)rand()/RAND_MAX );
-            green = int( 255 * (double)rand()/RAND_MAX );
-            blue = int( 255 * (double)rand()/RAND_MAX );
-            alpha = int( 255 * (double)rand()/RAND_MAX );
-            ctx->skia_paint->setARGB(alpha, red, green, blue);
+            skiaRandomizeColor(ctx);
 
             shape = (4.0 * rand())/RAND_MAX;
             switch (shape) {

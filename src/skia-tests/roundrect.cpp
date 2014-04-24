@@ -7,6 +7,7 @@
 #include <SkRect.h>
 
 #include "caskbench.h"
+#include "skia-shapes.h"
 
 int
 sk_setup_roundrect(caskbench_context_t *ctx)
@@ -30,11 +31,7 @@ sk_test_roundrect(caskbench_context_t *ctx)
     SkRect rect;
 
     for (i=0; i<ctx->size; i++) {
-        red = int( 255 * (double)rand()/RAND_MAX );
-        green = int( 255 * (double)rand()/RAND_MAX );
-        blue = int( 255 * (double)rand()/RAND_MAX );
-        alpha = int( 255 * (double)rand()/RAND_MAX );
-        ctx->skia_paint->setARGB(alpha, red, green, blue);
+        skiaRandomizeColor(ctx);
 
         x = trunc( (((double)ctx->canvas_width-20)*rand())/RAND_MAX ) + 10;
         y = trunc( (((double)ctx->canvas_height-20)*rand())/RAND_MAX ) + 10;

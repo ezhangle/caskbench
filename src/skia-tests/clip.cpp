@@ -213,11 +213,7 @@ draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles
         y = particles?particles->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
-            red = int( 255 * (double)rand()/RAND_MAX );
-            green = int( 255 * (double)rand()/RAND_MAX );
-            blue = int( 255 * (double)rand()/RAND_MAX );
-            alpha = int( 255 * (double)rand()/RAND_MAX );
-            ctx->skia_paint->setARGB(alpha,red, green, blue );
+            skiaRandomizeColor(ctx);
             if (!draw_square(ctx,canvas, x,y))
                 return false;
         }

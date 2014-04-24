@@ -5,6 +5,7 @@
 #include <SkPaint.h>
 
 #include "caskbench.h"
+#include "skia-shapes.h"
 
 static int max_dim;
 
@@ -26,11 +27,7 @@ sk_test_bubbles(caskbench_context_t *ctx)
     unsigned char red, green, blue, alpha;
     int i, x, y, r;
     for (i=0; i<ctx->size; i++) {
-        red = int( 255 * (double)rand()/RAND_MAX );
-        green = int( 255 * (double)rand()/RAND_MAX );
-        blue = int( 255 * (double)rand()/RAND_MAX );
-        alpha = int( 255 * (double)rand()/RAND_MAX );
-        ctx->skia_paint->setARGB(alpha, red, green, blue);
+        skiaRandomizeColor(ctx);
 
         r = ((double)max_dim*rand())/RAND_MAX + 1;
         x = (0.5*(double)ctx->canvas_width*rand())/RAND_MAX;

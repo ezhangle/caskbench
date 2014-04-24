@@ -6,6 +6,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "cairo-shapes.h"
 
 int
 ca_setup_rectangles(caskbench_context_t *ctx)
@@ -30,7 +31,7 @@ ca_test_rectangles(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
 
     for (i=0; i<ctx->size; i++) {
-        randomize_color (cr);
+        cairoRandomizeColor(ctx);
 
         w = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX ) + 1;
         h = trunc( (0.5*(double)ctx->canvas_height*rand())/RAND_MAX ) + 1;

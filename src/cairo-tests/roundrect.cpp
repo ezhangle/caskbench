@@ -6,6 +6,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "cairo-shapes.h"
 
 int
 ca_setup_roundrect(caskbench_context_t *ctx)
@@ -41,7 +42,7 @@ ca_test_roundrect(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
 
     for (i=0; i<ctx->size; i++) {
-        randomize_color (cr);
+        cairoRandomizeColor(ctx);
 
         x = 10 + trunc( (((double)ctx->canvas_width-20.0)*rand())/RAND_MAX );
         y = 10 + trunc( (((double)ctx->canvas_height-20.0)*rand())/RAND_MAX );

@@ -6,6 +6,7 @@
 #include <math.h>
 
 #include "caskbench.h"
+#include "cairo-shapes.h"
 
 static int element_spacing;
 static int num_x_elements;
@@ -55,7 +56,7 @@ ca_test_multishape(caskbench_context_t *ctx)
         for (i=0; i<num_x_elements; i++) {
             x = i * element_spacing;
 
-            randomize_color (cr);
+            cairoRandomizeColor(ctx);
 
             shape = (4.0 * rand())/RAND_MAX;
             switch (shape) {

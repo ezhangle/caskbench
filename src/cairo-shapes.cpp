@@ -1,6 +1,24 @@
 #include <config.h>
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <cairo.h>
+#include <math.h>
+
 #include "cairo-shapes.h"
+
+void
+cairoRandomizeColor(caskbench_context_t *ctx)
+{
+    double red, green, blue, alpha;
+
+    red = (double)rand()/RAND_MAX;
+    green = (double)rand()/RAND_MAX;
+    blue = (double)rand()/RAND_MAX;
+    alpha = (double)rand()/RAND_MAX;
+
+    cairo_set_source_rgba (ctx->cairo_cr, red, green, blue, alpha);
+}
 
 void cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {

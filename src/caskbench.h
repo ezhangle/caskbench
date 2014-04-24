@@ -47,7 +47,4 @@ typedef struct _caskbench_context {
 double get_tick (void);
 void   display_results_json(int iterations, int status);
 
-// Cairo helpers
-void   randomize_color(cairo_t *cr);
-
 #endif // __CASKBENCH_H__

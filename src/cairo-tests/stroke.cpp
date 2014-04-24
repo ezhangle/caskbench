@@ -124,10 +124,9 @@ void drawStroke(caskbench_context_t *ctx,kinetics_t *particles)
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
             cairo_set_line_cap(cr,(cairo_line_cap_t)(i % 3));
-            randomize_color(cr);
+            cairoRandomizeColor(ctx);
             drawShape(ctx,x,y);
             cairo_stroke (cr);
-
         }
     }
 }

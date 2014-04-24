@@ -6,6 +6,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "cairo-shapes.h"
 
 static int max_dim;
 static char rand_text_array[19][100];
@@ -54,7 +55,7 @@ ca_test_text(caskbench_context_t *ctx)
         for(font_size = 18; font_size <= 36; font_size++)
         {
             cairo_set_font_size (cr, font_size);
-            randomize_color (cr);
+            cairoRandomizeColor(ctx);
 
             cairo_status_t status;
             cairo_scaled_font_t *font;
@@ -86,8 +87,7 @@ ca_test_text(caskbench_context_t *ctx)
         for(font_size = 36; font_size >= 18; font_size--)
         {
             cairo_set_font_size (cr, font_size);
-
-            randomize_color (cr);
+            cairoRandomizeColor(ctx);
 
             cairo_status_t status;
             cairo_scaled_font_t *font;

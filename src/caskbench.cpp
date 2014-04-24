@@ -369,19 +369,6 @@ get_tick (void)
 }
 
 void
-randomize_color(cairo_t *cr)
-{
-    double red, green, blue, alpha;
-
-    red = (double)rand()/RAND_MAX;
-    green = (double)rand()/RAND_MAX;
-    blue = (double)rand()/RAND_MAX;
-    alpha = (double)rand()/RAND_MAX;
-
-    cairo_set_source_rgba (cr, red, green, blue, alpha);
-}
-
-void
 context_init(caskbench_context_t *context, int size)
 {
     assert(context);

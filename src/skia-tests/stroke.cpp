@@ -109,11 +109,7 @@ static void draw_stroke(caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* pa
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
             ctx->skia_paint->setStrokeCap((SkPaint::Cap)(i % 5));
-            red = int( 255 * (double)rand()/RAND_MAX );
-            green = int( 255 * (double)rand()/RAND_MAX );
-            blue = int( 255 * (double)rand()/RAND_MAX );
-            alpha = int( 255 * (double)rand()/RAND_MAX );
-            ctx->skia_paint->setARGB(alpha,red, green, blue );
+            skiaRandomizeColor(ctx);
             drawShape(ctx, x,y);
         }
     }
@@ -164,11 +160,7 @@ sk_test_stroke(caskbench_context_t *ctx)
             ctx->skia_canvas->drawColor(SK_ColorWHITE);
             for (i = 0; i < num_particles; i++) {
                 kinetics_update(&particles[i], 0.3);
-                red = int( 255 * (double)rand()/RAND_MAX );
-                green = int( 255 * (double)rand()/RAND_MAX );
-                blue = int( 255 * (double)rand()/RAND_MAX );
-                alpha = int( 255 * (double)rand()/RAND_MAX );
-                ctx->skia_paint->setARGB(alpha,red, green, blue );
+                skiaRandomizeColor(ctx);
                 //draw_stroke(ctx,ctx->skia_canvas,&particles[i]);
                 drawShape(ctx,particles[i].x,particles[i].y,&particles[i]);
             }

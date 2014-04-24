@@ -5,6 +5,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "cairo-shapes.h"
 
 static int max_dim;
 
@@ -27,7 +28,7 @@ ca_test_bubbles(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
 
     for (i=0; i<ctx->size; i++) {
-        randomize_color (cr);
+        cairoRandomizeColor(ctx);
 
         r = ((double)max_dim*rand())/RAND_MAX + 1;
         x = (0.5*(double)ctx->canvas_width*rand())/RAND_MAX;

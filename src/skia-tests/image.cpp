@@ -6,6 +6,7 @@
 #include <SkBitmapDevice.h>
 
 #include "caskbench.h"
+#include "skia-shapes.h"
 
 static SkBitmap bitmap;
 

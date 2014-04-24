@@ -116,7 +116,7 @@ void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
         y = particles?particles->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
-            randomize_color(cr);
+            cairoRandomizeColor(ctx);
             drawShape(ctx,x,y,30,true);
             cairo_clip (cr);
             drawShape(ctx,x,y,false);

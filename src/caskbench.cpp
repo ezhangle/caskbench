@@ -294,6 +294,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "represents represents b value for stroke color",
          NULL},
 #endif
+#if 0
         {"cap-style", 'C', POPT_ARG_INT, &opt->cap_style, 0,
          "represents r value for stroke color",
          NULL},
@@ -303,6 +304,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"dash-style", 'D', POPT_ARG_INT, &opt->dash_style, 0,
          "represents r value for stroke color",
          NULL},
+#endif
         POPT_AUTOHELP
         {NULL}
     };

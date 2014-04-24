@@ -13,28 +13,9 @@ typedef struct _kinetics
 
     double x_radius;
     double y_radius;
-    double x_offset;
-    double y_offset;
     double width;
     double height;
     double line_width;
-
-//Shadow, Drop ,Spread
-    double shadow_color[4];
-    double shadow_x_blur;
-    double shadow_y_blur;
-
-    double spread_color[4];
-    double spread_line_width;
-    double spread_x_blur;
-    double spread_y_blur;
-
-    double drop_color[4];
-    double drop_x_blur;
-    double drop_y_blur;
-    double drop_x_offset;
-    double drop_y_offset;
-    double drop_line_width;
 } kinetics_t;
 
 void kinetics_init (kinetics_t *kinetics);

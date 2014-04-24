@@ -120,59 +120,12 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0)
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
         shape = ctx->shape_args.shape_id ;
-
-    switch (shape) {
-    case 1:
-        // Circle
-        ctx->shape_args.centre_x = x+r;
-        ctx->shape_args.centre_y = y+r;
-        ctx->shape_args.radius = r;
-        skiaShapes[Circle](ctx,&ctx->shape_args);
-        break;
-
-    case 2:
-        // Rectangle
-        ctx->shape_args.centre_x =  x;
-        ctx->shape_args.centre_y = y;
-        ctx->shape_args.width = (ctx->shape_args.centre_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
-        ctx->shape_args.height = (ctx->shape_args.centre_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
-        skiaShapes[Rectangle](ctx,&ctx->shape_args);
-        ctx->shape_args.width = old_width;
-        ctx->shape_args.height = old_height;
-        break;
-
-    case 3:
-        // Triangle
-        ctx->shape_args.numpoints = 3;
-        ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-        ctx->shape_args.points[0][0] = x;
-        ctx->shape_args.points[0][1] = y+2*r;
-        ctx->shape_args.points[1][0] = 2*r;
-        ctx->shape_args.points[1][1] = 0;
-        ctx->shape_args.points[2][0] = -r;
-        ctx->shape_args.points[2][1] = -2*r;
-        skiaShapes[Triangle] (ctx,&ctx->shape_args);
-        free (ctx->shape_args.points);
-        break;
-
-    case 4:
-        // Star
-        ctx->shape_args.numpoints = 10;
-        ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-
-        for (p = 0; p < 10; p++ ) {
-            int px = x + 2*r * star_points[p][0]/200.0;
-            int py = y + 2*r * star_points[p][1]/200.0;
-            ctx->shape_args.points[p][0] = px;
-            ctx->shape_args.points[p][1] = py;
-        }
-        skiaShapes[Star] (ctx,&ctx->shape_args);
-        free (ctx->shape_args.points);
-        break;
-
-    default:
-        break;
-    }
+    ctx->shape_args.centre_x = x;
+    ctx->shape_args.centre_y = y;
+    ctx->shape_args.radius = r;
+    ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
+    ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
+    skiaShapes[(shape-1)%4](ctx,&ctx->shape_args);
     ctx->skia_canvas->flush();
 }
 
@@ -181,14 +134,14 @@ draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
     SkShader* shader;
     SkBitmap    bm;
     int clipr = 30;
-//    canvas->save();
-//    canvas->translate(SkIntToScalar(x), SkIntToScalar(y));
+    //    canvas->save();
+    //    canvas->translate(SkIntToScalar(x), SkIntToScalar(y));
 
     if (ctx->shape_args.image_path == NULL)
         return false;
     SkImageDecoder::DecodeFile(ctx->shape_args.image_path, &bm);
     shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
-                                          SkShader::kClamp_TileMode);
+            SkShader::kClamp_TileMode);
 
     ctx->skia_paint->setShader (shader);
     drawClip(ctx,x,y,clipr);

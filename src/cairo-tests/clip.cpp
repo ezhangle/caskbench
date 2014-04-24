@@ -48,62 +48,16 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
     cairo_t *cr = ctx->cairo_cr;
     int i, r,shape,p;
     r = 0.9 * element_spacing /2;
-        if(!ctx->shape_args.shape_id)
-            shape = ((4.0 * rand())/RAND_MAX) +1;
-        else
-            shape = ctx->shape_args.shape_id ;
-        switch (shape) {
-            case 1:
-                // Circle
-                ctx->shape_args.centre_x = x+r;
-                ctx->shape_args.centre_y = y+r;
-                ctx->shape_args.radius = isClip?clipr:r;
-                cairoShapes[Circle](ctx,&ctx->shape_args);
-                break;
-
-            case 2:
-                // Rectangle
-                ctx->shape_args.centre_x =  x;
-                ctx->shape_args.centre_y = y;
-                ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*(isClip?clipr:r);
-                ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*(isClip?clipr:r);
-                cairoShapes[Rectangle](ctx,&ctx->shape_args);
-                break;
-
-            case 3:
-                // Triangle
-                ctx->shape_args.numpoints = 3;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-                ctx->shape_args.points[0][0] = x;
-                ctx->shape_args.points[0][1] = y+2*(isClip?clipr:r);
-                ctx->shape_args.points[1][0] = 2*(isClip?clipr:r);
-                ctx->shape_args.points[1][1] = 0;
-                ctx->shape_args.points[2][0] = -(isClip?clipr:r);
-                ctx->shape_args.points[2][1] = -2*(isClip?clipr:r);
-                cairoShapes[Triangle] (ctx,&ctx->shape_args);
-                free (ctx->shape_args.points);
-                cairo_fill (cr);
-                break;
-
-            case 4:
-                // Star
-                ctx->shape_args.numpoints = 10;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-
-                for (p = 0; p < 10; p++ ) {
-                    int px = x + 2*(isClip?clipr:r) * star_points[p][0]/200.0;
-                    int py = y + 2*(isClip?clipr:r) * star_points[p][1]/200.0;
-                    ctx->shape_args.points[p][0] = px;
-                    ctx->shape_args.points[p][1] = py;
-                }
-                cairoShapes[Star] (ctx,&ctx->shape_args);
-                cairo_fill (cr);
-                free (ctx->shape_args.points);
-                break;
-
-            default:
-                break;
-        }
+    if(!ctx->shape_args.shape_id)
+        shape = ((4.0 * rand())/RAND_MAX) +1;
+    else
+        shape = ctx->shape_args.shape_id ;
+    ctx->shape_args.centre_x = x;
+    ctx->shape_args.centre_y = y;
+    ctx->shape_args.radius = isClip?clipr:r;
+    ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*(isClip?clipr:r);
+    ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*(isClip?clipr:r);
+    cairoShapes[(shape-1)%4](ctx,&ctx->shape_args);
 }
 void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
 {

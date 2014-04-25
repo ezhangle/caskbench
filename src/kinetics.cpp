@@ -40,7 +40,6 @@ kinetics_update (kinetics_t *kinetics, double delta)
     double x = kinetics->x + cos (kinetics->angle) * kinetics->velocity * delta;
     double y = kinetics->y + sin (kinetics->angle) * kinetics->velocity * delta;
     double w = kinetics->width/2;
-    double height = kinetics->height/2;
 
     if (x + w > WIDTH) {
         if (kinetics->angle >= 0 && kinetics->angle < M_PI / 2)

@@ -4,17 +4,18 @@
 #include <SkPath.h>
 #include <SkRect.h>
 
+#define MAX_SHAPES 5
+
 typedef struct shapes
 {
-    double centre_x;
-    double centre_y;
+    double center_x;
+    double center_y;
     double radius;
     double width;
     double height;
+    /* TODO Clip still uses points, modidy clip and remove numpoints and points */
     int numpoints;
     double (*points)[2];
-    SkPath path;
-    SkRect rect;
 
     int shape_id;
     char* fill_type;

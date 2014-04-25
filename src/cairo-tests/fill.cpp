@@ -15,19 +15,6 @@ static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
 static kinetics_t *cairo_particles;
-static int star_points[11][2] = {
-    { 0, 85 },
-    { 75, 75 },
-    { 100, 10 },
-    { 125, 75 },
-    { 200, 85 },
-    { 150, 125 },
-    { 160, 190 },
-    { 100, 150 },
-    { 40, 190 },
-    { 50, 125 },
-    { 0, 85 }
-};
 
 void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 {
@@ -40,6 +27,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     double red, green, blue, alpha;
     static const double dashed3[] = {1.0};
     static const double dashed2[] = {14.0, 6.0};
+    int px,py;
     cairo_path_t *newPath;
     shape = ctx->shape_args.shape_id;
     if(!shape)
@@ -51,10 +39,10 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
     if(shape)
     {
-        if(!(ctx->shape_args.centre_x && ctx->shape_args.centre_y))
+        if(!(ctx->shape_args.center_x && ctx->shape_args.center_y))
         {
-            ctx->shape_args.centre_x = x = ctx->canvas_width/2;
-            ctx->shape_args.centre_y = y = ctx->canvas_height/2;
+            ctx->shape_args.center_x = x = ctx->canvas_width/2;
+            ctx->shape_args.center_y = y = ctx->canvas_height/2;
         }
         if(!ctx->shape_args.multi_shapes)
             if(!(ctx->shape_args.width && ctx->shape_args.height))
@@ -72,8 +60,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
         num_y_elements = 1;
 
         r = 40;
-        old_x = ctx->shape_args.centre_x;
-        old_y = ctx->shape_args.centre_y;
+        old_x = ctx->shape_args.center_x;
+        old_y = ctx->shape_args.center_y;
         old_width = ctx->shape_args.width;
         old_height = ctx->shape_args.height;
     }
@@ -127,16 +115,16 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             switch (shape) {
             case 1:
                 // Circle
-                ctx->shape_args.centre_x = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?x+r:ctx->shape_args.centre_x;
-                ctx->shape_args.centre_y = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?y+r:ctx->shape_args.centre_y;
+                ctx->shape_args.center_x = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?x+r:ctx->shape_args.center_x;
+                ctx->shape_args.center_y = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?y+r:ctx->shape_args.center_y;
                 ctx->shape_args.radius = r;
 
                 if(ctx->shape_args.fill_type != NULL)
                 {
                     if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (ctx->shape_args.centre_x, ctx->shape_args.centre_y ,r,ctx->shape_args.centre_x, ctx->shape_args.centre_y,0 );
+                        pattern = cairo_pattern_create_radial (ctx->shape_args.center_x, ctx->shape_args.center_y ,r,ctx->shape_args.center_x, ctx->shape_args.center_y,0 );
                     else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.centre_y-r ,0, ctx->shape_args.centre_y+r );
+                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.center_y-r ,0, ctx->shape_args.center_y+r );
 
                     if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
                        cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
@@ -153,22 +141,22 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             case 2:
                 // Rectangle
-                ctx->shape_args.centre_x =  (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?x:ctx->shape_args.centre_x;
-                ctx->shape_args.centre_y = (ctx->shape_args.multi_shapes|| ctx->shape_args.animation)?y:ctx->shape_args.centre_y;
+                ctx->shape_args.center_x =  (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?x:ctx->shape_args.center_x;
+                ctx->shape_args.center_y = (ctx->shape_args.multi_shapes|| ctx->shape_args.animation)?y:ctx->shape_args.center_y;
                 ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
 
                 if(ctx->shape_args.fill_type != NULL)
                 {
                     if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (ctx->shape_args.centre_x+(ctx->shape_args.width/2),
-                                                               ctx->shape_args.centre_y+(ctx->shape_args.height/2),
-                                                               ctx->shape_args.height/2, ctx->shape_args.centre_x+(ctx->shape_args.width/2),
-                                                               ctx->shape_args.centre_y+(ctx->shape_args.height/2),
+                        pattern = cairo_pattern_create_radial (ctx->shape_args.center_x+(ctx->shape_args.width/2),
+                                                               ctx->shape_args.center_y+(ctx->shape_args.height/2),
+                                                               ctx->shape_args.height/2, ctx->shape_args.center_x+(ctx->shape_args.width/2),
+                                                               ctx->shape_args.center_y+(ctx->shape_args.height/2),
                                                                0/*ctx->shape_args.height/2 */);
                     else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.centre_y, 0,
-                                                               ctx->shape_args.centre_y+ctx->shape_args.height );
+                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.center_y, 0,
+                                                               ctx->shape_args.center_y+ctx->shape_args.height );
 
                     if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
                        cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
@@ -186,26 +174,21 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             case 3:
                 // Triangle
-                ctx->shape_args.numpoints = 3;
                 if( (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation))
                 {
-                    x = ctx->shape_args.centre_x;
-                    y = ctx->shape_args.centre_y;
+                    x = ctx->shape_args.center_x;
+                    y = ctx->shape_args.center_y;
                 }
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-                ctx->shape_args.points[0][0] = x;
-                ctx->shape_args.points[0][1] = y+2*r;
-                ctx->shape_args.points[1][0] = 2*r;
-                ctx->shape_args.points[1][1] = 0;
-                ctx->shape_args.points[2][0] = -r;
-                ctx->shape_args.points[2][1] = -2*r;
+
+                ctx->shape_args.center_x = x;
+                ctx->shape_args.center_y = y;
 
                 if (ctx->shape_args.fill_type != NULL)
                 {
                     if ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
                         pattern = cairo_pattern_create_radial (x, y+2*r, r, x, y+2*r,0/*2*r*/);
                     else if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.points[0][1] ,0, ctx->shape_args.points[0][1]+(4*r) );
+                        pattern = cairo_pattern_create_linear (0, (y+2*r) ,0, (y+2*r)+(4*r) );
 
                     if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
                         cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
@@ -219,7 +202,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 }
                 cairoShapes[Triangle] (ctx,&ctx->shape_args);
-                free (ctx->shape_args.points);
 
                 break;
 
@@ -227,24 +209,21 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 // Star
                 if ((!ctx->shape_args.multi_shapes && !ctx->shape_args.animation))
                 {
-                    x = ctx->shape_args.centre_x;
-                    y = ctx->shape_args.centre_y;
+                    x = ctx->shape_args.center_x;
+                    y = ctx->shape_args.center_y;
                 }
-                ctx->shape_args.numpoints = 10;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
 
-                for (p = 0; p < 10; p++ ) {
-                    int px = x + 2*r * star_points[p][0]/200.0;
-                    int py = y + 2*r * star_points[p][1]/200.0;
-                    ctx->shape_args.points[p][0] = px;
-                    ctx->shape_args.points[p][1] = py;
-                }
+                ctx->shape_args.center_x = x;
+                ctx->shape_args.center_y = y;
+
+                px = x + 2*r * star_points[p][0]/200.0;
+                py = y + 2*r * star_points[p][1]/200.0;
 
                 if (ctx->shape_args.fill_type != NULL) {
                     if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (ctx->shape_args.points[0][0], ctx->shape_args.points[0][1], r, x, ctx->shape_args.points[0][1],0/*r*/);
+                        pattern = cairo_pattern_create_radial (px, py, r, x, py,0/*r*/);
                     else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.points[0][1]-r ,0, ctx->shape_args.points[0][1]+(r) );
+                        pattern = cairo_pattern_create_linear (0, py-r ,0, py+(r) );
 
 
                     if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
@@ -258,7 +237,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 }
                 cairoShapes[Star] (ctx,&ctx->shape_args);
 
-                free (ctx->shape_args.points);
                 break;
 
             default:
@@ -291,6 +269,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 cairo_stroke(cr);
             }
+#if 0
             if (ctx->shape_args.fill_type != NULL)
             {
                 if (pattern != NULL)
@@ -298,13 +277,15 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 if (image != NULL)
                     cairo_surface_destroy (image);
             }
+#endif
+
         }
     }
 
     if (!ctx->shape_args.animation && !ctx->shape_args.multi_shapes)
     {
-        ctx->shape_args.centre_x = old_x;
-        ctx->shape_args.centre_y = old_y;
+        ctx->shape_args.center_x = old_x;
+        ctx->shape_args.center_y = old_y;
         ctx->shape_args.width = old_width;
         ctx->shape_args.height = old_height;
     }

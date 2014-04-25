@@ -14,20 +14,7 @@ static kinetics_t *particles;
 static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
-static int star_points[11][2] = {
-    { 0, 85 },
-    { 75, 75 },
-    { 100, 10 },
-    { 125, 75 },
-    { 200, 85 },
-    { 150, 125 },
-    { 160, 190 },
-    { 100, 150 },
-    { 40, 190 },
-    { 50, 125 },
-    { 0, 85 }
-};
-
+SkPath path;
 
 static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
 {
@@ -37,6 +24,7 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
 
     int i,shape,p;
     double r;
+	path.reset();
     r = 0.9 * element_spacing /2;
     if(!ctx->shape_args.shape_id)
         shape = ((4.0 * rand())/RAND_MAX) +1;
@@ -45,19 +33,19 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.centre_x = x+r;
-        ctx->shape_args.centre_y = y+r;
+        ctx->shape_args.center_x = x+r;
+        ctx->shape_args.center_y = y+r;
         ctx->shape_args.radius = r;
-        ctx->shape_args.path.addCircle(ctx->shape_args.centre_x, ctx->shape_args.centre_y,SkIntToScalar(clipr));
+        path.addCircle(ctx->shape_args.center_x, ctx->shape_args.center_y,SkIntToScalar(clipr));
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.centre_x =  x;
-        ctx->shape_args.centre_y = y;
-        ctx->shape_args.width = (ctx->shape_args.centre_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*clipr);
-        ctx->shape_args.height = (ctx->shape_args.centre_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*clipr);
-        ctx->shape_args.path.addRect(ctx->shape_args.centre_x, ctx->shape_args.centre_y, ctx->shape_args.width, ctx->shape_args.height);
+        ctx->shape_args.center_x =  x;
+        ctx->shape_args.center_y = y;
+        ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*clipr);
+        ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*clipr);
+        path.addRect(ctx->shape_args.center_x, ctx->shape_args.center_y, ctx->shape_args.width, ctx->shape_args.height);
         ctx->shape_args.width = old_width;
         ctx->shape_args.height = old_height;
         break;
@@ -74,9 +62,9 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
         ctx->shape_args.points[2][1] = -2*clipr;
         for ( p = 0; p <  ctx->shape_args.numpoints; p++ ) {
             if(p == 0)
-                ctx->shape_args.path.moveTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
+                path.moveTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
             else
-                ctx->shape_args.path.rLineTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
+                path.rLineTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
         }
 
         free (ctx->shape_args.points);
@@ -95,9 +83,9 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
         }
         for (p = 0; p <  ctx->shape_args.numpoints; p++ ) {
             if(p == 0)
-                ctx->shape_args.path.moveTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
+                path.moveTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
             else
-                ctx->shape_args.path.lineTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
+                path.lineTo(ctx->shape_args.points[p][0], ctx->shape_args.points[p][1]);
         }
         free (ctx->shape_args.points);
         break;
@@ -120,17 +108,19 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0)
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
         shape = ctx->shape_args.shape_id ;
-    ctx->shape_args.centre_x = x;
-    ctx->shape_args.centre_y = y;
+    ctx->shape_args.center_x = x;
+    ctx->shape_args.center_y = y;
     ctx->shape_args.radius = r;
     ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
     ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
     skiaShapes[(shape-1)%4](ctx,&ctx->shape_args);
     ctx->skia_canvas->flush();
+
 }
 
 static bool
 draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
+
     SkShader* shader;
     SkBitmap    bm;
     int clipr = 30;
@@ -145,7 +135,7 @@ draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
 
     ctx->skia_paint->setShader (shader);
     drawClip(ctx,x,y,clipr);
-    canvas->clipPath(ctx->shape_args.path, SkRegion::kReplace_Op, true);
+    canvas->clipPath(path, SkRegion::kReplace_Op, true);
     drawShape(ctx,x,y);
     ctx->skia_canvas->flush();
     if(shader != NULL)
@@ -153,8 +143,9 @@ draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
         ctx->skia_paint->setShader (NULL);
         delete shader;
     }
-    ctx->shape_args.path.reset();
+    path.reset();
     return true;
+
 }
 
 static bool

@@ -12,19 +12,6 @@ static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
 static kinetics_t *cairo_particles;
-static int star_points[11][2] = {
-    { 0, 85 },
-    { 75, 75 },
-    { 100, 10 },
-    { 125, 75 },
-    { 200, 85 },
-    { 150, 125 },
-    { 160, 190 },
-    { 100, 150 },
-    { 40, 190 },
-    { 50, 125 },
-    { 0, 85 }
-};
 
 static kinetics_t *particles;
     cairo_surface_t *image;
@@ -52,8 +39,8 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
         shape = ctx->shape_args.shape_id ;
-    ctx->shape_args.centre_x = x;
-    ctx->shape_args.centre_y = y;
+    ctx->shape_args.center_x = x;
+    ctx->shape_args.center_y = y;
     ctx->shape_args.radius = isClip?clipr:r;
     ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*(isClip?clipr:r);
     ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*(isClip?clipr:r);

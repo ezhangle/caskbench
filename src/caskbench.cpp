@@ -29,6 +29,8 @@ int32_t SkToS32(intmax_t x) { return (int32_t)x; }
 bool gPrintInstCount = false;
 #endif
 
+char gShapes[MAX_SHAPES][100] = {"circle", "rectangle", "triangle", "star", "roundedrectangle"};
+
 typedef struct _caskbench_options {
     int dry_run;
     int iterations;
@@ -39,7 +41,7 @@ typedef struct _caskbench_options {
     int version;
 
     unsigned int enable_egl_sample_buffers;
-    int shape_id;
+	char* shape_name;
     int x_position;
     int y_position;
     int width;
@@ -236,7 +238,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"enable-egl-sample-buffers", '\0', POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
          "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
          NULL},
-        {"shape-id", 'S', POPT_ARG_INT, &opt->shape_id, 0,
+        {"shape-name", 'S', POPT_ARG_STRING, &opt->shape_name, 0,
          "Controls which shape to be drawn ",
          NULL},
         {"x-position", 'X', POPT_ARG_INT, &opt->x_position, 0,
@@ -320,7 +322,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
 
     opt->enable_egl_sample_buffers = 0;
-    opt->shape_id = 0;
+    opt->shape_name = NULL;
     opt->x_position = 0;
     opt->y_position = 0;
     opt->width = 0;
@@ -533,6 +535,15 @@ result_init(caskbench_result_t *result, const char* name)
     result->avg_run_time = -1.0;
 }
 
+int convertToShapeID(char* shapeName)
+{
+	if (shapeName == NULL)
+		return 0;
+	for (int i = 0; i < MAX_SHAPES; i++)
+		if(strcmp(gShapes[i],shapeName) == 0)
+			return i + 1;
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -592,11 +603,11 @@ main (int argc, char *argv[])
         context_init(&context, opt.size);
 
         // Command line setup for shapes
-        context.shape_args.centre_x = opt.x_position;
-        context.shape_args.centre_y = opt.y_position;
+        context.shape_args.center_x = opt.x_position;
+        context.shape_args.center_y = opt.y_position;
         context.shape_args.width = opt.width;
         context.shape_args.height = opt.height;
-        context.shape_args.shape_id = opt.shape_id;
+        context.shape_args.shape_id = convertToShapeID(opt.shape_name);
         context.shape_args.fill_type = opt.fill_type;
         context.shape_args.red = opt.red;
         context.shape_args.green = opt.green;

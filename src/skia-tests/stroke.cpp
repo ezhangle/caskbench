@@ -14,19 +14,6 @@ static kinetics_t *particles;
 static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
-static int star_points[11][2] = {
-    { 0, 85 },
-    { 75, 75 },
-    { 100, 10 },
-    { 125, 75 },
-    { 200, 85 },
-    { 150, 125 },
-    { 160, 190 },
-    { 100, 150 },
-    { 40, 190 },
-    { 50, 125 },
-    { 0, 85 }
-};
 SkAutoTUnref<SkPathEffect> fPE;
 static SkRect r;
 static int line_length;
@@ -49,18 +36,18 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.centre_x = x+r;
-        ctx->shape_args.centre_y = y+r;
+        ctx->shape_args.center_x = x+r;
+        ctx->shape_args.center_y = y+r;
         ctx->shape_args.radius = r;
         skiaShapes[Circle](ctx,&ctx->shape_args);
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.centre_x =  x;
-        ctx->shape_args.centre_y = y;
-        ctx->shape_args.width = (ctx->shape_args.centre_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
-        ctx->shape_args.height = (ctx->shape_args.centre_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
+        ctx->shape_args.center_x =  x;
+        ctx->shape_args.center_y = y;
+        ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
+        ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
         skiaShapes[Rectangle](ctx,&ctx->shape_args);
         ctx->shape_args.width = old_width;
         ctx->shape_args.height = old_height;
@@ -68,30 +55,18 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
 
     case 3:
         // Triangle
-        ctx->shape_args.numpoints = 3;
-        ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-        ctx->shape_args.points[0][0] = x;
-        ctx->shape_args.points[0][1] = y+2*r;
-        ctx->shape_args.points[1][0] = 2*r;
-        ctx->shape_args.points[1][1] = 0;
-        ctx->shape_args.points[2][0] = -r;
-        ctx->shape_args.points[2][1] = -2*r;
+        ctx->shape_args.center_x = x;
+        ctx->shape_args.center_y = y;
         skiaShapes[Triangle] (ctx,&ctx->shape_args);
-        free (ctx->shape_args.points);
+
         break;
     case 4:
         // Star
-        ctx->shape_args.numpoints = 10;
-        ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
+        ctx->shape_args.center_x = x;
+        ctx->shape_args.center_y = y;
 
-        for (p = 0; p < 10; p++ ) {
-            int px = x + 2*r * star_points[p][0]/200.0;
-            int py = y + 2*r * star_points[p][1]/200.0;
-            ctx->shape_args.points[p][0] = px;
-            ctx->shape_args.points[p][1] = py;
-        }
+
         skiaShapes[Star] (ctx,&ctx->shape_args);
-        free (ctx->shape_args.points);
         break;
 
     default:
@@ -168,6 +143,6 @@ sk_test_stroke(caskbench_context_t *ctx)
     }
     /* Static clip */
     else
-        ctx->shape_args.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_args.centre_x?ctx->shape_args.centre_x:100,ctx->shape_args.centre_y?ctx->shape_args.centre_y:100);
+        ctx->shape_args.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_args.center_x?ctx->shape_args.center_x:100,ctx->shape_args.center_y?ctx->shape_args.center_y:100);
     return 1;
 }

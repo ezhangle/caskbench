@@ -3,27 +3,33 @@
 iterations=100
 size=256
 
-if [ -z "$HOSTNAME" ]; then
+which hostname > /dev/null
+if [ $? = 0 ]; then
     host=$(hostname -s)
 else
     host=$HOSTNAME
 fi
+
 if [ -z "$host" ]; then
     echo "Error: Could not determine hostname"
     exit 1
 fi
 
-which caskbench > /dev/null
-if [ $? = 0 ]; then
-    CASKBENCH=caskbench
-else
-    # This script assumes you've built caskbench in a sub-directory
-    # named "build-HOST".  It invokes the executable from that build
-    # tree, and stores the results in a directories named
-    # results-NNN/HOST-SURFACE.
-    CASKBENCH="build-${host}/src/caskbench"
+# This script assumes you've built caskbench in a sub-directory
+# named "build-HOST".  It invokes the executable from that build
+# tree, and stores the results in a directories named
+# results-NNN/HOST-SURFACE.
+CASKBENCH="build-${host}/src/caskbench"
+if [ ! -e ${CASKBENCH} ]; then
+    which caskbench > /dev/null
+    if [ $? = 0 ]; then
+	CASKBENCH=caskbench
+    fi
 fi
-
+if [ -z "$CASKBENCH" ]; then
+    echo "Could not locate caskbench executable"
+    exit 1
+fi
 
 run_caskbench() {
     out=$1

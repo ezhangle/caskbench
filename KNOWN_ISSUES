@@ -1,0 +1,19 @@
+			   ~= Known Issues =~
+
+* On Tizen, 'caskbench -t egl' crashes.  It works only when using MSAA,
+  so run it with sample buffers enabled:
+
+  caskbench -t egl --enable-egl-sample-buffers
+
+* On Ubuntu 12.04 with Radeon video card and FOSS driver, MSAA does not
+  work: It just crashes when using --enable-egl-sample-buffers.  So
+  don't do that.
+
+* The text test case can consume excessive amounts of memory on
+  large sized runs, triggering the oom killer.  Use it only on lower
+
+* The new animation option is included for experimentation but has not
+  been widely tested.  When given large values it can severely affect
+  performance of some tests.
+
+

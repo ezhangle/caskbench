@@ -70,12 +70,12 @@ while [ -d "${results_dir}" ]; do
     results_dir=$(printf "results-${today}-%02d" $id)
 done
 
+echo "No MSAA" >> ${results_dir}/comparison.txt
+export CAIRO_GL_COMPOSITOR=
 surfaces=$(${CASKBENCH} -l)
 for surface in ${surfaces}; do
     run_caskbench "${results_dir}/${host}-${surface}" "${surface}"
 done
-echo "No MSAA" >> ${results_dir}/comparison.txt
-export CAIRO_GL_COMPOSITOR=
 ./compare_runs "${results_dir}/${host}-image/results.json" "${results_dir}/${host}-egl/results.json" \
     >> ${results_dir}/comparison.txt
 echo >> ${results_dir}/comparison.txt

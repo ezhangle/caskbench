@@ -1,3 +1,51 @@
+0.4 - April 25, 2014
+--------------------
+Building on last release's preliminary porting of Caskbench to Tizen and
+multiple PC variants, a major focus of this release was to get EGL
+working on Tizen (and PC) with MSAA enabled.  GLX support has been
+disabled for this release; it will make a reappearance next release.
+
+Previous releases have built against an old version of Skia, and this
+release will still work with that Skia version (be sure to specify
+ENABLE_LEGACY_SKIA_SRA=ON to cmake when configuring).  But now Caskbench
+also builds and runs against a recent (April 17th) snapshot of Skia as
+well.
+
+Running Caskbench against the older skia-sra branch works pretty solidly
+now.  There are still some glitches when using the newer skia-samsung
+branch, but the numbers will be more relevant for our performance work,
+and this will be our development focus going forward.
+
+This release also includes support for building against CairoGles, a
+fork of upstream Cairo by Samsung which includes various GL
+optimizations, GLES enablement and new features.  It is off by default
+but can be configured on by passing ENABLE_CAIROGLES=ON to cmake.
+
+Tests now write out the last frame to a file.  This allows comparison of
+skia and cairo rendering functionality, so that discrepancies are
+obvious.  Several tests have been expanded, and others newly added; much
+of this is still experimental though, but lay a good foundation for the
+0.5 release's primary focus on expansion of test coverage.  A few tests
+are disabled in this release due to stability concerns with the newer
+skia library, and will make a return in 0.5.
+
+
+
+0.3 - January 13, 2014
+----------------------
+A major focus of this release was porting to all target platforms. It
+compiles and runs on PC (Linux) and ARM (Tizen), and supports software
+rendering (image), GLX, EGL/GLES 2, and EGL/GLES 3. If GLX or EGL is
+not present on the system, caskbench will compile and run without it.
+
+A few new tests have been added, and existing ones tweaked for
+improvement. Note though that there are still a few discrepancies
+between the skia and cairo implementations of individual tests, so the
+test results are questionable and will need deeper study to be of
+use. The next release will focus on addressing these deficiencies and
+improving the quality of the tests. 
+
+
 0.2 - November 8, 2013
 ----------------------
 This release provides improved Cairo tests and matching Skia tests.

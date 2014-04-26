@@ -136,31 +136,19 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
             x = particles?particles->x : i * element_spacing;
 
             // Options for fill,gradient and transparency
-            if( ctx->shape_args.fill_type == NULL)
+            if(ctx->shape_args.fill_type == none || ctx->shape_args.fill_type == solid)
             {
                 if(ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
                 {
-                    ctx->skia_paint->setARGB(255*((double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1),
-                                             255*(double)ctx->shape_args.red,
-                                             255*((double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0),
-                                             255*(ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0) );
+                    ctx->skia_paint->setARGB(255*(ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1),
+                                             255*ctx->shape_args.red,
+                                             255*ctx->shape_args.green,
+                                             255*ctx->shape_args.blue);
                 }
                 else
                     skiaRandomizeColor(ctx);
             }
-            else if ((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
-            {
-                if(ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
-                {
-                    ctx->skia_paint->setARGB ( 255*(double)ctx->shape_args.red,
-                                               255*((double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0),
-                                               255* (ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0),
-                                               255*( (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1));
-                }
-                else
-                    skiaRandomizeColor(ctx);
-            }
-            else if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
+            else if((ctx->shape_args.fill_type == linearGradient) || (ctx->shape_args.fill_type == radialGradient))
             {
                 red = 255*(double)rand()/RAND_MAX;
                 green = 255*(double)rand()/RAND_MAX;
@@ -168,8 +156,8 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 alpha = 255*(double)rand()/RAND_MAX;
 
             }
-            else if((strcmp(ctx->shape_args.fill_type,"herringbone-pattern")) == 0){}
-            else if((strcmp(ctx->shape_args.fill_type,"image-pattern")) == 0 &&(ctx->shape_args.image_path))
+            else if(ctx->shape_args.fill_type == herringbonePattern){}
+            else if((ctx->shape_args.fill_type == imagePattern) && (ctx->shape_args.image_path))
             {
                 SkBitmap    bm;
 
@@ -186,9 +174,9 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_y = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?y+r:ctx->shape_args.center_y;
                 ctx->shape_args.radius = r;
 
-                if(ctx->shape_args.fill_type != NULL)
+                if(ctx->shape_args.fill_type != none)
                 {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                    if(ctx->shape_args.fill_type == radialGradient)
                     {
                         linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[0] = SkColorSetARGB (200,200,200,200);
@@ -199,7 +187,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                                             SkShader::kClamp_TileMode, NULL);
                         ctx->skia_paint->setShader (shader);
                     }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                    else if(ctx->shape_args.fill_type == linearGradient)
                     {
                         linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[1] = SkColorSetARGB (200,200,200,200);
@@ -227,9 +215,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 					//Stroke Color
 					skiaRandomizeColor(ctx);
 					skiaShapes[Circle](ctx,&ctx->shape_args);
-					
 				}
-
 
                 break;
 
@@ -240,9 +226,9 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
                 ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
 
-                if(ctx->shape_args.fill_type != NULL)
+            	if(ctx->shape_args.fill_type != none)
                 {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                    if(ctx->shape_args.fill_type == radialGradient)
                     {
                         linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[0] = SkColorSetARGB (200,200,200,200);
@@ -254,7 +240,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                         ctx->skia_paint->setShader (shader);
                     }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                    else if(ctx->shape_args.fill_type == linearGradient)
                     {
                         linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[1] = SkColorSetARGB (200,200,200,200);
@@ -275,14 +261,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
 				if(ctx->shape_args.stroke_width)
 				{
-				
             		ctx->skia_paint->setShader (NULL);
 					apply_stroke_settings(ctx);
 		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
 					//Stroke Color
 					skiaRandomizeColor(ctx);
                		skiaShapes[Rectangle](ctx,&ctx->shape_args);
-					
 				}
 
                 ctx->shape_args.width = old_width;
@@ -297,14 +281,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     y = ctx->shape_args.center_y;
                 }
 
-               ctx->shape_args.center_x = x;
-               ctx->shape_args.center_y = y;
+                ctx->shape_args.center_x = x;
+                ctx->shape_args.center_y = y;
 
-
-
-                if(ctx->shape_args.fill_type != NULL)
+                if(ctx->shape_args.fill_type != none)
                 {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                    if(ctx->shape_args.fill_type == radialGradient)
                     {
                         linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[0] = SkColorSetARGB (200,200,200,200);
@@ -316,7 +298,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                         ctx->skia_paint->setShader (shader);
                     }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                    else if(ctx->shape_args.fill_type == linearGradient)
                     {
                         linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[1] = SkColorSetARGB (200,200,200,200);
@@ -337,14 +319,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 				skiaShapes[Triangle] (ctx,&ctx->shape_args);
 				if(ctx->shape_args.stroke_width)
 				{
-				
             		ctx->skia_paint->setShader (NULL);
 					apply_stroke_settings(ctx);
 		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
 					//Stroke Color
 					skiaRandomizeColor(ctx);
 					skiaShapes[Triangle] (ctx,&ctx->shape_args);
-					
 				}
 
                 break;
@@ -360,13 +340,13 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                ctx->shape_args.center_x = x;
                ctx->shape_args.center_y = y;
 
-               px = x + 2*r * star_points[p][0]/200.0;
-               py = y + 2*r * star_points[p][1]/200.0;
+               px = x + 2*r * star_points[0][0]/200.0;
+               py = y + 2*r * star_points[0][1]/200.0;
 
 
-                if(ctx->shape_args.fill_type != NULL)
+                if(ctx->shape_args.fill_type != none)
                 {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                    if(ctx->shape_args.fill_type == radialGradient)
                     {
                         linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[0] = SkColorSetARGB (200,200,200,200);
@@ -379,7 +359,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                         ctx->skia_paint->setShader (shader);
                     }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                    else if(ctx->shape_args.fill_type == linearGradient)
                     {
                         linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
                         linearColors[1] = SkColorSetARGB (200,200,200,200);
@@ -400,14 +380,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
 				if(ctx->shape_args.stroke_width)
 				{
-				
             		ctx->skia_paint->setShader (NULL);
 					apply_stroke_settings(ctx);
 		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
 					//Stroke Color
 					skiaRandomizeColor(ctx);
 					skiaShapes[Star] (ctx,&ctx->shape_args);
-					
 				}
 
                 break;
@@ -416,13 +394,15 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 break;
             }
             ctx->skia_canvas->flush();
-            if(ctx->shape_args.fill_type != NULL)
+            if((ctx->shape_args.fill_type != none) && (ctx->shape_args.fill_type != solid))
                 if(shader != NULL)
                 {
                     ctx->skia_paint->setShader (NULL);
                     delete shader;
                 }
-            ctx->skia_paint->setPathEffect(NULL);
+
+			if(ctx->shape_args.stroke_width)
+            	ctx->skia_paint->setPathEffect(NULL);
         }
     }
 

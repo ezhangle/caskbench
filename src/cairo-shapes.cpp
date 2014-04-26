@@ -39,6 +39,7 @@ cairoDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
     cairo_move_to (ctx->cairo_cr, args->center_x, args->center_y+2*args->radius);
     cairo_rel_line_to (ctx->cairo_cr, 2*args->radius, 0);
     cairo_rel_line_to (ctx->cairo_cr, -args->radius, -2*args->radius);
+    cairo_close_path(ctx->cairo_cr);
 }
 
 

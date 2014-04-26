@@ -5,6 +5,17 @@
 #include <SkRect.h>
 
 #define MAX_SHAPES 5
+#define MAX_FILL_TYPES 6
+
+enum fillType
+{
+	none,
+	solid,
+	linearGradient,
+	radialGradient,
+	imagePattern,
+	herringbonePattern
+};
 
 typedef struct shapes
 {
@@ -18,7 +29,7 @@ typedef struct shapes
     double (*points)[2];
 
     int shape_id;
-    char* fill_type;
+    fillType fill_type;
     double red;
     double green;
     double blue;

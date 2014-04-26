@@ -30,6 +30,7 @@ bool gPrintInstCount = false;
 #endif
 
 char gShapes[MAX_SHAPES][100] = {"circle", "rectangle", "triangle", "star", "roundedrectangle"};
+char gFillTypes[MAX_FILL_TYPES][100] = {"none","solid","linear-gradient","radial-gradient","image-pattern","herringbone-pattern"};
 
 typedef struct _caskbench_options {
     int dry_run;
@@ -544,6 +545,16 @@ int convertToShapeID(char* shapeName)
 			return i + 1;
 }
 
+fillType convertToFillType(char *fill_type)
+{
+	if (fill_type == NULL)
+		return (fillType) 0;
+	for (int i = 0; i < MAX_FILL_TYPES; i++)
+		if(strcmp(gFillTypes[i],fill_type) == 0)
+			return (fillType) i ;
+
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -587,7 +598,7 @@ main (int argc, char *argv[])
         /* Disable stroke: Displays no output to file */
         if (!strncmp(perf_tests[c].name, "cairo-stroke", 12) ||
             !strncmp(perf_tests[c].name, "skia-stroke", 11))
-            continue;
+            //continue;
 
         /* Disable multishape:  Crashes on EGL */
         if (!strncmp(perf_tests[c].name, "cairo-multishape", 16) ||
@@ -608,7 +619,7 @@ main (int argc, char *argv[])
         context.shape_args.width = opt.width;
         context.shape_args.height = opt.height;
         context.shape_args.shape_id = convertToShapeID(opt.shape_name);
-        context.shape_args.fill_type = opt.fill_type;
+        context.shape_args.fill_type = convertToFillType(opt.fill_type);
         context.shape_args.red = opt.red;
         context.shape_args.green = opt.green;
         context.shape_args.blue = opt.blue;

@@ -32,6 +32,20 @@ bool gPrintInstCount = false;
 char gShapes[MAX_SHAPES][100] = {"circle", "rectangle", "triangle", "star", "roundedrectangle"};
 char gFillTypes[MAX_FILL_TYPES][100] = {"none","solid","linear-gradient","radial-gradient","image-pattern","herringbone-pattern"};
 
+int star_points[11][2] = {
+    { 0, 85 },
+    { 75, 75 },
+    { 100, 10 },
+    { 125, 75 },
+    { 200, 85 },
+    { 150, 125 },
+    { 160, 190 },
+    { 100, 150 },
+    { 40, 190 },
+    { 50, 125 },
+    { 0, 85 }
+};
+
 typedef struct _caskbench_options {
     int dry_run;
     int iterations;
@@ -598,7 +612,7 @@ main (int argc, char *argv[])
         /* Disable stroke: Displays no output to file */
         if (!strncmp(perf_tests[c].name, "cairo-stroke", 12) ||
             !strncmp(perf_tests[c].name, "skia-stroke", 11))
-            //continue;
+            continue;
 
         /* Disable multishape:  Crashes on EGL */
         if (!strncmp(perf_tests[c].name, "cairo-multishape", 16) ||

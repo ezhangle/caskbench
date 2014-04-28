@@ -401,8 +401,8 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     delete shader;
                 }
 
-			if(ctx->shape_args.stroke_width)
-            	ctx->skia_paint->setPathEffect(NULL);
+            if(ctx->shape_args.stroke_width)
+                ctx->skia_paint->setPathEffect(NULL);
         }
     }
 

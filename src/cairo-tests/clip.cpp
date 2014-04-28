@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
-
+#include <math.h>
 #include "caskbench.h"
 #include "kinetics.h"
 #include "cairo-shapes.h"

@@ -1,12 +1,10 @@
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
 
-#include <SkPath.h>
-#include <SkRect.h>
-
 #define MAX_SHAPES 5
 #define MAX_FILL_TYPES 6
 
+extern int star_points[11][2];
 enum fillType
 {
 	none,

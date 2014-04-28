@@ -42,7 +42,7 @@ typedef struct _caskbench_options {
     int version;
 
     unsigned int enable_egl_sample_buffers;
-	char* shape_name;
+    char* shape_name;
     int x_position;
     int y_position;
     int width;

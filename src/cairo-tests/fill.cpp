@@ -209,7 +209,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 py = y + 2*r * star_points[0][1]/200.0;
 
                 if(ctx->shape_args.fill_type != none)
-				{
+                {
                     if(ctx->shape_args.fill_type == radialGradient)
                         pattern = cairo_pattern_create_radial (px, py, r, x, py,0/*r*/);
                     else if(ctx->shape_args.fill_type == linearGradient)

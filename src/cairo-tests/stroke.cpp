@@ -64,17 +64,17 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
 
     case 3:
         // Triangle
-		ctx->shape_args.center_x = x;
-		ctx->shape_args.center_y = y;
+        ctx->shape_args.center_x = x;
+        ctx->shape_args.center_y = y;
 
-		cairoShapes[Triangle] (ctx,&ctx->shape_args);
+        cairoShapes[Triangle] (ctx,&ctx->shape_args);
         //cairo_fill (cr);
         break;
 
     case 4:
         // Star
-		ctx->shape_args.center_x = x;
-		ctx->shape_args.center_y = y;
+        ctx->shape_args.center_x = x;
+        ctx->shape_args.center_y = y;
 
         cairoShapes[Star] (ctx,&ctx->shape_args);
         //cairo_fill (cr);

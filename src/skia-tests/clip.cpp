@@ -24,7 +24,7 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
 
     int i,shape,p;
     double r;
-	path.reset();
+    path.reset();
     r = 0.9 * element_spacing /2;
     if(!ctx->shape_args.shape_id)
         shape = ((4.0 * rand())/RAND_MAX) +1;
@@ -120,7 +120,6 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0)
 
 static bool
 draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
-
     SkShader* shader;
     SkBitmap    bm;
     int clipr = 30;
@@ -145,7 +144,6 @@ draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
     }
     path.reset();
     return true;
-
 }
 
 static bool

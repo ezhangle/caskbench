@@ -44,39 +44,39 @@ sk_teardown_fill(void)
 
 void apply_stroke_settings(caskbench_context_t *ctx)
 {
-	//Stroke styles
-	SkScalar dashed[] = { SkIntToScalar(20), SkIntToScalar(5)  };
-	SkScalar dotted[] = { SkIntToScalar(1), SkIntToScalar(1)  };
-	if(ctx->shape_args.stroke_width)
-	{
+    //Stroke styles
+    SkScalar dashed[] = { SkIntToScalar(20), SkIntToScalar(5)  };
+    SkScalar dotted[] = { SkIntToScalar(1), SkIntToScalar(1)  };
+    if(ctx->shape_args.stroke_width)
+    {
 
-		    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
 
-			ctx->skia_paint->setStrokeWidth(ctx->shape_args.stroke_width);
+        ctx->skia_paint->setStrokeWidth(ctx->shape_args.stroke_width);
 
 
-			ctx->skia_paint->setStrokeJoin((SkPaint::Join)ctx->shape_args.join_style);
-			ctx->skia_paint->setStrokeCap((SkPaint::Cap)ctx->shape_args.cap_style);
-			if(ctx->shape_args.dash_style == 0)
-			{
-					ctx->skia_paint->setPathEffect(NULL);
+        ctx->skia_paint->setStrokeJoin((SkPaint::Join)ctx->shape_args.join_style);
+        ctx->skia_paint->setStrokeCap((SkPaint::Cap)ctx->shape_args.cap_style);
+        if(ctx->shape_args.dash_style == 0)
+        {
+            ctx->skia_paint->setPathEffect(NULL);
 #if USE_LEGACY_SKIA_SRA
-					ctx->skia_paint->setPathEffect(new SkDashPathEffect(dotted, 2, 0))->unref();
+            ctx->skia_paint->setPathEffect(new SkDashPathEffect(dotted, 2, 0))->unref();
 #else
-					ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(dotted, 2, 0))->unref();
+            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(dotted, 2, 0))->unref();
 #endif
-			}
-			else if(ctx->shape_args.dash_style == 1)
-			{
-					ctx->skia_paint->setPathEffect(NULL);
+        }
+        else if(ctx->shape_args.dash_style == 1)
+        {
+            ctx->skia_paint->setPathEffect(NULL);
 #if USE_LEGACY_SKIA_SRA
-					ctx->skia_paint->setPathEffect(new SkDashPathEffect(dashed, 2, 0))->unref();
+            ctx->skia_paint->setPathEffect(new SkDashPathEffect(dashed, 2, 0))->unref();
 #else
-					ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(dashed, 2, 0))->unref();
+            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(dashed, 2, 0))->unref();
 #endif
-			}
+        }
 
-	}
+    }
 }
 
 void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
@@ -183,8 +183,8 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         center.set(ctx->shape_args.center_x, ctx->shape_args.center_y);
 
                         shader = SkGradientShader::CreateRadial (center,r,
-                                            linearColors, NULL,2,
-                                            SkShader::kClamp_TileMode, NULL);
+                                linearColors, NULL,2,
+                                SkShader::kClamp_TileMode, NULL);
                         ctx->skia_paint->setShader (shader);
                     }
                     else if(ctx->shape_args.fill_type == linearGradient)
@@ -197,25 +197,25 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         linearPoints[1].fY = SkIntToScalar(ctx->shape_args.center_y+r);
 
                         shader = SkGradientShader::CreateLinear (
-                                            linearPoints, linearColors, NULL, 2,
-                                            SkShader::kClamp_TileMode, NULL);
+                                linearPoints, linearColors, NULL, 2,
+                                SkShader::kClamp_TileMode, NULL);
 
 
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-		    	ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+                ctx->skia_paint->setStyle(SkPaint::kFill_Style);
                 skiaShapes[Circle](ctx,&ctx->shape_args);
 
-				if(ctx->shape_args.stroke_width)
-				{
-					apply_stroke_settings(ctx);
-            		ctx->skia_paint->setShader (NULL);
-		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-					//Stroke Color
-					skiaRandomizeColor(ctx);
-					skiaShapes[Circle](ctx,&ctx->shape_args);
-				}
+                if(ctx->shape_args.stroke_width)
+                {
+                    apply_stroke_settings(ctx);
+                    ctx->skia_paint->setShader (NULL);
+                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+                    //Stroke Color
+                    skiaRandomizeColor(ctx);
+                    skiaShapes[Circle](ctx,&ctx->shape_args);
+                }
 
                 break;
 
@@ -226,7 +226,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
                 ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
 
-            	if(ctx->shape_args.fill_type != none)
+                if(ctx->shape_args.fill_type != none)
                 {
                     if(ctx->shape_args.fill_type == radialGradient)
                     {
@@ -235,8 +235,8 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         center.set((ctx->shape_args.center_x+ctx->shape_args.width)/2, (ctx->shape_args.center_y+ctx->shape_args.height)/2);
 
                         shader = SkGradientShader::CreateRadial (center, (ctx->shape_args.height-ctx->shape_args.center_y)/2,
-                                                                 linearColors, NULL,2,
-                                                                 SkShader::kClamp_TileMode, NULL);
+                                linearColors, NULL,2,
+                                SkShader::kClamp_TileMode, NULL);
 
                         ctx->skia_paint->setShader (shader);
                     }
@@ -250,24 +250,24 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         linearPoints[1].fY = SkIntToScalar(ctx->shape_args.center_y+ctx->shape_args.height/4);
 
                         shader = SkGradientShader::CreateLinear (
-                            linearPoints, linearColors, NULL, 2,
-                            SkShader::kClamp_TileMode, NULL);
+                                linearPoints, linearColors, NULL, 2,
+                                SkShader::kClamp_TileMode, NULL);
 
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-		    	ctx->skia_paint->setStyle(SkPaint::kFill_Style);
-               	skiaShapes[Rectangle](ctx,&ctx->shape_args);
+                ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+                skiaShapes[Rectangle](ctx,&ctx->shape_args);
 
-				if(ctx->shape_args.stroke_width)
-				{
-            		ctx->skia_paint->setShader (NULL);
-					apply_stroke_settings(ctx);
-		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-					//Stroke Color
-					skiaRandomizeColor(ctx);
-               		skiaShapes[Rectangle](ctx,&ctx->shape_args);
-				}
+                if(ctx->shape_args.stroke_width)
+                {
+                    ctx->skia_paint->setShader (NULL);
+                    apply_stroke_settings(ctx);
+                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+                    //Stroke Color
+                    skiaRandomizeColor(ctx);
+                    skiaShapes[Rectangle](ctx,&ctx->shape_args);
+                }
 
                 ctx->shape_args.width = old_width;
                 ctx->shape_args.height = old_height;
@@ -293,8 +293,8 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         center.set(x,(y+2*r));
 
                         shader = SkGradientShader::CreateRadial (center, r,
-                            linearColors, NULL,2,
-                            SkShader::kClamp_TileMode, NULL);
+                                linearColors, NULL,2,
+                                SkShader::kClamp_TileMode, NULL);
 
                         ctx->skia_paint->setShader (shader);
                     }
@@ -308,24 +308,24 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         linearPoints[1].fY = SkIntToScalar(y+2*r);
 
                         shader = SkGradientShader::CreateLinear (
-                            linearPoints, linearColors, NULL, 2,
-                            SkShader::kClamp_TileMode, NULL);
+                                linearPoints, linearColors, NULL, 2,
+                                SkShader::kClamp_TileMode, NULL);
 
                         ctx->skia_paint->setShader (shader);
                     }
                 }
 
-		    	ctx->skia_paint->setStyle(SkPaint::kFill_Style);
-				skiaShapes[Triangle] (ctx,&ctx->shape_args);
-				if(ctx->shape_args.stroke_width)
-				{
-            		ctx->skia_paint->setShader (NULL);
-					apply_stroke_settings(ctx);
-		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-					//Stroke Color
-					skiaRandomizeColor(ctx);
-					skiaShapes[Triangle] (ctx,&ctx->shape_args);
-				}
+                ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+                skiaShapes[Triangle] (ctx,&ctx->shape_args);
+                if(ctx->shape_args.stroke_width)
+                {
+                    ctx->skia_paint->setShader (NULL);
+                    apply_stroke_settings(ctx);
+                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+                    //Stroke Color
+                    skiaRandomizeColor(ctx);
+                    skiaShapes[Triangle] (ctx,&ctx->shape_args);
+                }
 
                 break;
 
@@ -337,11 +337,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     y = ctx->shape_args.center_y;
                 }
 
-               ctx->shape_args.center_x = x;
-               ctx->shape_args.center_y = y;
+                ctx->shape_args.center_x = x;
+                ctx->shape_args.center_y = y;
 
-               px = x + 2*r * star_points[0][0]/200.0;
-               py = y + 2*r * star_points[0][1]/200.0;
+                px = x + 2*r * star_points[0][0]/200.0;
+                py = y + 2*r * star_points[0][1]/200.0;
 
 
                 if(ctx->shape_args.fill_type != none)
@@ -354,8 +354,8 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         center.set(px,py);
 
                         shader = SkGradientShader::CreateRadial (center, r,
-                                                                 linearColors, NULL,2,
-                                                                 SkShader::kClamp_TileMode, NULL);
+                                linearColors, NULL,2,
+                                SkShader::kClamp_TileMode, NULL);
 
                         ctx->skia_paint->setShader (shader);
                     }
@@ -369,24 +369,24 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         linearPoints[1].fY = SkIntToScalar(y+2*r);
 
                         shader = SkGradientShader::CreateLinear (
-                                                                 linearPoints, linearColors, NULL, 2,
-                                                                 SkShader::kClamp_TileMode, NULL);
+                                linearPoints, linearColors, NULL, 2,
+                                SkShader::kClamp_TileMode, NULL);
 
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-		    	ctx->skia_paint->setStyle(SkPaint::kFill_Style);
-				skiaShapes[Star] (ctx,&ctx->shape_args);
+                ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+                skiaShapes[Star] (ctx,&ctx->shape_args);
 
-				if(ctx->shape_args.stroke_width)
-				{
-            		ctx->skia_paint->setShader (NULL);
-					apply_stroke_settings(ctx);
-		    		ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-					//Stroke Color
-					skiaRandomizeColor(ctx);
-					skiaShapes[Star] (ctx,&ctx->shape_args);
-				}
+                if(ctx->shape_args.stroke_width)
+                {
+                    ctx->skia_paint->setShader (NULL);
+                    apply_stroke_settings(ctx);
+                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+                    //Stroke Color
+                    skiaRandomizeColor(ctx);
+                    skiaShapes[Star] (ctx,&ctx->shape_args);
+                }
 
                 break;
 

@@ -29,8 +29,8 @@ int32_t SkToS32(intmax_t x) { return (int32_t)x; }
 bool gPrintInstCount = false;
 #endif
 
-char gShapes[MAX_SHAPES][100] = {"circle", "rectangle", "triangle", "star", "roundedrectangle"};
-char gFillTypes[MAX_FILL_TYPES][100] = {"none","solid","linear-gradient","radial-gradient","image-pattern","herringbone-pattern"};
+const char *gShapes[] = {"circle", "rectangle", "triangle", "star", "roundedrectangle", NULL};
+const char *gFillTypes[] = {"none", "solid", "linear-gradient", "radial-gradient", "image-pattern", "herringbone-pattern", NULL};
 
 int star_points[11][2] = {
     { 0, 85 },
@@ -253,7 +253,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"enable-egl-sample-buffers", '\0', POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
          "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
          NULL},
-        {"shape-name", 'S', POPT_ARG_STRING, &opt->shape_name, 0,
+        {"shape", 'S', POPT_ARG_STRING, &opt->shape_name, 0,
          "Controls which shape to be drawn ",
          NULL},
         {"x-position", 'X', POPT_ARG_INT, &opt->x_position, 0,
@@ -550,23 +550,30 @@ result_init(caskbench_result_t *result, const char* name)
     result->avg_run_time = -1.0;
 }
 
-int convertToShapeID(char* shapeName)
+int
+convertToShapeID(const char* shapeName)
 {
-	if (shapeName == NULL)
-		return 0;
-	for (int i = 0; i < MAX_SHAPES; i++)
-		if(strcmp(gShapes[i],shapeName) == 0)
-			return i + 1;
+    int i =0;
+    if (shapeName == NULL)
+        return 0;
+    while (gShapes[i] != NULL) {
+        if (strcmp(gShapes[i], shapeName) == 0)
+            return i + 1;
+        i++;
+    }
 }
 
-fillType convertToFillType(char *fill_type)
+fillType
+convertToFillType(const char *fill_type)
 {
-	if (fill_type == NULL)
-		return (fillType) 0;
-	for (int i = 0; i < MAX_FILL_TYPES; i++)
-		if(strcmp(gFillTypes[i],fill_type) == 0)
-			return (fillType) i ;
-
+    int i =0;
+    if (fill_type == NULL)
+        return (fillType) 0;
+    while (gFillTypes[i] != NULL) {
+        if (strcmp(gFillTypes[i], fill_type) == 0)
+            return (fillType) i ;
+        i++;
+    }
 }
 
 int

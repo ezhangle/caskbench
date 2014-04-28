@@ -1,7 +1,7 @@
 #
 Name:           caskbench
 Summary:        Cairo and Skia Benchmark
-Version:        0.3.9
+Version:        0.4.0
 Release:        1.0
 Group:          Graphics & UI Framework/Testing
 ExcludeArch:    i596

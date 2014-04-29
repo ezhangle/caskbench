@@ -266,10 +266,10 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "Controls the fill type of the objects draw either solid, gradient, image pattern type",
          NULL},
         {"fill-color", 'C', POPT_ARG_STRING, &opt->fill_color, 0,
-         "RGBA color value for fill eg. #ABCDEFFF ",
+         "RGBA color value for fill eg. -C ABCDEFFF ",
          NULL},
         {"stroke-color", 'O', POPT_ARG_STRING, &opt->stroke_color, 0,
-         "RGBA color value for stroke eg. #ABCDEFFF",
+         "RGBA color value for stroke eg. -O ABCDEFFF",
          NULL},
 #if 0
         {"red", 'R', POPT_ARG_DOUBLE, &opt->red, 0,

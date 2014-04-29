@@ -37,6 +37,7 @@ typedef struct shapes
     double stroke_red;
     double stroke_green;
     double stroke_blue;
+    double stroke_alpha;
 
     int dash_style;
     int cap_style;

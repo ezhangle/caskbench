@@ -62,18 +62,12 @@ typedef struct _caskbench_options {
     int width;
     int height;
     char* fill_type;
-    double red;
-    double green;
-    double blue;
-    double alpha;
+    char* fill_color;
+    char* stroke_color;
     int animation;
     char *image_path;
     int stroke_width;
     int multi_shapes;
-
-    double stroke_red;
-    double stroke_green;
-    double stroke_blue;
 
     int cap_style;
     int join_style;
@@ -271,6 +265,12 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"fill-type", 'f', POPT_ARG_STRING, &opt->fill_type, 0,
          "Controls the fill type of the objects draw either solid, gradient, image pattern type",
          NULL},
+        {"fill-color", 'C', POPT_ARG_STRING, &opt->fill_color, 0,
+         "RGBA color value for fill eg. #ABCDEFFF ",
+         NULL},
+        {"stroke-color", 'O', POPT_ARG_STRING, &opt->stroke_color, 0,
+         "RGBA color value for stroke eg. #ABCDEFFF",
+         NULL},
 #if 0
         {"red", 'R', POPT_ARG_DOUBLE, &opt->red, 0,
          "R Color Value",
@@ -343,20 +343,15 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->width = 0;
     opt->height = 0;
     opt->fill_type = NULL;
-    opt->red = 0;
-    opt->green = 0;
-    opt->blue = 0;
-    opt->alpha = 0;
     opt->animation = 0;
     opt->image_path = NULL;
     opt->multi_shapes = 0;
     opt->stroke_width = 0;
-    opt->stroke_red = 0;
-    opt->stroke_green = 0;
-    opt->stroke_blue = 0;
     opt->cap_style = 0;
     opt->join_style = 0;
     opt->dash_style = 0;
+    opt->fill_color = NULL;
+    opt->stroke_color = NULL;
 
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
@@ -550,6 +545,47 @@ result_init(caskbench_result_t *result, const char* name)
     result->avg_run_time = -1.0;
 }
 
+void
+convertHexToRGBA(const char * hexValue, caskbench_context_t *context, bool stroke = false)
+{
+    char *endPtr;
+    uint32_t colorVal = 0;
+    int r, g, b;
+    if ((hexValue == NULL) || (strlen(hexValue) != 8))
+    {
+        if (!stroke)
+        {
+            context->shape_args.red = 0;
+            context->shape_args.green = 0;
+            context->shape_args.blue = 0;
+            context->shape_args.alpha = 0;
+        }
+        else
+        {
+            context->shape_args.stroke_red = 0;
+            context->shape_args.stroke_green = 0;
+            context->shape_args.stroke_blue = 0;
+            context->shape_args.stroke_alpha = 0;
+        }
+        return;
+    }
+    colorVal = strtoul(hexValue, &endPtr, 16);
+    if (!stroke)
+    {
+        context->shape_args.red = ((colorVal >> 24) & 255) / 255.0;
+        context->shape_args.green= ((colorVal >> 16) & 255) / 255.0;
+        context->shape_args.blue = ((colorVal >> 8) & 255) / 255.0;
+        context->shape_args.alpha = ((colorVal) & 255) / 255.0;
+    }
+    else
+    {
+        context->shape_args.stroke_red = ((colorVal >> 24) & 255) / 255.0;
+        context->shape_args.stroke_green= ((colorVal >> 16) & 255) / 255.0;
+        context->shape_args.stroke_blue = ((colorVal >> 8) & 255) / 255.0;
+        context->shape_args.stroke_alpha = ((colorVal) & 255) / 255.0;
+    }
+}
+
 int
 convertToShapeID(const char* shapeName)
 {
@@ -641,18 +677,13 @@ main (int argc, char *argv[])
         context.shape_args.height = opt.height;
         context.shape_args.shape_id = convertToShapeID(opt.shape_name);
         context.shape_args.fill_type = convertToFillType(opt.fill_type);
-        context.shape_args.red = opt.red;
-        context.shape_args.green = opt.green;
-        context.shape_args.blue = opt.blue;
-        context.shape_args.alpha = opt.alpha;
+        convertHexToRGBA(opt.fill_color, &context);
+        convertHexToRGBA(opt.stroke_color, &context, true);
         context.shape_args.image_path = opt.image_path;
         context.shape_args.stroke_width = opt.stroke_width;
         context.shape_args.multi_shapes = opt.multi_shapes;
         context.shape_args.animation = opt.animation;
         context.shape_args.stroke_width = opt.stroke_width;
-        context.shape_args.stroke_red = opt.stroke_red;
-        context.shape_args.stroke_green = opt.stroke_green;
-        context.shape_args.stroke_blue = opt.stroke_blue;
         context.shape_args.cap_style = opt.cap_style;
         context.shape_args.join_style = opt.join_style;
         context.shape_args.dash_style = opt.dash_style;

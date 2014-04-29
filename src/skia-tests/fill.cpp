@@ -77,6 +77,17 @@ void apply_stroke_settings(caskbench_context_t *ctx)
         }
 
     }
+    ctx->skia_paint->setShader (NULL);
+    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+    if (ctx->shape_args.stroke_red > 0 || ctx->shape_args.stroke_blue > 0 || ctx->shape_args.stroke_green > 0 || ctx->shape_args.stroke_alpha > 0)
+    {
+        ctx->skia_paint->setARGB(255*(ctx->shape_args.stroke_alpha ? ctx->shape_args.stroke_alpha:(double)1),
+                255*ctx->shape_args.stroke_red,
+                255*ctx->shape_args.stroke_green,
+                255*ctx->shape_args.stroke_blue);
+    }
+    else
+        skiaRandomizeColor(ctx);
 }
 
 void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
@@ -150,11 +161,20 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
             }
             else if ((ctx->shape_args.fill_type == linearGradient) || (ctx->shape_args.fill_type == radialGradient))
             {
-                red = 255*(double)rand()/RAND_MAX;
-                green = 255*(double)rand()/RAND_MAX;
-                blue = 255*(double)rand()/RAND_MAX;
-                alpha = 255*(double)rand()/RAND_MAX;
-
+                if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+                {
+                    red = 255*ctx->shape_args.red;
+                    green = 255*ctx->shape_args.green;
+                    blue = 255*ctx->shape_args.blue;
+                    alpha = 255*ctx->shape_args.alpha;
+                }
+                else
+                {
+                    red = 255*(double)rand()/RAND_MAX;
+                    green = 255*(double)rand()/RAND_MAX;
+                    blue = 255*(double)rand()/RAND_MAX;
+                    alpha = 255*(double)rand()/RAND_MAX;
+                }
             }
             else if (ctx->shape_args.fill_type == herringbonePattern){}
             else if ((ctx->shape_args.fill_type == imagePattern) && (ctx->shape_args.image_path))
@@ -210,10 +230,6 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 if (ctx->shape_args.stroke_width)
                 {
                     apply_stroke_settings(ctx);
-                    ctx->skia_paint->setShader (NULL);
-                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-                    //Stroke Color
-                    skiaRandomizeColor(ctx);
                     skiaShapes[Circle] (ctx,&ctx->shape_args);
                 }
 
@@ -261,11 +277,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 if (ctx->shape_args.stroke_width)
                 {
-                    ctx->skia_paint->setShader (NULL);
                     apply_stroke_settings(ctx);
-                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-                    //Stroke Color
-                    skiaRandomizeColor(ctx);
                     skiaShapes[Rectangle] (ctx,&ctx->shape_args);
                 }
 
@@ -319,11 +331,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 skiaShapes[Triangle] (ctx,&ctx->shape_args);
                 if (ctx->shape_args.stroke_width)
                 {
-                    ctx->skia_paint->setShader (NULL);
                     apply_stroke_settings(ctx);
-                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-                    //Stroke Color
-                    skiaRandomizeColor(ctx);
                     skiaShapes[Triangle] (ctx,&ctx->shape_args);
                 }
 
@@ -380,11 +388,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 if (ctx->shape_args.stroke_width)
                 {
-                    ctx->skia_paint->setShader (NULL);
                     apply_stroke_settings(ctx);
-                    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-                    //Stroke Color
-                    skiaRandomizeColor(ctx);
                     skiaShapes[Star] (ctx,&ctx->shape_args);
                 }
 

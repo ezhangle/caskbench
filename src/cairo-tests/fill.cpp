@@ -73,7 +73,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             //Options for fill,gradient and transparency
             if ((ctx->shape_args.fill_type == none) || (ctx->shape_args.fill_type == solid))
-             {
+            {
                 if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
                 {
                     cairo_set_source_rgba(cr, ctx->shape_args.red, ctx->shape_args.green, ctx->shape_args.blue, ctx->shape_args.alpha?ctx->shape_args.alpha:1);
@@ -83,11 +83,20 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             }
             else if ((ctx->shape_args.fill_type == linearGradient) || (ctx->shape_args.fill_type == radialGradient))
             {
-                red = (double)rand()/RAND_MAX;
-                green = (double)rand()/RAND_MAX;
-                blue = (double)rand()/RAND_MAX;
-                alpha = (double)rand()/RAND_MAX;
-
+                if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+                {
+                    red = ctx->shape_args.red;
+                    green = ctx->shape_args.green;
+                    blue = ctx->shape_args.blue;
+                    alpha = ctx->shape_args.alpha;
+                }
+                else
+                {
+                    red = (double)rand()/RAND_MAX;
+                    green = (double)rand()/RAND_MAX;
+                    blue = (double)rand()/RAND_MAX;
+                    alpha = (double)rand()/RAND_MAX;
+                }
             }
             else if (ctx->shape_args.fill_type == herringbonePattern){}
             else if ((ctx->shape_args.fill_type == imagePattern) && (ctx->shape_args.image_path))
@@ -101,7 +110,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 pattern = cairo_pattern_create_for_surface (image);
                 cairo_set_source (cr, pattern);
             }
-
 
             switch (shape) {
             case 1:
@@ -250,9 +258,10 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 }
 
                 cairo_set_line_join(cr,  (cairo_line_join_t)ctx->shape_args.join_style);
-                if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+                if (ctx->shape_args.stroke_red > 0 || ctx->shape_args.stroke_blue > 0 || ctx->shape_args.stroke_green > 0 || ctx->shape_args.stroke_alpha > 0)
                 {
-                    cairo_set_source_rgba(cr, ctx->shape_args.red, ctx->shape_args.green, ctx->shape_args.blue, ctx->shape_args.alpha?ctx->shape_args.alpha:1);
+                    cairo_set_source_rgba (cr, ctx->shape_args.stroke_red, ctx->shape_args.stroke_green, ctx->shape_args.stroke_blue,
+                                           ctx->shape_args.stroke_alpha?ctx->shape_args.stroke_alpha:1);
                 }
                 else
                     cairoRandomizeColor(ctx);
@@ -263,7 +272,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             {
                 if (pattern != NULL)
                     cairo_pattern_destroy(pattern);
-                if (image != NULL)
+                if ((image != NULL) && (ctx->shape_args.fill_type == imagePattern))
                     cairo_surface_destroy (image);
             }
         }

@@ -1,8 +1,10 @@
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
 
-#include <SkPath.h>
-#include <SkRect.h>
+#ifdef USE_SKIA
+#  include <SkPath.h>
+#  include <SkRect.h>
+#endif
 
 typedef struct shapes
 {
@@ -13,8 +15,10 @@ typedef struct shapes
     double height;
     int numpoints;
     double (*points)[2];
+#ifdef USE_SKIA
     SkPath path;
     SkRect rect;
+#endif
 
     int shape_id;
     char* fill_type;

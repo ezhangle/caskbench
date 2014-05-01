@@ -3,19 +3,14 @@ file(GLOB caskbench_SOURCES
   kinetics.cpp
   image.cpp
   cairo-image.cpp
-  skia-image.cpp
   cairo-shapes.cpp
-  skia-shapes.cpp
-
   cairo-tests/*.cpp
-  skia-tests/*.cpp
 )
 
 if (USE_GLX)
   list(APPEND caskbench_SOURCES
     glx.cpp
     cairo-glx.cpp
-    skia-glx.cpp
     )
 endif (USE_GLX)
 
@@ -23,9 +18,22 @@ if (USE_EGL)
   list(APPEND caskbench_SOURCES
     egl.cpp
     cairo-egl.cpp
-    skia-egl.cpp
     )
 endif (USE_EGL)
+
+if (USE_SKIA)
+  list(APPEND caskbench_SOURCES
+    skia-image.cpp
+    skia-shapes.cpp
+    skia-tests/*.cpp
+    )
+  if (USE_GLX)
+    list(APPEND caskbench_SOURCES skia-glx.cpp)
+  endif (USE_GLX)
+  if (USE_EGL)
+    list(APPEND caskbench_SOURCES skia-egl.cpp)
+  endif (USE_EGL)
+endif (USE_SKIA)
 
 add_executable(generate_tests IMPORTED)
 set_property(TARGET generate_tests PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/generate_tests")

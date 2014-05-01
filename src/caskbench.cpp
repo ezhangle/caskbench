@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <assert.h>
 #include <sys/time.h>
 #include <popt.h>
@@ -12,10 +13,12 @@
 #  include <cairo-gl.h>
 #endif
 
-#include <SkBitmap.h>
-#include <SkBitmapDevice.h>
-#include <SkPaint.h>
-#include <SkCanvas.h>
+#ifdef USE_SKIA
+#  include <SkBitmap.h>
+#  include <SkBitmapDevice.h>
+#  include <SkPaint.h>
+#  include <SkCanvas.h>
+#endif
 
 #include "caskbench.h"
 #include "device_config.h"
@@ -113,7 +116,7 @@ write_image_file_cairo (const char *fname, caskbench_context_t *context)
     cairo_surface_write_to_png (context->cairo_surface, fname);
 }
 
-
+#ifdef USE_SKIA
 void
 write_image_file_skia (const char *fname, caskbench_context_t *context)
 {
@@ -160,7 +163,7 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
     cairo_surface_write_to_png (surface, fname);
     cairo_surface_destroy(surface);
 }
-
+#endif
 
 typedef enum {
     CASKBENCH_STATUS_PASS,
@@ -442,6 +445,24 @@ context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
 }
 
 void
+context_update_cairo(caskbench_context_t *context)
+{
+    context->update_cairo();
+}
+
+void
+context_destroy_cairo(caskbench_context_t *context)
+{
+    if (!context)
+        return;
+    cairo_destroy(context->cairo_cr);
+    cairo_surface_destroy(context->cairo_surface);
+    context->destroy_cairo();
+    context->cairo_cr = NULL;
+}
+
+#ifdef USE_SKIA
+void
 context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 {
     if (config.surface_type == NULL || !strncmp(config.surface_type, "image", 5)) {
@@ -488,12 +509,6 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 }
 
 void
-context_update_cairo(caskbench_context_t *context)
-{
-    context->update_cairo();
-}
-
-void
 context_update_skia(caskbench_context_t *context)
 {
     context->update_skia();
@@ -510,17 +525,7 @@ context_destroy_skia(caskbench_context_t *context)
     context->destroy_skia();
     context->skia_device = NULL;
 }
-
-void
-context_destroy_cairo(caskbench_context_t *context)
-{
-    if (!context)
-        return;
-    cairo_destroy(context->cairo_cr);
-    cairo_surface_destroy(context->cairo_surface);
-    context->destroy_cairo();
-    context->cairo_cr = NULL;
-}
+#endif
 
 void
 result_init(caskbench_result_t *result, const char* name)

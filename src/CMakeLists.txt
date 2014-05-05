@@ -2,6 +2,7 @@ file(GLOB caskbench_SOURCES
   caskbench.cpp
   kinetics.cpp
   image.cpp
+  cairo-util.cpp
   cairo-image.cpp
   cairo-shapes.cpp
   cairo-tests/*.cpp
@@ -22,11 +23,13 @@ if (USE_EGL)
 endif (USE_EGL)
 
 if (USE_SKIA)
-  list(APPEND caskbench_SOURCES
+  file(GLOB skia_files 
+    skia-util.cpp
     skia-image.cpp
     skia-shapes.cpp
     skia-tests/*.cpp
     )
+  list(APPEND caskbench_SOURCES ${skia_files} )
   if (USE_GLX)
     list(APPEND caskbench_SOURCES skia-glx.cpp)
   endif (USE_GLX)

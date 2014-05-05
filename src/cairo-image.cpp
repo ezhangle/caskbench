@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <cairo.h>
 
+#include "forward.h"
 #include "image.h"
 #include "device_config.h"
 

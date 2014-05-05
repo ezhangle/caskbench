@@ -104,67 +104,6 @@ void destroy_skia_egl();
 void update_skia_egl();
 #endif
 
-void
-write_image_file_cairo (const char *fname, caskbench_context_t *context)
-{
-    assert (context->cairo_surface);
-    cairo_status_t status = cairo_surface_status (context->cairo_surface);
-    if (status != CAIRO_STATUS_SUCCESS) {
-      warnx("Error writing cairo surface to file: %s\n", cairo_status_to_string(status));
-      return;
-    }
-    cairo_surface_write_to_png (context->cairo_surface, fname);
-}
-
-#ifdef USE_SKIA
-void
-write_image_file_skia (const char *fname, caskbench_context_t *context)
-{
-    SkBitmap bitmap;
-    void * data;
-    cairo_surface_t* surface;
-
-#ifdef USE_LEGACY_SKIA_SRA
-    bitmap.setConfig(SkBitmap::kARGB_8888_Config,
-                     context->canvas_width, context->canvas_height,
-                     4 * context->canvas_width, // TODO: Get from context->skia_device
-                     kPremul_SkAlphaType);
-    context->skia_canvas->flush();
-    if (!context->skia_canvas->readPixels(&bitmap, 0, 0, SkCanvas::kRGBA_Unpremul_Config8888)) {
-        warnx("Could not read pixels from skia device\n");
-        return;
-    }
-#else
-    bitmap.setConfig(SkBitmap::kARGB_8888_Config,
-                     context->canvas_width, context->canvas_height);
-    SkImageInfo info = SkImageInfo::Make(context->canvas_width, context->canvas_height,
-                                         kBGRA_8888_SkColorType,
-                                         kPremul_SkAlphaType);
-    bitmap.allocPixels(info);
-    context->skia_canvas->flush();
-    if (!context->skia_canvas->readPixels(&bitmap, 0, 0)) {
-        warnx("Could not read pixels from skia device\n");
-        return;
-    }
-#endif
-
-    data = bitmap.getPixels();
-    assert(data);
-    surface = cairo_image_surface_create_for_data((unsigned char*)data,
-                                                  CAIRO_FORMAT_ARGB32,
-                                                  context->canvas_width, context->canvas_height,
-                                                  4 * context->canvas_width);
-
-    cairo_status_t status = cairo_surface_status (surface);
-    if (status != CAIRO_STATUS_SUCCESS) {
-      warnx("Error writing skia surface to file: %s\n", cairo_status_to_string(status));
-      return;
-    }
-    cairo_surface_write_to_png (surface, fname);
-    cairo_surface_destroy(surface);
-}
-#endif
-
 typedef enum {
     CASKBENCH_STATUS_PASS,
     CASKBENCH_STATUS_FAIL,

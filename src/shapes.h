@@ -12,14 +12,22 @@
 #  include <SkRect.h>
 #endif
 
-enum fillType {
-    noFill,
-    solidFill,
-    linearGradient,
-    radialGradient,
-    imagePattern,
-    herringbonePattern
-};
+typedef enum {
+    CB_FILL_NONE,
+    CB_FILL_SOLID,
+    CB_FILL_LINEAR_GRADIENT,
+    CB_FILL_RADIAL_GRADIENT,
+    CB_FILL_IMAGE_PATTERN,
+    CB_FILL_HERRINGBONE_PATTERN
+} fill_type_t;
+
+typedef enum {
+    CB_SHAPE_CIRCLE,
+    CB_SHAPE_RECTANGLE,
+    CB_SHAPE_TRIANGLE,
+    CB_SHAPE_STAR,
+    CB_SHAPE_ROUNDED_RECTANGLE
+} shape_type_t;
 
 typedef struct shapes
 {
@@ -55,15 +63,6 @@ typedef struct shapes
     int cap_style;
     int join_style;
 } shapes_t;
-
-enum Shapes
-{
-    Circle,
-    Rectangle,
-    Triangle,
-    Star,
-    RoundedRectangle
-};
 
 extern int star_points[11][2];
 

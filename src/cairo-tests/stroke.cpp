@@ -57,7 +57,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
         ctx->shape_args.center_x = x+r;
         ctx->shape_args.center_y = y+r;
         ctx->shape_args.radius = r;
-        cairoShapes[Circle](ctx,&ctx->shape_args);
+        cairoShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
         break;
 
     case 2:
@@ -66,7 +66,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
         ctx->shape_args.center_y = y;
         ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
         ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
-        cairoShapes[Rectangle](ctx,&ctx->shape_args);
+        cairoShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
         break;
 
     case 3:
@@ -79,7 +79,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
         ctx->shape_args.points[1][1] = 0;
         ctx->shape_args.points[2][0] = -r;
         ctx->shape_args.points[2][1] = -2*r;
-        cairoShapes[Triangle] (ctx,&ctx->shape_args);
+        cairoShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
         free (ctx->shape_args.points);
         //cairo_fill (cr);
         break;
@@ -95,7 +95,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
             ctx->shape_args.points[p][0] = px;
             ctx->shape_args.points[p][1] = py;
         }
-        cairoShapes[Star] (ctx,&ctx->shape_args);
+        cairoShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
         //cairo_fill (cr);
         free (ctx->shape_args.points);
         break;

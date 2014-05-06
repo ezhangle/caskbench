@@ -503,27 +503,27 @@ result_init(caskbench_result_t *result, const char* name)
 }
 
 int
-convertToShapeID(const char* shapeName)
+convertToShapeID(const char* shape_name)
 {
     int i =0;
-    if (shapeName == NULL)
+    if (shape_name == NULL)
         return 0;
     while (gShapes[i] != NULL) {
-        if (strcmp(gShapes[i], shapeName) == 0)
+        if (strcmp(gShapes[i], shape_name) == 0)
             return i + 1;
         i++;
     }
 }
 
-fillType
-convertToFillType(const char *fill_type)
+fill_type_t
+convertToFillType(const char *fill_name)
 {
     int i =0;
-    if (fill_type == NULL)
-        return (fillType) 0;
+    if (fill_name == NULL)
+        return (fill_type_t) 0;
     while (gFillTypes[i] != NULL) {
-        if (strcmp(gFillTypes[i], fill_type) == 0)
-            return (fillType) i ;
+        if (strcmp(gFillTypes[i], fill_name) == 0)
+            return (fill_type_t) i ;
         i++;
     }
 }

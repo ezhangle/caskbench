@@ -46,7 +46,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
         ctx->shape_args.center_x = x+r;
         ctx->shape_args.center_y = y+r;
         ctx->shape_args.radius = r;
-        skiaShapes[Circle](ctx,&ctx->shape_args);
+        skiaShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
         break;
 
     case 2:
@@ -55,7 +55,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
         ctx->shape_args.center_y = y;
         ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
         ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
-        skiaShapes[Rectangle](ctx,&ctx->shape_args);
+        skiaShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
         ctx->shape_args.width = old_width;
         ctx->shape_args.height = old_height;
         break;
@@ -70,7 +70,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
         ctx->shape_args.points[1][1] = 0;
         ctx->shape_args.points[2][0] = -r;
         ctx->shape_args.points[2][1] = -2*r;
-        skiaShapes[Triangle] (ctx,&ctx->shape_args);
+        skiaShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
         free (ctx->shape_args.points);
         break;
     case 4:
@@ -84,7 +84,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
             ctx->shape_args.points[p][0] = px;
             ctx->shape_args.points[p][1] = py;
         }
-        skiaShapes[Star] (ctx,&ctx->shape_args);
+        skiaShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
         free (ctx->shape_args.points);
         break;
 

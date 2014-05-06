@@ -215,7 +215,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
 
-                skiaShapes[Circle](ctx,&ctx->shape_args);
+                skiaShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
 
                 break;
 
@@ -256,7 +256,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-                skiaShapes[Rectangle](ctx,&ctx->shape_args);
+                skiaShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
                 ctx->shape_args.width = old_width;
                 ctx->shape_args.height = old_height;
                 break;
@@ -310,7 +310,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
 
-                skiaShapes[Triangle] (ctx,&ctx->shape_args);
+                skiaShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
                 free (ctx->shape_args.points);
 
                 break;
@@ -364,7 +364,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-                skiaShapes[Star] (ctx,&ctx->shape_args);
+                skiaShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
                 free (ctx->shape_args.points);
                 break;
 

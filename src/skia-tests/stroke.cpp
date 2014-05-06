@@ -157,3 +157,14 @@ sk_test_stroke(caskbench_context_t *ctx)
         ctx->shape_args.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_args.center_x?ctx->shape_args.center_x:100,ctx->shape_args.center_y?ctx->shape_args.center_y:100);
     return 1;
 }
+
+/*
+  Local Variables:
+  mode:c++
+  c-file-style:"stroustrup"
+  c-file-offsets:((innamespace . 0)(inline-open . 0)(case-label . +))
+  indent-tabs-mode:nil
+  fill-column:99
+  End:
+*/
+// vim: filetype=cpp:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:fileencoding=utf-8:textwidth=99 :

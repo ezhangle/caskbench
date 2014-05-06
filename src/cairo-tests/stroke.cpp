@@ -15,19 +15,6 @@ static int num_y_elements;
 static kinetics_t *particles;
 const double dashes[] = { 2, 4 };
 static int line_length;
-static int star_points[11][2] = {
-    { 0, 85 },
-    { 75, 75 },
-    { 100, 10 },
-    { 125, 75 },
-    { 200, 85 },
-    { 150, 125 },
-    { 160, 190 },
-    { 100, 150 },
-    { 40, 190 },
-    { 50, 125 },
-    { 0, 85 }
-};
 
 int
 ca_setup_stroke(caskbench_context_t *ctx)

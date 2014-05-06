@@ -49,4 +49,6 @@ enum Shapes
     RoundedRectangle
 };
 
+extern int star_points[11][2];
+
 #endif

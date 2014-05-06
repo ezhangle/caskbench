@@ -2,6 +2,7 @@ file(GLOB caskbench_SOURCES
   caskbench.cpp
   kinetics.cpp
   image.cpp
+  shapes.cpp
   cairo-util.cpp
   cairo-image.cpp
   cairo-shapes.cpp

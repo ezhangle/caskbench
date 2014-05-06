@@ -15,19 +15,6 @@ static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
 static kinetics_t *cairo_particles;
-static int star_points[11][2] = {
-    { 0, 85 },
-    { 75, 75 },
-    { 100, 10 },
-    { 125, 75 },
-    { 200, 85 },
-    { 150, 125 },
-    { 160, 190 },
-    { 100, 150 },
-    { 40, 190 },
-    { 50, 125 },
-    { 0, 85 }
-};
 
 void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 {

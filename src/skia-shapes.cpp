@@ -29,20 +29,20 @@ skiaRandomizeColor(caskbench_context_t *ctx)
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->skia_canvas->drawCircle(args->centre_x, args->centre_y, args->radius,
+    ctx->skia_canvas->drawCircle(args->center_x, args->center_y, args->radius,
                                  *(ctx->skia_paint));
 }
 
 void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->skia_canvas->drawRectCoords(args->centre_x, args->centre_y, args->width, args->height,
+    ctx->skia_canvas->drawRectCoords(args->center_x, args->center_y, args->width, args->height,
                                      *(ctx->skia_paint));
 }
 
 void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 {
     SkPath path;
-    path.moveTo(args->centre_x, args->centre_y+2*args->radius);
+    path.moveTo(args->center_x, args->center_y+2*args->radius);
     path.rLineTo(2*args->radius, 0);
     path.rLineTo(-args->radius, -2*args->radius);
 
@@ -51,14 +51,14 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 
 void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 {
-    int px = args->centre_x + 2*args->radius * star_points[0][0]/200.0;
-    int py = args->centre_y + 2*args->radius * star_points[0][1]/200.0;
+    int px = args->center_x + 2*args->radius * star_points[0][0]/200.0;
+    int py = args->center_y + 2*args->radius * star_points[0][1]/200.0;
     SkPath path;
     path.moveTo(px, py);
 
     for (int p = 1; p < 10; p++ ) {
-        px = args->centre_x + 2*args->radius * star_points[p][0]/200.0;
-        py = args->centre_y + 2*args->radius * star_points[p][1]/200.0;
+        px = args->center_x + 2*args->radius * star_points[p][0]/200.0;
+        py = args->center_y + 2*args->radius * star_points[p][1]/200.0;
         path.lineTo(px, py);
     }
 
@@ -67,7 +67,7 @@ void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 
 void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 {
-    args->rect.set(args->centre_x, args->centre_y, args->width, args->height);
+    args->rect.set(args->center_x, args->center_y, args->width, args->height);
 
     ctx->skia_canvas->drawRoundRect(args->rect, 4.0, 4.0, *(ctx->skia_paint));
 }

@@ -61,16 +61,16 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.centre_x = x+r;
-        ctx->shape_args.centre_y = y+r;
+        ctx->shape_args.center_x = x+r;
+        ctx->shape_args.center_y = y+r;
         ctx->shape_args.radius = r;
         cairoShapes[Circle](ctx,&ctx->shape_args);
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.centre_x =  x;
-        ctx->shape_args.centre_y = y;
+        ctx->shape_args.center_x =  x;
+        ctx->shape_args.center_y = y;
         ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
         ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
         cairoShapes[Rectangle](ctx,&ctx->shape_args);
@@ -159,7 +159,7 @@ ca_test_stroke(caskbench_context_t *ctx)
     }
     else
         //drawStroke(ctx,NULL);
-        ctx->shape_args.multi_shapes?drawStroke(ctx,NULL):drawShape(ctx,ctx->shape_args.centre_x?ctx->shape_args.centre_x:100.0,ctx->shape_args.centre_y?ctx->shape_args.centre_y:100.0);
+        ctx->shape_args.multi_shapes?drawStroke(ctx,NULL):drawShape(ctx,ctx->shape_args.center_x?ctx->shape_args.center_x:100.0,ctx->shape_args.center_y?ctx->shape_args.center_y:100.0);
 
     return 1;
 }

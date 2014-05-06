@@ -53,8 +53,8 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
         shape = ctx->shape_args.shape_id ;
-    ctx->shape_args.centre_x = x;
-    ctx->shape_args.centre_y = y;
+    ctx->shape_args.center_x = x;
+    ctx->shape_args.center_y = y;
     ctx->shape_args.radius = isClip?clipr:r;
     ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*(isClip?clipr:r);
     ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*(isClip?clipr:r);

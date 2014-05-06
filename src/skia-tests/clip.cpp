@@ -45,19 +45,19 @@ static void drawClip(caskbench_context_t *ctx,double x,double y,double clipr=0)
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.centre_x = x+r;
-        ctx->shape_args.centre_y = y+r;
+        ctx->shape_args.center_x = x+r;
+        ctx->shape_args.center_y = y+r;
         ctx->shape_args.radius = r;
-        ctx->shape_args.path.addCircle(ctx->shape_args.centre_x, ctx->shape_args.centre_y,SkIntToScalar(clipr));
+        ctx->shape_args.path.addCircle(ctx->shape_args.center_x, ctx->shape_args.center_y,SkIntToScalar(clipr));
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.centre_x =  x;
-        ctx->shape_args.centre_y = y;
-        ctx->shape_args.width = (ctx->shape_args.centre_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*clipr);
-        ctx->shape_args.height = (ctx->shape_args.centre_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*clipr);
-        ctx->shape_args.path.addRect(ctx->shape_args.centre_x, ctx->shape_args.centre_y, ctx->shape_args.width, ctx->shape_args.height);
+        ctx->shape_args.center_x =  x;
+        ctx->shape_args.center_y = y;
+        ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*clipr);
+        ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*clipr);
+        ctx->shape_args.path.addRect(ctx->shape_args.center_x, ctx->shape_args.center_y, ctx->shape_args.width, ctx->shape_args.height);
         ctx->shape_args.width = old_width;
         ctx->shape_args.height = old_height;
         break;
@@ -120,8 +120,8 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0)
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
         shape = ctx->shape_args.shape_id ;
-    ctx->shape_args.centre_x = x;
-    ctx->shape_args.centre_y = y;
+    ctx->shape_args.center_x = x;
+    ctx->shape_args.center_y = y;
     ctx->shape_args.radius = r;
     ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
     ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;

@@ -8,8 +8,8 @@
 
 typedef struct shapes
 {
-    double centre_x;
-    double centre_y;
+    double center_x;
+    double center_y;
     double radius;
     double width;
     double height;

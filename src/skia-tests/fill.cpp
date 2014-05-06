@@ -146,6 +146,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
 
+            ctx->skia_paint->reset();
             // Options for fill,gradient and transparency
             if (ctx->shape_args.fill_type == none || ctx->shape_args.fill_type == solid)
             {

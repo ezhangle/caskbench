@@ -43,6 +43,7 @@ sk_test_multishape(caskbench_context_t *ctx)
             SkPath path;
             x = i * element_spacing;
 
+            ctx->skia_paint->reset();
             // TODO: Select a pre-defined paint object at random
             skiaRandomizeColor(ctx);
 

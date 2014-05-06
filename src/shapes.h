@@ -1,3 +1,9 @@
+/*
+ * Copyright 2014 © Samsung Research America, Silicon Valley
+ *
+ * Use of this source code is governed by the 3-Clause BSD license
+ * specified in the COPYING file included with this source code.
+ */
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
 

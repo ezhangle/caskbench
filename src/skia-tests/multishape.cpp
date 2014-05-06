@@ -33,7 +33,6 @@ sk_teardown_multishape(void)
 int
 sk_test_multishape(caskbench_context_t *ctx)
 {
-    unsigned char red, green, blue, alpha;
     int i, j, x, y, r, p, shape;
 
     r = 0.9 * element_spacing / 2;

@@ -22,7 +22,6 @@ sk_teardown_paint(void)
 int
 sk_test_paint(caskbench_context_t *ctx)
 {
-    unsigned char red, green, blue, alpha;
     int i;
     for (i=0; i<ctx->size; i++) {
         skiaRandomizeColor(ctx);

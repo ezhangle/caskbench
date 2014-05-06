@@ -27,7 +27,6 @@ sk_teardown_mask(void)
 int
 sk_test_mask(caskbench_context_t *ctx)
 {
-    unsigned char red, green, blue, alpha;
     int i;
 
     for (i=0; i<ctx->size; i++) {

@@ -63,7 +63,6 @@ static void getGlyphPositions(const SkPaint& paint, const uint16_t glyphs[],
 int
 sk_test_text(caskbench_context_t *ctx)
 {
-    unsigned char red, green, blue, alpha;
     for (int i = 0; i < ctx->size; i++)
     {
         double font_size = 18;

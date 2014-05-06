@@ -146,7 +146,6 @@ draw_square (caskbench_context_t *ctx,SkCanvas* canvas, int x, int y) {
 static bool
 draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles) {
     int i,j,x,y;
-    double red,green,blue,alpha;
 
     for (j=0; j<num_y_elements; j++) {
         y = particles?particles->y : j * element_spacing;

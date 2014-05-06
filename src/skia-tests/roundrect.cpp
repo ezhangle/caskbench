@@ -25,7 +25,6 @@ sk_teardown_roundrect(void)
 int
 sk_test_roundrect(caskbench_context_t *ctx)
 {
-    unsigned char red, green, blue, alpha;
     int i;
     double line_width, x, y;
     SkRect rect;

@@ -90,7 +90,6 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
 
 static void draw_stroke(caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles) {
     int i,j,x,y;
-    double red,green,blue,alpha;
     for (j=0; j<num_y_elements; j++) {
         y = particles?particles->y : j * element_spacing;
         ctx->skia_paint->setStrokeJoin((SkPaint::Join)(j % 5));
@@ -135,7 +134,6 @@ int
 sk_test_stroke(caskbench_context_t *ctx)
 {
     /* Animation */
-    double red,green,blue,alpha;
     if(ctx->shape_args.animation)
     {
         int num_particles = ctx->shape_args.animation;

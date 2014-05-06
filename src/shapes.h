@@ -6,6 +6,15 @@
 #  include <SkRect.h>
 #endif
 
+enum fillType {
+    noFill,
+    solidFill,
+    linearGradient,
+    radialGradient,
+    imagePattern,
+    herringbonePattern
+};
+
 typedef struct shapes
 {
     double center_x;
@@ -21,6 +30,7 @@ typedef struct shapes
 #endif
 
     int shape_id;
+    char* shape_name;
     char* fill_type;
     double red;
     double green;

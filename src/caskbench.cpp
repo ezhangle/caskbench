@@ -42,7 +42,7 @@ typedef struct _caskbench_options {
     int version;
 
     unsigned int enable_egl_sample_buffers;
-    int shape_id;
+    char* shape_name;
     int x_position;
     int y_position;
     int width;
@@ -74,6 +74,25 @@ typedef struct _caskbench_result {
     double avg_run_time;
     int status;
 } caskbench_result_t;
+
+const char *gShapes[] = {
+    "circle",
+    "rectangle",
+    "triangle",
+    "star",
+    "roundedrectangle",
+    NULL
+};
+
+const char *gFillTypes[] = {
+    "none",
+    "solid",
+    "linear-gradient",
+    "radial-gradient",
+    "image-pattern",
+    "herringbone-pattern",
+    NULL
+};
 
 // Backend-specific graphics initialization
 cairo_surface_t * create_cairo_surface_image (const device_config_t& config);
@@ -178,7 +197,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"enable-egl-sample-buffers", '\0', POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
          "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
          NULL},
-        {"shape-id", 'S', POPT_ARG_INT, &opt->shape_id, 0,
+        {"shape", 'S', POPT_ARG_STRING, &opt->shape_name, 0,
          "Controls which shape to be drawn ",
          NULL},
         {"x-position", 'X', POPT_ARG_INT, &opt->x_position, 0,
@@ -262,7 +281,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
 
     opt->enable_egl_sample_buffers = 0;
-    opt->shape_id = 0;
+    opt->shape_name = NULL;
     opt->x_position = 0;
     opt->y_position = 0;
     opt->width = 0;
@@ -478,6 +497,32 @@ result_init(caskbench_result_t *result, const char* name)
 }
 
 int
+convertToShapeID(const char* shapeName)
+{
+    int i =0;
+    if (shapeName == NULL)
+        return 0;
+    while (gShapes[i] != NULL) {
+        if (strcmp(gShapes[i], shapeName) == 0)
+            return i + 1;
+        i++;
+    }
+}
+
+fillType
+convertToFillType(const char *fill_type)
+{
+    int i =0;
+    if (fill_type == NULL)
+        return (fillType) 0;
+    while (gFillTypes[i] != NULL) {
+        if (strcmp(gFillTypes[i], fill_type) == 0)
+            return (fillType) i ;
+        i++;
+    }
+}
+
+int
 main (int argc, char *argv[])
 {
     int c, i;
@@ -540,7 +585,7 @@ main (int argc, char *argv[])
         context.shape_args.center_y = opt.y_position;
         context.shape_args.width = opt.width;
         context.shape_args.height = opt.height;
-        context.shape_args.shape_id = opt.shape_id;
+        context.shape_args.shape_name = opt.shape_name;
         context.shape_args.fill_type = opt.fill_type;
         context.shape_args.red = opt.red;
         context.shape_args.green = opt.green;

@@ -130,23 +130,23 @@ void update_skia_egl();
 #endif
 
 typedef enum {
-    CASKBENCH_STATUS_PASS,
-    CASKBENCH_STATUS_FAIL,
-    CASKBENCH_STATUS_ERROR,
-    CASKBENCH_STATUS_CRASH,
+    CB_STATUS_PASS,
+    CB_STATUS_FAIL,
+    CB_STATUS_ERROR,
+    CB_STATUS_CRASH,
 } caskbench_status_t;
 
 static const char *
 _status_to_string(int result)
 {
     switch (result) {
-    case CASKBENCH_STATUS_PASS:
+    case CB_STATUS_PASS:
         return "PASS";
-    case CASKBENCH_STATUS_FAIL:
+    case CB_STATUS_FAIL:
         return "FAIL";
-    case CASKBENCH_STATUS_ERROR:
+    case CB_STATUS_ERROR:
         return "ERROR";
-    case CASKBENCH_STATUS_CRASH:
+    case CB_STATUS_CRASH:
         return "CRASH";
     default:
         return "unknown";
@@ -618,7 +618,7 @@ main (int argc, char *argv[])
 
         if (perf_tests[c].setup != NULL)
             if (!perf_tests[c].setup(&context)) {
-                result.status = CASKBENCH_STATUS_ERROR;
+                result.status = CB_STATUS_ERROR;
                 goto FINAL;
             }
 
@@ -639,9 +639,9 @@ main (int argc, char *argv[])
 
                 // Execute test_case
                 if (perf_tests[c].test_case(&context))
-                    result.status = CASKBENCH_STATUS_PASS;
+                    result.status = CB_STATUS_PASS;
                 else
-                    result.status = CASKBENCH_STATUS_FAIL;
+                    result.status = CB_STATUS_FAIL;
                 perf_tests[c].context_update(&context);
 
                 stop_time = get_tick();
@@ -653,7 +653,7 @@ main (int argc, char *argv[])
                 run_total += run_time;
             } catch (...) {
                 warnx("Unknown exception encountered\n");
-                result.status = CASKBENCH_STATUS_CRASH;
+                result.status = CB_STATUS_CRASH;
                 goto FINAL;
             }
         }

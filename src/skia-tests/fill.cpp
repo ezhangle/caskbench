@@ -146,7 +146,6 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
 
-            ctx->skia_paint->reset();
             // Options for fill,gradient and transparency
             if (ctx->shape_args.fill_type == none || ctx->shape_args.fill_type == solid)
             {
@@ -328,8 +327,10 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
 
+                ctx->skia_paint->setAntiAlias(false);
                 ctx->skia_paint->setStyle(SkPaint::kFill_Style);
                 skiaShapes[Triangle] (ctx,&ctx->shape_args);
+                ctx->skia_paint->setAntiAlias(true);
                 if (ctx->shape_args.stroke_width)
                 {
                     apply_stroke_settings(ctx);

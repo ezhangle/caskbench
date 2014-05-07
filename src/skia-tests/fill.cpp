@@ -177,11 +177,17 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 ctx->skia_paint->setShader (shader);
             }
+
+            if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
+                x = ctx->shape_args.center_x;
+                y = ctx->shape_args.center_y;
+            }
+
             switch (shape) {
             case 1:
                 // Circle
-                ctx->shape_args.center_x = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?x+r:ctx->shape_args.center_x;
-                ctx->shape_args.center_y = (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?y+r:ctx->shape_args.center_y;
+                ctx->shape_args.center_x = x+r;
+                ctx->shape_args.center_y = y+r;
                 ctx->shape_args.radius = r;
 
                 if(ctx->shape_args.fill_type != NULL)
@@ -221,8 +227,9 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             case 2:
                 // Rectangle
-                ctx->shape_args.center_x =  (ctx->shape_args.multi_shapes || ctx->shape_args.animation)?x:ctx->shape_args.center_x;
-                ctx->shape_args.center_y = (ctx->shape_args.multi_shapes|| ctx->shape_args.animation)?y:ctx->shape_args.center_y;
+                ctx->shape_args.center_x = x;
+                ctx->shape_args.center_y = y;
+
                 ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
                 ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
 
@@ -264,11 +271,6 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 3:
                 // Triangle
                 ctx->shape_args.path.reset();
-                if( (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation))
-                {
-                    x = ctx->shape_args.center_x;
-                    y = ctx->shape_args.center_y;
-                }
 
                 ctx->shape_args.numpoints = 3;
                 ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
@@ -318,11 +320,6 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 4:
                 // Star
                 ctx->shape_args.path.reset();
-                if( (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation))
-                {
-                    x = ctx->shape_args.center_x;
-                    y = ctx->shape_args.center_y;
-                }
                 ctx->shape_args.numpoints = 10;
                 ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
 

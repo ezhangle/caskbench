@@ -36,11 +36,15 @@ void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 {
     SkPath path;
+
+    // Temporarily disable anti-aliasing to work around crash in GlShader
+    ctx->skia_paint->setAntiAlias(false);
     path.moveTo(args->center_x, args->center_y+2*args->radius);
     path.rLineTo(2*args->radius, 0);
     path.rLineTo(-args->radius, -2*args->radius);
 
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
+    ctx->skia_paint->setAntiAlias(true);
 }
 
 void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)

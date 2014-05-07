@@ -244,12 +244,10 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"stroke-width", 'w', POPT_ARG_INT, &opt->stroke_width, 0,
          "represents stroke width of the object",
          NULL},
-#if 0
         // TODO: Crashes
         {"multi-shapes", 'm', POPT_ARG_INT, &opt->multi_shapes, 0,
          "represents stroke width of the object",
          NULL},
-#endif
 #if 0
         {"stroke-red", "SR", POPT_ARG_INT, &opt->multi_shapes, 0,
          "represents r value for stroke color",
@@ -571,11 +569,6 @@ main (int argc, char *argv[])
         /* Disable stroke: Displays no output to file */
         if (!strncmp(perf_tests[c].name, "cairo-stroke", 12) ||
             !strncmp(perf_tests[c].name, "skia-stroke", 11))
-            continue;
-
-        /* Disable multishape:  Crashes on EGL */
-        if (!strncmp(perf_tests[c].name, "cairo-multishape", 16) ||
-            !strncmp(perf_tests[c].name, "skia-multishape", 15))
             continue;
 
         /* Disable clip:  Test fails */

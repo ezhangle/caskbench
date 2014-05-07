@@ -67,11 +67,13 @@ sk_test_multishape(caskbench_context_t *ctx)
 
             case 2:
                 // Triangle
+                ctx->skia_paint->setAntiAlias(false);
                 path.moveTo(x, y+2*r);
                 path.rLineTo(2*r, 0);
                 path.rLineTo(-r, -2*r);
                 ctx->skia_canvas->drawPath(path,
                                            *(ctx->skia_paint));
+                ctx->skia_paint->setAntiAlias(true);
                 break;
 
             case 3:

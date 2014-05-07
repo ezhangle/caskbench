@@ -128,6 +128,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_x = x;
                 ctx->shape_args.center_y = y;
                 ctx->shape_args.radius = r;
+                ctx->shape_args.points = NULL;
 
                 if(ctx->shape_args.fill_type != NULL)
                 {
@@ -146,7 +147,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
                 cairoShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
-
                 break;
 
             case 2:
@@ -155,6 +155,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_y = y;
                 ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
+                ctx->shape_args.points = NULL;
 
                 if(ctx->shape_args.fill_type != NULL)
                 {
@@ -179,7 +180,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
                 cairoShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
-
                 break;
 
             case 3:
@@ -212,8 +212,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 }
                 cairoShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
-                free (ctx->shape_args.points);
-
                 break;
 
             case 4:
@@ -245,13 +243,17 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
                 cairoShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
-
-                free (ctx->shape_args.points);
                 break;
 
             default:
                 break;
             }
+
+            ctx->shape_args.width = old_width;
+            ctx->shape_args.height = old_height;
+            if (ctx->shape_args.points)
+                free (ctx->shape_args.points);
+
             newPath = cairo_copy_path(cr);
             cairo_fill (cr);
             if(ctx->shape_args.stroke_width)

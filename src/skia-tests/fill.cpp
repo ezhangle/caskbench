@@ -145,13 +145,11 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             skiaShapes[shape.shape_type] (ctx, &shape);
 
             ctx->skia_canvas->flush();
-            if (shape.fill_type != CB_FILL_NONE)
-                if (shader != NULL)
-                {
-                    ctx->skia_paint->setShader (NULL);
-                    delete shader;
-                }
             ctx->skia_paint->setPathEffect(NULL);
+            if (shader != NULL) {
+                ctx->skia_paint->setShader (NULL);
+                delete shader;
+            }
         }
     }
 }

@@ -62,6 +62,7 @@ sk_test_multishape(caskbench_context_t *ctx)
 
             case 2:
                 // Triangle
+                /* Temporary work around for GlShader crash in skia for triangles https://github.com/Samsung/skia/issues/5 */
                 ctx->skia_paint->setAntiAlias(false);
                 path.moveTo(x, y+2*r);
                 path.rLineTo(2*r, 0);

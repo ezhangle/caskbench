@@ -327,10 +327,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
                 }
 
+                /* Temporary work around for GlShader crash in skia for triangles https://github.com/Samsung/skia/issues/5 */
                 ctx->skia_paint->setAntiAlias(false);
                 ctx->skia_paint->setStyle(SkPaint::kFill_Style);
                 skiaShapes[Triangle] (ctx,&ctx->shape_args);
                 ctx->skia_paint->setAntiAlias(true);
+
                 if (ctx->shape_args.stroke_width)
                 {
                     apply_stroke_settings(ctx);

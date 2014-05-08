@@ -102,18 +102,17 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             }
             else if(ctx->shape_defaults.fill_type == CB_FILL_HERRINGBONE_PATTERN){}
-            else if(ctx->shape_defaults.fill_type == CB_FILL_IMAGE_PATTERN && (ctx->shape_defaults.image_path))
+            else if(ctx->shape_defaults.fill_type == CB_FILL_IMAGE_PATTERN && (ctx->stock_image_path))
             {
                 cairo_matrix_t   matrix;
 
-                image = cairo_image_surface_create_from_png (ctx->shape_defaults.image_path);
+                image = cairo_image_surface_create_from_png (ctx->stock_image_path);
                 int w = cairo_image_surface_get_width (image);
                 int h = cairo_image_surface_get_height (image);
 
                 pattern = cairo_pattern_create_for_surface (image);
                 cairo_set_source (cr, pattern);
             }
-
             if (!ctx->shape_defaults.multi_shapes && !ctx->shape_defaults.animation) {
                 x = ctx->shape_defaults.x;
                 y = ctx->shape_defaults.y;

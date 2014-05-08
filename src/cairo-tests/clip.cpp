@@ -60,7 +60,7 @@ void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
     int  w, h;
     double x,y;
     cairo_t *cr = ctx->cairo_cr;
-    image = cairo_image_surface_create_from_png (ctx->shape_defaults.image_path);
+    image = cairo_image_surface_create_from_png (ctx->stock_image_path);
     for (j=0; j<num_y_elements; j++) {
         y = particles?particles->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {

@@ -59,7 +59,7 @@ typedef struct _caskbench_options {
     double blue;
     double alpha;
     int animation;
-    char *image_path;
+    char *stock_image_path;
     int stroke_width;
     int multi_shapes;
 
@@ -238,8 +238,8 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"animation", 'g', POPT_ARG_INT, &opt->animation, 0,
          "Controls the kinematics of the objects drawn",
          NULL},
-        {"image-path", 'I', POPT_ARG_STRING, &opt->image_path, 0,
-         "Image path to refer the image for setting source, clipping, patterns",
+        {"image-path", 'I', POPT_ARG_STRING, &opt->stock_image_path, 0,
+         "Path to a stock image for use in clipping, patterns, etc.",
          NULL},
         {"stroke-width", 'w', POPT_ARG_INT, &opt->stroke_width, 0,
          "represents stroke width of the object",
@@ -295,7 +295,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->blue = 0;
     opt->alpha = 0;
     opt->animation = 0;
-    opt->image_path = NULL;
+    opt->stock_image_path = NULL;
     opt->multi_shapes = 0;
     opt->stroke_width = 0;
     opt->stroke_red = 0;
@@ -529,7 +529,6 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->green = opt->green;
     shape_defaults->blue = opt->blue;
     shape_defaults->alpha = opt->alpha;
-    shape_defaults->image_path = opt->image_path;
     shape_defaults->stroke_width = opt->stroke_width;
     shape_defaults->multi_shapes = opt->multi_shapes;
     shape_defaults->animation = opt->animation;

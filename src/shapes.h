@@ -40,7 +40,6 @@ typedef struct shapes
     double blue;
     double alpha;
     int animation;
-    char *image_path;
     int stroke_width;
     int multi_shapes;
 

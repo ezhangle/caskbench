@@ -149,7 +149,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             {
                 SkBitmap    bm;
 
-                SkImageDecoder::DecodeFile(ctx->shape_defaults.image_path, &bm);
+                SkImageDecoder::DecodeFile(ctx->stock_image_path, &bm);
                 shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
                                         SkShader::kClamp_TileMode);
             }

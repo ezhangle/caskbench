@@ -193,10 +193,10 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_y = y+r;
                 ctx->shape_args.radius = r;
 
-                y1 = ctx->shape_args.center_y-r;
-                y2 = ctx->shape_args.center_y+r;
-                cx = ctx->shape_args.center_x;
-                cy = ctx->shape_args.center_y;
+                y1 = y;
+                y2 = y+2*r;
+                cx = x+r;
+                cy = y+r;
                 rr = r;
 
                 break;
@@ -210,11 +210,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
                 ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
 
-                y1 = ctx->shape_args.center_y;
-                y2 = ctx->shape_args.center_y+ctx->shape_args.height/4;
-                cx = (ctx->shape_args.center_x+ctx->shape_args.width)/2;
-                cy = (ctx->shape_args.center_y+ctx->shape_args.height)/2;
-                rr = (ctx->shape_args.height-ctx->shape_args.center_y)/2;
+                y1 = y;
+                y2 = y + ctx->shape_args.height/4;
+                cx = (x + ctx->shape_args.width)/2;
+                cy = (y + ctx->shape_args.height)/2;
+                rr = (ctx->shape_args.height - y)/2;
 
                 break;
 

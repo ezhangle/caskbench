@@ -133,11 +133,11 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.radius = r;
                 ctx->shape_args.points = NULL;
 
-                cx = ctx->shape_args.center_x;
-                cy = ctx->shape_args.center_y;
+                cx = x;
+                cy = y;
                 rr = r;
-                x1 = ctx->shape_args.center_y-r;
-                x2 = ctx->shape_args.center_y+r;
+                x1 = y-r;
+                x2 = y+r;
 
                 break;
 
@@ -150,11 +150,11 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
                 ctx->shape_args.points = NULL;
 
-                cx = ctx->shape_args.center_x+(ctx->shape_args.width/2);
-                cy = ctx->shape_args.center_y+(ctx->shape_args.height/2);
+                cx = x+(ctx->shape_args.width/2);
+                cy = y+(ctx->shape_args.height/2);
                 rr = ctx->shape_args.height/2;
-                x1 = ctx->shape_args.center_y;
-                x2 = ctx->shape_args.center_y+ctx->shape_args.height;
+                x1 = y;
+                x2 = y+ctx->shape_args.height;
 
                 break;
 
@@ -171,10 +171,10 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.points[2][1] = -2*r;
 
                 cx = x;
-                cy = y+2*r;
+                cy = y + 2*r;
                 rr = r;
-                x1 = ctx->shape_args.points[0][1];
-                x2 = ctx->shape_args.points[0][1]+(4*r);
+                x1 = y + 2*r;
+                x2 = y + 2*r + 4*r;
 
                 break;
 
@@ -185,17 +185,15 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
 
                 for (p = 0; p < 10; p++ ) {
-                    int px = x + 2*r * star_points[p][0]/200.0;
-                    int py = y + 2*r * star_points[p][1]/200.0;
-                    ctx->shape_args.points[p][0] = px;
-                    ctx->shape_args.points[p][1] = py;
+                    ctx->shape_args.points[p][0] = x + 2*r * star_points[p][0]/200.0;
+                    ctx->shape_args.points[p][1] = y + 2*r * star_points[p][1]/200.0;
                 }
 
-                cx = ctx->shape_args.points[0][0];
-                cy = ctx->shape_args.points[0][1];
+                cx = x + 2*r * star_points[0][0]/200.0;
+                cy = y + 2*r * star_points[0][1]/200.0;
                 rr = r;
-                x1 = ctx->shape_args.points[0][1]-r;
-                x2 = ctx->shape_args.points[0][1]+r;
+                x1 = x + 2*r * star_points[p][0]/200.0 - r;
+                x2 = y + 2*r * star_points[0][1]/200.0 + r;
 
                 break;
 

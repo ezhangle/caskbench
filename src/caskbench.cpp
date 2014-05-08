@@ -585,7 +585,7 @@ main (int argc, char *argv[])
         context.shape_defaults.width = opt.width;
         context.shape_defaults.height = opt.height;
         context.shape_defaults.shape_name = opt.shape_name;
-        context.shape_defaults.fill_type = opt.fill_type;
+        context.shape_defaults.fill_type = convertToFillType(opt.fill_type);
         context.shape_defaults.red = opt.red;
         context.shape_defaults.green = opt.green;
         context.shape_defaults.blue = opt.blue;

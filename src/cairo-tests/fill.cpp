@@ -77,7 +77,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             x = particles?particles->x : i * element_spacing;
 
             //Options for fill,gradient and transparency
-            if( ctx->shape_defaults.fill_type == NULL)
+            if (ctx->shape_defaults.fill_type == CB_FILL_NONE)
             {
                 if(ctx->shape_defaults.red > 0 || ctx->shape_defaults.blue > 0 || ctx->shape_defaults.green > 0 || ctx->shape_defaults.alpha > 0)
                 {
@@ -86,7 +86,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 else
                     cairoRandomizeColor(ctx);
             }
-            else if((strcmp(ctx->shape_defaults.fill_type,"solid")) == 0)
+            else if (ctx->shape_defaults.fill_type == CB_FILL_SOLID)
             {
                 if(ctx->shape_defaults.red > 0 || ctx->shape_defaults.blue > 0 || ctx->shape_defaults.green > 0 || ctx->shape_defaults.alpha > 0)
                 {
@@ -95,7 +95,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 else
                     cairoRandomizeColor(ctx);
             }
-            else if (((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0))
+            else if (ctx->shape_defaults.fill_type == CB_FILL_LINEAR_GRADIENT || ctx->shape_defaults.fill_type == CB_FILL_RADIAL_GRADIENT)
             {
                 red = (double)rand()/RAND_MAX;
                 green = (double)rand()/RAND_MAX;
@@ -103,8 +103,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 alpha = (double)rand()/RAND_MAX;
 
             }
-            else if((strcmp(ctx->shape_defaults.fill_type,"herringbone-pattern")) == 0){}
-            else if((strcmp(ctx->shape_defaults.fill_type,"image-pattern")) == 0 && (ctx->shape_defaults.image_path))
+            else if(ctx->shape_defaults.fill_type == CB_FILL_HERRINGBONE_PATTERN){}
+            else if(ctx->shape_defaults.fill_type == CB_FILL_IMAGE_PATTERN && (ctx->shape_defaults.image_path))
             {
                 cairo_matrix_t   matrix;
 
@@ -184,18 +184,16 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 break;
             }
 
-            if (ctx->shape_defaults.fill_type != NULL)
+            if (ctx->shape_defaults.fill_type != CB_FILL_NONE)
             {
-                if ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0)
+                if (ctx->shape_defaults.fill_type == CB_FILL_RADIAL_GRADIENT) {
                     pattern = cairo_pattern_create_radial (cx, cy, rr, cx, cy, 0);
-                else if ((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0)
+                    cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
+                    cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
+                    cairo_set_source (cr, pattern);
+                } else if (ctx->shape_defaults.fill_type == CB_FILL_LINEAR_GRADIENT) {
                     pattern = cairo_pattern_create_linear (0, x1, 0, x2);
-
-                if ((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0)
                     cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-                if (((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0) || \
-                    ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0))
-                {
                     cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
                     cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
                     cairo_set_source (cr, pattern);
@@ -235,7 +233,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
                 cairo_stroke(cr);
             }
-            if (ctx->shape_defaults.fill_type != NULL)
+            if (ctx->shape_defaults.fill_type != CB_FILL_NONE)
             {
                 if (pattern != NULL)
                     cairo_pattern_destroy(pattern);

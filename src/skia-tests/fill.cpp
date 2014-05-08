@@ -135,17 +135,17 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
             // Options for fill, gradient and transparency
             SkShader* shader = NULL;
-            if (ctx->shape_defaults.fill_type == NULL)
+            if (ctx->shape_defaults.fill_type == CB_FILL_NONE)
             {
                 if (randomize_color)
                     skiaRandomizePaintColor(ctx);
             }
-            else if ((strcmp(ctx->shape_defaults.fill_type,"solid")) == 0)
+            else if (ctx->shape_defaults.fill_type == CB_FILL_SOLID)
             {
                 if (randomize_color)
                     skiaRandomizePaintColor(ctx);
             }
-            else if ((strcmp(ctx->shape_defaults.fill_type,"image-pattern")) == 0 &&(ctx->shape_defaults.image_path))
+            else if (ctx->shape_defaults.fill_type == CB_FILL_IMAGE_PATTERN)
             {
                 SkBitmap    bm;
 
@@ -153,7 +153,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
                                         SkShader::kClamp_TileMode);
             }
-            else if ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0)
+            else if (ctx->shape_defaults.fill_type == CB_FILL_RADIAL_GRADIENT)
             {
                 SkPoint center;
                 SkColor linearColors[2];
@@ -168,7 +168,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                     linearColors, NULL, 2,
                     SkShader::kClamp_TileMode, NULL);
             }
-            else if ((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0)
+            else if (ctx->shape_defaults.fill_type == CB_FILL_LINEAR_GRADIENT)
             {
                 SkColor linearColors[2];
                 SkPoint linearPoints[2];
@@ -191,7 +191,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             skiaShapes[shape_type] (ctx, &ctx->shape_defaults);
 
             ctx->skia_canvas->flush();
-            if (ctx->shape_defaults.fill_type != NULL)
+            if (ctx->shape_defaults.fill_type != CB_FILL_NONE)
                 if (shader != NULL)
                 {
                     ctx->skia_paint->setShader (NULL);

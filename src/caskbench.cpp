@@ -580,27 +580,27 @@ main (int argc, char *argv[])
         context_init(&context, opt.size);
 
         // Command line setup for shapes
-        context.shape_args.x = opt.x_position;
-        context.shape_args.y = opt.y_position;
-        context.shape_args.width = opt.width;
-        context.shape_args.height = opt.height;
-        context.shape_args.shape_name = opt.shape_name;
-        context.shape_args.fill_type = opt.fill_type;
-        context.shape_args.red = opt.red;
-        context.shape_args.green = opt.green;
-        context.shape_args.blue = opt.blue;
-        context.shape_args.alpha = opt.alpha;
-        context.shape_args.image_path = opt.image_path;
-        context.shape_args.stroke_width = opt.stroke_width;
-        context.shape_args.multi_shapes = opt.multi_shapes;
-        context.shape_args.animation = opt.animation;
-        context.shape_args.stroke_width = opt.stroke_width;
-        context.shape_args.stroke_red = opt.stroke_red;
-        context.shape_args.stroke_green = opt.stroke_green;
-        context.shape_args.stroke_blue = opt.stroke_blue;
-        context.shape_args.cap_style = opt.cap_style;
-        context.shape_args.join_style = opt.join_style;
-        context.shape_args.dash_style = opt.dash_style;
+        context.shape_defaults.x = opt.x_position;
+        context.shape_defaults.y = opt.y_position;
+        context.shape_defaults.width = opt.width;
+        context.shape_defaults.height = opt.height;
+        context.shape_defaults.shape_name = opt.shape_name;
+        context.shape_defaults.fill_type = opt.fill_type;
+        context.shape_defaults.red = opt.red;
+        context.shape_defaults.green = opt.green;
+        context.shape_defaults.blue = opt.blue;
+        context.shape_defaults.alpha = opt.alpha;
+        context.shape_defaults.image_path = opt.image_path;
+        context.shape_defaults.stroke_width = opt.stroke_width;
+        context.shape_defaults.multi_shapes = opt.multi_shapes;
+        context.shape_defaults.animation = opt.animation;
+        context.shape_defaults.stroke_width = opt.stroke_width;
+        context.shape_defaults.stroke_red = opt.stroke_red;
+        context.shape_defaults.stroke_green = opt.stroke_green;
+        context.shape_defaults.stroke_blue = opt.stroke_blue;
+        context.shape_defaults.cap_style = opt.cap_style;
+        context.shape_defaults.join_style = opt.join_style;
+        context.shape_defaults.dash_style = opt.dash_style;
 
         result_init(&result, perf_tests[c].name);
         config.width = context.canvas_width;

@@ -34,41 +34,41 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     static const double dashed3[] = {1.0};
     static const double dashed2[] = {14.0, 6.0};
     cairo_path_t *newPath;
-    shape = ctx->shape_args.shape_id;
+    shape = ctx->shape_defaults.shape_id;
     if(!shape)
     {
         shape = ((4.0 * rand())/RAND_MAX) + 1;
-        if(!ctx->shape_args.multi_shapes)
+        if(!ctx->shape_defaults.multi_shapes)
             shape = 2;
     }
 
     if(shape)
     {
-        if(!(ctx->shape_args.x && ctx->shape_args.y))
+        if(!(ctx->shape_defaults.x && ctx->shape_defaults.y))
         {
-            ctx->shape_args.x = x = ctx->canvas_width/2;
-            ctx->shape_args.y = y = ctx->canvas_height/2;
+            ctx->shape_defaults.x = x = ctx->canvas_width/2;
+            ctx->shape_defaults.y = y = ctx->canvas_height/2;
         }
-        if(!ctx->shape_args.multi_shapes)
-            if(!(ctx->shape_args.width && ctx->shape_args.height))
+        if(!ctx->shape_defaults.multi_shapes)
+            if(!(ctx->shape_defaults.width && ctx->shape_defaults.height))
             {
-                ctx->shape_args.width = 100;
-                ctx->shape_args.height = 50;
+                ctx->shape_defaults.width = 100;
+                ctx->shape_defaults.height = 50;
             }
-        ctx->shape_args.radius = r;
+        ctx->shape_defaults.radius = r;
     }
 
 
-    if(!ctx->shape_args.animation && !ctx->shape_args.multi_shapes)
+    if(!ctx->shape_defaults.animation && !ctx->shape_defaults.multi_shapes)
     {
         num_x_elements = 1;
         num_y_elements = 1;
 
         r = 40;
-        old_x = ctx->shape_args.x;
-        old_y = ctx->shape_args.y;
-        old_width = ctx->shape_args.width;
-        old_height = ctx->shape_args.height;
+        old_x = ctx->shape_defaults.x;
+        old_y = ctx->shape_defaults.y;
+        old_width = ctx->shape_defaults.width;
+        old_height = ctx->shape_defaults.height;
     }
 
     for (j=0; j<num_y_elements; j++) {
@@ -77,25 +77,25 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             x = particles?particles->x : i * element_spacing;
 
             //Options for fill,gradient and transparency
-            if( ctx->shape_args.fill_type == NULL)
+            if( ctx->shape_defaults.fill_type == NULL)
             {
-                if(ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+                if(ctx->shape_defaults.red > 0 || ctx->shape_defaults.blue > 0 || ctx->shape_defaults.green > 0 || ctx->shape_defaults.alpha > 0)
                 {
-                    cairo_set_source_rgba(cr, (double)ctx->shape_args.red, (double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0, ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0, (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1);
+                    cairo_set_source_rgba(cr, (double)ctx->shape_defaults.red, (double)ctx->shape_defaults.green ? (double)ctx->shape_defaults.green:(double)0, ctx->shape_defaults.blue ? (double)ctx->shape_defaults.blue:(double)0, (double)ctx->shape_defaults.alpha ? (double)ctx->shape_defaults.alpha:(double)1);
                 }
                 else
                     cairoRandomizeColor(ctx);
             }
-            else if((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
+            else if((strcmp(ctx->shape_defaults.fill_type,"solid")) == 0)
             {
-                if(ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+                if(ctx->shape_defaults.red > 0 || ctx->shape_defaults.blue > 0 || ctx->shape_defaults.green > 0 || ctx->shape_defaults.alpha > 0)
                 {
-                    cairo_set_source_rgba(cr,  (double)ctx->shape_args.red, (double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0, ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0, (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1);
+                    cairo_set_source_rgba(cr,  (double)ctx->shape_defaults.red, (double)ctx->shape_defaults.green ? (double)ctx->shape_defaults.green:(double)0, ctx->shape_defaults.blue ? (double)ctx->shape_defaults.blue:(double)0, (double)ctx->shape_defaults.alpha ? (double)ctx->shape_defaults.alpha:(double)1);
                 }
                 else
                     cairoRandomizeColor(ctx);
             }
-            else if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
+            else if (((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0))
             {
                 red = (double)rand()/RAND_MAX;
                 green = (double)rand()/RAND_MAX;
@@ -103,12 +103,12 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 alpha = (double)rand()/RAND_MAX;
 
             }
-            else if((strcmp(ctx->shape_args.fill_type,"herringbone-pattern")) == 0){}
-            else if((strcmp(ctx->shape_args.fill_type,"image-pattern")) == 0 && (ctx->shape_args.image_path))
+            else if((strcmp(ctx->shape_defaults.fill_type,"herringbone-pattern")) == 0){}
+            else if((strcmp(ctx->shape_defaults.fill_type,"image-pattern")) == 0 && (ctx->shape_defaults.image_path))
             {
                 cairo_matrix_t   matrix;
 
-                image = cairo_image_surface_create_from_png (ctx->shape_args.image_path);
+                image = cairo_image_surface_create_from_png (ctx->shape_defaults.image_path);
                 int w = cairo_image_surface_get_width (image);
                 int h = cairo_image_surface_get_height (image);
 
@@ -116,9 +116,9 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 cairo_set_source (cr, pattern);
             }
 
-            if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
-                x = ctx->shape_args.x;
-                y = ctx->shape_args.y;
+            if (!ctx->shape_defaults.multi_shapes && !ctx->shape_defaults.animation) {
+                x = ctx->shape_defaults.x;
+                y = ctx->shape_defaults.y;
             }
 
             double cx, cy, rr, x1, x2;
@@ -127,9 +127,9 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 1:
                 // Circle
                 shape_type = CB_SHAPE_CIRCLE;
-                ctx->shape_args.x = x;
-                ctx->shape_args.y = y;
-                ctx->shape_args.radius = r;
+                ctx->shape_defaults.x = x;
+                ctx->shape_defaults.y = y;
+                ctx->shape_defaults.radius = r;
 
                 cx = x;
                 cy = y;
@@ -142,16 +142,16 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 2:
                 // Rectangle
                 shape_type = CB_SHAPE_RECTANGLE;
-                ctx->shape_args.x = x;
-                ctx->shape_args.y = y;
-                ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
-                ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
+                ctx->shape_defaults.x = x;
+                ctx->shape_defaults.y = y;
+                ctx->shape_defaults.width = (ctx->shape_defaults.width)?ctx->shape_defaults.width:2*r;
+                ctx->shape_defaults.height = (ctx->shape_defaults.height)?ctx->shape_defaults.height:2*r;
 
-                cx = x+(ctx->shape_args.width/2);
-                cy = y+(ctx->shape_args.height/2);
-                rr = ctx->shape_args.height/2;
+                cx = x+(ctx->shape_defaults.width/2);
+                cy = y+(ctx->shape_defaults.height/2);
+                rr = ctx->shape_defaults.height/2;
                 x1 = y;
-                x2 = y+ctx->shape_args.height;
+                x2 = y+ctx->shape_defaults.height;
 
                 break;
 
@@ -184,17 +184,17 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 break;
             }
 
-            if (ctx->shape_args.fill_type != NULL)
+            if (ctx->shape_defaults.fill_type != NULL)
             {
-                if ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                if ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0)
                     pattern = cairo_pattern_create_radial (cx, cy, rr, cx, cy, 0);
-                else if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                else if ((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0)
                     pattern = cairo_pattern_create_linear (0, x1, 0, x2);
 
-                if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                if ((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0)
                     cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-                if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || \
-                    ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
+                if (((strcmp(ctx->shape_defaults.fill_type,"linear-gradient")) == 0) || \
+                    ((strcmp(ctx->shape_defaults.fill_type,"radial-gradient")) == 0))
                 {
                     cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
                     cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
@@ -202,40 +202,40 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 }
             }
 
-            cairoShapes[shape_type] (ctx,&ctx->shape_args);
+            cairoShapes[shape_type] (ctx,&ctx->shape_defaults);
 
             // Reset
-            ctx->shape_args.width = old_width;
-            ctx->shape_args.height = old_height;
+            ctx->shape_defaults.width = old_width;
+            ctx->shape_defaults.height = old_height;
 
             newPath = cairo_copy_path(cr);
             cairo_fill (cr);
-            if(ctx->shape_args.stroke_width)
+            if(ctx->shape_defaults.stroke_width)
             {
                 cairo_new_path(cr);
                 cairo_append_path(cr, newPath);
-                cairo_set_line_width(cr, ctx->shape_args.stroke_width);
-                cairo_set_line_cap(cr, (cairo_line_cap_t)ctx->shape_args.cap_style);
-                if (ctx->shape_args.dash_style == 1)
+                cairo_set_line_width(cr, ctx->shape_defaults.stroke_width);
+                cairo_set_line_cap(cr, (cairo_line_cap_t)ctx->shape_defaults.cap_style);
+                if (ctx->shape_defaults.dash_style == 1)
                 {
                     cairo_set_dash(cr, dashed3, 1, 0);
                 }
-                else if (ctx->shape_args.dash_style == 2)
+                else if (ctx->shape_defaults.dash_style == 2)
                 {
                     cairo_set_dash(cr, dashed2, 2, 0);
                 }
 
-                cairo_set_line_join(cr,  (cairo_line_join_t)ctx->shape_args.join_style);
-                if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+                cairo_set_line_join(cr,  (cairo_line_join_t)ctx->shape_defaults.join_style);
+                if (ctx->shape_defaults.red > 0 || ctx->shape_defaults.blue > 0 || ctx->shape_defaults.green > 0 || ctx->shape_defaults.alpha > 0)
                 {
-                    cairo_set_source_rgba(cr,  (double)ctx->shape_args.red, (double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0, ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0, (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1);
+                    cairo_set_source_rgba(cr,  (double)ctx->shape_defaults.red, (double)ctx->shape_defaults.green ? (double)ctx->shape_defaults.green:(double)0, ctx->shape_defaults.blue ? (double)ctx->shape_defaults.blue:(double)0, (double)ctx->shape_defaults.alpha ? (double)ctx->shape_defaults.alpha:(double)1);
                 }
                 else
                     cairoRandomizeColor(ctx);
 
                 cairo_stroke(cr);
             }
-            if (ctx->shape_args.fill_type != NULL)
+            if (ctx->shape_defaults.fill_type != NULL)
             {
                 if (pattern != NULL)
                     cairo_pattern_destroy(pattern);
@@ -245,12 +245,12 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
         }
     }
 
-    if (!ctx->shape_args.animation && !ctx->shape_args.multi_shapes)
+    if (!ctx->shape_defaults.animation && !ctx->shape_defaults.multi_shapes)
     {
-        ctx->shape_args.x = old_x;
-        ctx->shape_args.y = old_y;
-        ctx->shape_args.width = old_width;
-        ctx->shape_args.height = old_height;
+        ctx->shape_defaults.x = old_x;
+        ctx->shape_defaults.y = old_y;
+        ctx->shape_defaults.width = old_width;
+        ctx->shape_defaults.height = old_height;
     }
 }
 
@@ -278,9 +278,9 @@ ca_test_fill(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
     for(int i = 0;i < ctx->size; i++) {
         //Animation / Kinematics of single or multi shape
-        if(ctx->shape_args.animation)
+        if(ctx->shape_defaults.animation)
         {
-            int num_particles = ctx->shape_args.animation;
+            int num_particles = ctx->shape_defaults.animation;
             double start_frame, stop_frame, delta;
             cairo_particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
             int i,j;

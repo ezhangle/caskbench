@@ -59,9 +59,9 @@ int
 sk_test_clip(caskbench_context_t *ctx)
 {
     /* Animation */
-    if(ctx->shape_args.animation)
+    if(ctx->shape_defaults.animation)
     {
-        int num_particles = ctx->shape_args.animation;
+        int num_particles = ctx->shape_defaults.animation;
         double start_frame, stop_frame, delta;
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         int i,j ;

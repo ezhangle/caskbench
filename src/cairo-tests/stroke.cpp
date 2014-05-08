@@ -30,9 +30,9 @@ ca_setup_stroke(caskbench_context_t *ctx)
     element_spacing = sqrt( ((double)ctx->canvas_width * ctx->canvas_height) / ctx->size);
     num_x_elements = ctx->canvas_width / element_spacing;
     num_y_elements = ctx->canvas_height / element_spacing;
-    cairo_set_line_width(cr,ctx->shape_args.stroke_width?ctx->shape_args.stroke_width:5);
-    cairo_set_line_cap(cr,ctx->shape_args.cap_style?(cairo_line_cap_t)(ctx->shape_args.cap_style % 3):CAIRO_LINE_CAP_BUTT);
-    cairo_set_line_join(cr,ctx->shape_args.join_style?(cairo_line_join_t)(ctx->shape_args.join_style % 3):CAIRO_LINE_JOIN_MITER);
+    cairo_set_line_width(cr,ctx->shape_defaults.stroke_width?ctx->shape_defaults.stroke_width:5);
+    cairo_set_line_cap(cr,ctx->shape_defaults.cap_style?(cairo_line_cap_t)(ctx->shape_defaults.cap_style % 3):CAIRO_LINE_CAP_BUTT);
+    cairo_set_line_join(cr,ctx->shape_defaults.join_style?(cairo_line_join_t)(ctx->shape_defaults.join_style % 3):CAIRO_LINE_JOIN_MITER);
     cairo_set_dash (cr, dashes, sizeof (dashes) / sizeof (dashes[0]), 0);
     return 1;
 }
@@ -47,37 +47,37 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
     cairo_t *cr = ctx->cairo_cr;
     int i, r,shape,p;
     r = 0.9 * element_spacing /2;
-    if(!ctx->shape_args.shape_id)
+    if(!ctx->shape_defaults.shape_id)
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
-        shape = ctx->shape_args.shape_id ;
+        shape = ctx->shape_defaults.shape_id ;
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.x = x+r;
-        ctx->shape_args.y = y+r;
-        ctx->shape_args.radius = r;
-        cairoShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
+        ctx->shape_defaults.x = x+r;
+        ctx->shape_defaults.y = y+r;
+        ctx->shape_defaults.radius = r;
+        cairoShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_defaults);
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.x =  x;
-        ctx->shape_args.y = y;
-        ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
-        ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
-        cairoShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
+        ctx->shape_defaults.x =  x;
+        ctx->shape_defaults.y = y;
+        ctx->shape_defaults.width = (ctx->shape_defaults.width)?ctx->shape_defaults.width:2*r;
+        ctx->shape_defaults.height = (ctx->shape_defaults.height)?ctx->shape_defaults.height:2*r;
+        cairoShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_defaults);
         break;
 
     case 3:
         // Triangle
-        cairoShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
+        cairoShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_defaults);
         //cairo_fill (cr);
         break;
 
     case 4:
         // Star
-        cairoShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
+        cairoShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_defaults);
         //cairo_fill (cr);
         break;
 
@@ -110,9 +110,9 @@ int
 ca_test_stroke(caskbench_context_t *ctx)
 {
     cairo_t *cr = ctx->cairo_cr;
-    if(ctx->shape_args.animation)
+    if(ctx->shape_defaults.animation)
     {
-        int num_particles = ctx->shape_args.animation;
+        int num_particles = ctx->shape_defaults.animation;
         double start_frame, stop_frame, delta;
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         int i,j;
@@ -133,7 +133,7 @@ ca_test_stroke(caskbench_context_t *ctx)
     }
     else
         //drawStroke(ctx,NULL);
-        ctx->shape_args.multi_shapes?drawStroke(ctx,NULL):drawShape(ctx,ctx->shape_args.x?ctx->shape_args.x:100.0,ctx->shape_args.y?ctx->shape_args.y:100.0);
+        ctx->shape_defaults.multi_shapes?drawStroke(ctx,NULL):drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100.0,ctx->shape_defaults.y?ctx->shape_defaults.y:100.0);
 
     return 1;
 }

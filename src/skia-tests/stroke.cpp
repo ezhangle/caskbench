@@ -33,36 +33,36 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
     double r;
 
     r = particles?50:0.9 * element_spacing /2;
-    if(!ctx->shape_args.shape_id)
+    if(!ctx->shape_defaults.shape_id)
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
-        shape = ctx->shape_args.shape_id ;
+        shape = ctx->shape_defaults.shape_id ;
 
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.x = x;
-        ctx->shape_args.y = y;
-        ctx->shape_args.radius = r;
-        skiaShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
+        ctx->shape_defaults.x = x;
+        ctx->shape_defaults.y = y;
+        ctx->shape_defaults.radius = r;
+        skiaShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_defaults);
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.x =  x;
-        ctx->shape_args.y = y;
-        ctx->shape_args.width = ctx->shape_args.width? ctx->shape_args.width : 2*r;
-        ctx->shape_args.height = ctx->shape_args.height? ctx->shape_args.height: 2*r;
-        skiaShapes[CB_SHAPE_RECTANGLE](ctx, &ctx->shape_args);
+        ctx->shape_defaults.x =  x;
+        ctx->shape_defaults.y = y;
+        ctx->shape_defaults.width = ctx->shape_defaults.width? ctx->shape_defaults.width : 2*r;
+        ctx->shape_defaults.height = ctx->shape_defaults.height? ctx->shape_defaults.height: 2*r;
+        skiaShapes[CB_SHAPE_RECTANGLE](ctx, &ctx->shape_defaults);
         break;
 
     case 3:
         // Triangle
-        skiaShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
+        skiaShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_defaults);
         break;
     case 4:
         // Star
-        skiaShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
+        skiaShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_defaults);
         break;
 
     default:
@@ -95,9 +95,9 @@ sk_setup_stroke(caskbench_context_t *ctx)
 
     ctx->skia_paint->setAntiAlias(true);
     ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-    ctx->skia_paint->setStrokeWidth(ctx->shape_args.stroke_width?ctx->shape_args.stroke_width:5);
-    ctx->skia_paint->setStrokeJoin(ctx->shape_args.join_style?(SkPaint::Join)(ctx->shape_args.join_style % 5):SkPaint::kDefault_Join);
-    ctx->skia_paint->setStrokeCap(ctx->shape_args.cap_style?(SkPaint::Cap)(ctx->shape_args.cap_style % 5):SkPaint::kDefault_Cap);
+    ctx->skia_paint->setStrokeWidth(ctx->shape_defaults.stroke_width?ctx->shape_defaults.stroke_width:5);
+    ctx->skia_paint->setStrokeJoin(ctx->shape_defaults.join_style?(SkPaint::Join)(ctx->shape_defaults.join_style % 5):SkPaint::kDefault_Join);
+    ctx->skia_paint->setStrokeCap(ctx->shape_defaults.cap_style?(SkPaint::Cap)(ctx->shape_defaults.cap_style % 5):SkPaint::kDefault_Cap);
 #if USE_LEGACY_SKIA_SRA
     fPE.reset(new SkDashPathEffect(vals, 4, 0));
 #else
@@ -117,9 +117,9 @@ int
 sk_test_stroke(caskbench_context_t *ctx)
 {
     /* Animation */
-    if(ctx->shape_args.animation)
+    if(ctx->shape_defaults.animation)
     {
-        int num_particles = ctx->shape_args.animation;
+        int num_particles = ctx->shape_defaults.animation;
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         int i,j ;
         for (i = 0; i < num_particles; i++)
@@ -137,7 +137,7 @@ sk_test_stroke(caskbench_context_t *ctx)
     }
     /* Static clip */
     else
-        ctx->shape_args.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_args.x?ctx->shape_args.x:100,ctx->shape_args.y?ctx->shape_args.y:100);
+        ctx->shape_defaults.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100,ctx->shape_defaults.y?ctx->shape_defaults.y:100);
     return 1;
 }
 

@@ -42,16 +42,16 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
     cairo_t *cr = ctx->cairo_cr;
     int i, r,shape,p;
     r = 0.9 * element_spacing /2;
-    if(!ctx->shape_args.shape_id)
+    if(!ctx->shape_defaults.shape_id)
         shape = ((4.0 * rand())/RAND_MAX) +1;
     else
-        shape = ctx->shape_args.shape_id ;
-    ctx->shape_args.x = x;
-    ctx->shape_args.y = y;
-    ctx->shape_args.radius = isClip?clipr:r;
-    ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*(isClip?clipr:r);
-    ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*(isClip?clipr:r);
-    cairoShapes[(shape-1)%4](ctx,&ctx->shape_args);
+        shape = ctx->shape_defaults.shape_id ;
+    ctx->shape_defaults.x = x;
+    ctx->shape_defaults.y = y;
+    ctx->shape_defaults.radius = isClip?clipr:r;
+    ctx->shape_defaults.width = (ctx->shape_defaults.width)?ctx->shape_defaults.width:2*(isClip?clipr:r);
+    ctx->shape_defaults.height = (ctx->shape_defaults.height)?ctx->shape_defaults.height:2*(isClip?clipr:r);
+    cairoShapes[(shape-1)%4](ctx,&ctx->shape_defaults);
 }
 void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
 {
@@ -59,7 +59,7 @@ void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
     int  w, h;
     double x,y;
     cairo_t *cr = ctx->cairo_cr;
-    image = cairo_image_surface_create_from_png (ctx->shape_args.image_path);
+    image = cairo_image_surface_create_from_png (ctx->shape_defaults.image_path);
     for (j=0; j<num_y_elements; j++) {
         y = particles?particles->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
@@ -83,9 +83,9 @@ int
 ca_test_clip(caskbench_context_t *ctx)
 {
     cairo_t *cr = ctx->cairo_cr;
-    if(ctx->shape_args.animation)
+    if(ctx->shape_defaults.animation)
     {
-        int num_particles = ctx->shape_args.animation;
+        int num_particles = ctx->shape_defaults.animation;
         double start_frame, stop_frame, delta;
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         int i,j ;

@@ -340,6 +340,32 @@ get_tick (void)
     return (double)now.tv_sec + (double)now.tv_usec / 1000000.0;
 }
 
+int
+convertToShapeID(const char* shape_name)
+{
+    int i =0;
+    if (shape_name == NULL)
+        return 0;
+    while (gShapes[i] != NULL) {
+        if (strcmp(gShapes[i], shape_name) == 0)
+            return i + 1;
+        i++;
+    }
+}
+
+fill_type_t
+convertToFillType(const char *fill_name)
+{
+    int i =0;
+    if (fill_name == NULL)
+        return (fill_type_t) 0;
+    while (gFillTypes[i] != NULL) {
+        if (strcmp(gFillTypes[i], fill_name) == 0)
+            return (fill_type_t) i ;
+        i++;
+    }
+}
+
 void
 context_init(caskbench_context_t *context, int size)
 {
@@ -490,6 +516,32 @@ context_destroy_skia(caskbench_context_t *context)
 #endif
 
 void
+shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
+{
+    shape_defaults->x = opt->x_position;
+    shape_defaults->y = opt->y_position;
+    shape_defaults->width = opt->width;
+    shape_defaults->height = opt->height;
+    shape_defaults->shape_name = opt->shape_name;
+    shape_defaults->fill_type = convertToFillType(opt->fill_type);
+    shape_defaults->red = opt->red;
+    shape_defaults->green = opt->green;
+    shape_defaults->blue = opt->blue;
+    shape_defaults->alpha = opt->alpha;
+    shape_defaults->image_path = opt->image_path;
+    shape_defaults->stroke_width = opt->stroke_width;
+    shape_defaults->multi_shapes = opt->multi_shapes;
+    shape_defaults->animation = opt->animation;
+    shape_defaults->stroke_width = opt->stroke_width;
+    shape_defaults->stroke_red = opt->stroke_red;
+    shape_defaults->stroke_green = opt->stroke_green;
+    shape_defaults->stroke_blue = opt->stroke_blue;
+    shape_defaults->cap_style = opt->cap_style;
+    shape_defaults->join_style = opt->join_style;
+    shape_defaults->dash_style = opt->dash_style;
+}
+
+void
 result_init(caskbench_result_t *result, const char* name)
 {
     assert(result);
@@ -498,32 +550,6 @@ result_init(caskbench_result_t *result, const char* name)
     result->size = 0;
     result->min_run_time = -1.0;
     result->avg_run_time = -1.0;
-}
-
-int
-convertToShapeID(const char* shape_name)
-{
-    int i =0;
-    if (shape_name == NULL)
-        return 0;
-    while (gShapes[i] != NULL) {
-        if (strcmp(gShapes[i], shape_name) == 0)
-            return i + 1;
-        i++;
-    }
-}
-
-fill_type_t
-convertToFillType(const char *fill_name)
-{
-    int i =0;
-    if (fill_name == NULL)
-        return (fill_type_t) 0;
-    while (gFillTypes[i] != NULL) {
-        if (strcmp(gFillTypes[i], fill_name) == 0)
-            return (fill_type_t) i ;
-        i++;
-    }
 }
 
 int
@@ -578,30 +604,7 @@ main (int argc, char *argv[])
 
         srand(0xdeadbeef);
         context_init(&context, opt.size);
-
-        // Command line setup for shapes
-        context.shape_defaults.x = opt.x_position;
-        context.shape_defaults.y = opt.y_position;
-        context.shape_defaults.width = opt.width;
-        context.shape_defaults.height = opt.height;
-        context.shape_defaults.shape_name = opt.shape_name;
-        context.shape_defaults.fill_type = convertToFillType(opt.fill_type);
-        context.shape_defaults.red = opt.red;
-        context.shape_defaults.green = opt.green;
-        context.shape_defaults.blue = opt.blue;
-        context.shape_defaults.alpha = opt.alpha;
-        context.shape_defaults.image_path = opt.image_path;
-        context.shape_defaults.stroke_width = opt.stroke_width;
-        context.shape_defaults.multi_shapes = opt.multi_shapes;
-        context.shape_defaults.animation = opt.animation;
-        context.shape_defaults.stroke_width = opt.stroke_width;
-        context.shape_defaults.stroke_red = opt.stroke_red;
-        context.shape_defaults.stroke_green = opt.stroke_green;
-        context.shape_defaults.stroke_blue = opt.stroke_blue;
-        context.shape_defaults.cap_style = opt.cap_style;
-        context.shape_defaults.join_style = opt.join_style;
-        context.shape_defaults.dash_style = opt.dash_style;
-
+        shape_defaults_init(&context.shape_defaults, &opt);
         result_init(&result, perf_tests[c].name);
         config.width = context.canvas_width;
         config.height = context.canvas_height;

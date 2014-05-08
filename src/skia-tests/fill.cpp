@@ -117,16 +117,13 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
     }
 
     for (j=0; j<num_y_elements; j++) {
-        int y = particle? particle->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
-            int x = particle? particle->x : i * element_spacing;
-
-            if (!shape.multi_shapes && !shape.animation) {
-                x = shape.x;
-                y = shape.y;
-            } else {
-                shape.x = x;
-                shape.y = y;
+            if (shape.multi_shapes) {
+                shape.x = i * element_spacing;
+                shape.y = j * element_spacing;
+            } else if (shape.animation && particle) {
+                shape.x = particle->x;
+                shape.y = particle->y;
             }
 
             // Options for fill, gradient and transparency
@@ -138,9 +135,9 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             else if (shape.fill_type == CB_FILL_IMAGE_PATTERN)
                 shader = skiaCreateBitmapShader(ctx->stock_image_path);
             else if (shape.fill_type == CB_FILL_RADIAL_GRADIENT)
-                shader = skiaCreateRadialGradientShader(x, y, shape.radius);
+                shader = skiaCreateRadialGradientShader(shape.x, shape.y, shape.radius);
             else if (shape.fill_type == CB_FILL_LINEAR_GRADIENT)
-                shader = skiaCreateLinearGradientShader(y, y + shape.height);
+                shader = skiaCreateLinearGradientShader(shape.y, shape.y + shape.height);
 
             if (shader)
                 ctx->skia_paint->setShader (shader);

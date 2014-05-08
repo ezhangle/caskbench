@@ -75,9 +75,10 @@ void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 
 void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 {
-    args->rect.set(args->center_x, args->center_y, args->width, args->height);
+    SkRect rect;
+    rect.set(args->center_x, args->center_y, args->width, args->height);
 
-    ctx->skia_canvas->drawRoundRect(args->rect, 4.0, 4.0, *(ctx->skia_paint));
+    ctx->skia_canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->skia_paint));
 }
 
 void (*skiaShapes[5])(caskbench_context_t *ctx , shapes_t *args) = {

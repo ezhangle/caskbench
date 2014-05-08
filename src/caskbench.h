@@ -45,7 +45,7 @@ typedef struct _caskbench_context {
     void             (*update_cairo)(void);
     void             (*update_skia)(void);
 
-    shapes_t shape_args;
+    shapes_t         shape_args;
 
 } caskbench_context_t;
 

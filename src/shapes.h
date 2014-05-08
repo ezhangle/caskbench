@@ -7,11 +7,6 @@
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
 
-#ifdef USE_SKIA
-#  include <SkPath.h>
-#  include <SkRect.h>
-#endif
-
 typedef enum {
     CB_FILL_NONE,
     CB_FILL_SOLID,
@@ -38,10 +33,6 @@ typedef struct shapes
     double height;
     int numpoints;
     double (*points)[2];
-#ifdef USE_SKIA
-    SkPath path;
-    SkRect rect;
-#endif
 
     int shape_id;
     char* shape_name;

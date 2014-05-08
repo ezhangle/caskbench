@@ -166,7 +166,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             case 3:
                 // Triangle
                 shape_type = CB_SHAPE_TRIANGLE;
-                ctx->shape_args.path.reset();
 
                 y1 = y;
                 y2 = y+2*r;
@@ -179,7 +178,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             case 4:
                 // Star
                 shape_type = CB_SHAPE_STAR;
-                ctx->shape_args.path.reset();
 
                 y1 = y;
                 y2 = y+2*r;

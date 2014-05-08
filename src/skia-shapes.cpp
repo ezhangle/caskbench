@@ -23,13 +23,15 @@ skiaRandomizeColor(caskbench_context_t *ctx)
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->skia_canvas->drawCircle(args->center_x, args->center_y, args->radius,
+    ctx->skia_canvas->drawCircle(args->center_x, args->center_y,
+                                 args->radius,
                                  *(ctx->skia_paint));
 }
 
 void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->skia_canvas->drawRectCoords(args->center_x, args->center_y, args->width, args->height,
+    ctx->skia_canvas->drawRectCoords(args->center_x, args->center_y,
+                                     args->width, args->height,
                                      *(ctx->skia_paint));
 }
 
@@ -39,11 +41,13 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 
     // Temporarily disable anti-aliasing to work around crash in GlShader
     ctx->skia_paint->setAntiAlias(false);
-    path.moveTo(args->center_x, args->center_y+2*args->radius);
+
+    path.moveTo(args->center_x, args->center_y + 2*args->radius);
     path.rLineTo(2*args->radius, 0);
     path.rLineTo(-args->radius, -2*args->radius);
 
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
+
     ctx->skia_paint->setAntiAlias(true);
 }
 

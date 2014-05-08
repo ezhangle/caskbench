@@ -49,8 +49,9 @@ sk_teardown_fill(void)
 void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
     int i, j, r, p, shape;
-    r = 0.9 * element_spacing /2;
     int old_x, old_y;
+
+    r = 0.9 * element_spacing / 2;
 
     shape = ctx->shape_args.shape_id;
     if (shape)
@@ -104,6 +105,12 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         old_y = ctx->shape_args.y;
     }
 
+    if (!ctx->shape_args.width)
+        ctx->shape_args.width = 2*r;
+
+    if (!ctx->shape_args.height)
+        ctx->shape_args.height = 2*r;
+
     bool randomize_color = true;
     if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
     {
@@ -119,76 +126,40 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         for (i=0; i<num_x_elements; i++) {
             int x = particle? particle->x : i * element_spacing;
 
-            double y1, y2, cx, cy, rr;
+            ctx->shape_args.radius = r;
+            if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
+                x = ctx->shape_args.x;
+                y = ctx->shape_args.y;
+            } else {
+                ctx->shape_args.x = x;
+                ctx->shape_args.y = y;
+            }
+
             shape_type_t shape_type;
             switch (shape) {
             case 1:
                 // Circle
                 shape_type = CB_SHAPE_CIRCLE;
-                ctx->shape_args.x = x;
-                ctx->shape_args.y = y;
-                ctx->shape_args.radius = r;
-
-                y1 = y;
-                y2 = y + 2*r;
-                cx = x + r;
-                cy = y + r;
-                rr = r;
-
                 break;
 
             case 2:
                 // Rectangle
                 shape_type = CB_SHAPE_RECTANGLE;
-                ctx->shape_args.x = x;
-                ctx->shape_args.y = y;
-
-                if (!ctx->shape_args.width)
-                    ctx->shape_args.width = 2*r;
-
-                if (!ctx->shape_args.height)
-                    ctx->shape_args.height = 2*r;
-
-                y1 = y;
-                y2 = y + 2*r;
-                cx = x + r;
-                cy = y + r;
-                rr = r;
-
                 break;
 
             case 3:
                 // Triangle
                 shape_type = CB_SHAPE_TRIANGLE;
-
-                y1 = y;
-                y2 = y + 2*r;
-                cx = x;
-                cy = y + 2*r;
-                rr = r;
-
                 break;
 
             case 4:
                 // Star
                 shape_type = CB_SHAPE_STAR;
-
-                y1 = y;
-                y2 = y + 2*r;
-                cx = x;
-                cy = y + 2*r;
-                rr = r;
-
                 break;
 
             default:
                 // TODO: Should never reach this point
                 break;
-            }
-
-            if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
-                x = ctx->shape_args.x;
-                y = ctx->shape_args.y;
             }
 
             // Options for fill, gradient and transparency
@@ -219,10 +190,10 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
                 linearColors[0] = SkColorSetARGB (200,200,200,200);
                 linearColors[1] = skiaRandomColor();
-                center.set(cx, cy);
+                center.set(x+r, y+r);
 
                 shader = SkGradientShader::CreateRadial(
-                    center, rr,
+                    center, r,
                     linearColors, NULL, 2,
                     SkShader::kClamp_TileMode, NULL);
             }
@@ -234,9 +205,9 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 linearColors[0] = skiaRandomColor();
                 linearColors[1] = SkColorSetARGB (200,200,200,200);
                 linearPoints[0].fX = SkIntToScalar(0);
-                linearPoints[0].fY = SkIntToScalar(y1);
+                linearPoints[0].fY = SkIntToScalar(y);
                 linearPoints[1].fX = SkIntToScalar(0);
-                linearPoints[1].fY = SkIntToScalar(y2);
+                linearPoints[1].fY = SkIntToScalar(y + ctx->shape_args.height);
 
                 shader = SkGradientShader::CreateLinear(
                     linearPoints, linearColors, NULL, 2,

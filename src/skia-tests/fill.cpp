@@ -128,6 +128,16 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
         old_y = ctx->shape_args.center_y;
     }
 
+    bool randomize_color = true;
+    if (ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
+    {
+        randomize_color = false;
+        ctx->skia_paint->setARGB(255*((double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1),
+                                 255*(double)ctx->shape_args.red,
+                                 255*((double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0),
+                                 255*(ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0) );
+    }
+
     for (j=0; j<num_y_elements; j++) {
         y = particles?particles->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
@@ -136,35 +146,13 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
             // Options for fill,gradient and transparency
             if( ctx->shape_args.fill_type == NULL)
             {
-                if(ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
-                {
-                    ctx->skia_paint->setARGB(255*((double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1),
-                                             255*(double)ctx->shape_args.red,
-                                             255*((double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0),
-                                             255*(ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0) );
-                }
-                else
+                if (randomize_color)
                     skiaRandomizeColor(ctx);
             }
             else if ((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
             {
-                if(ctx->shape_args.red > 0 || ctx->shape_args.blue > 0 || ctx->shape_args.green > 0 || ctx->shape_args.alpha > 0)
-                {
-                    ctx->skia_paint->setARGB ( 255*(double)ctx->shape_args.red,
-                                               255*((double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0),
-                                               255* (ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0),
-                                               255*( (double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1));
-                }
-                else
+                if (randomize_color)
                     skiaRandomizeColor(ctx);
-            }
-            else if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
-            {
-                red = 255*(double)rand()/RAND_MAX;
-                green = 255*(double)rand()/RAND_MAX;
-                blue = 255*(double)rand()/RAND_MAX;
-                alpha = 255*(double)rand()/RAND_MAX;
-
             }
             else if((strcmp(ctx->shape_args.fill_type,"herringbone-pattern")) == 0){}
             else if((strcmp(ctx->shape_args.fill_type,"image-pattern")) == 0 &&(ctx->shape_args.image_path))
@@ -258,6 +246,10 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             if(ctx->shape_args.fill_type != NULL)
             {
+                red = 255*(double)rand()/RAND_MAX;
+                green = 255*(double)rand()/RAND_MAX;
+                blue = 255*(double)rand()/RAND_MAX;
+                alpha = 255*(double)rand()/RAND_MAX;
                 if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
                 {
                     linearColors[1] = SkColorSetARGB (alpha, red, green, blue);

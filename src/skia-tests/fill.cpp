@@ -50,7 +50,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
     int i, j, r, p, shape;
     r = 0.9 * element_spacing /2;
-    int old_x, old_y, old_width, old_height;
+    int old_x, old_y;
 
     shape = ctx->shape_args.shape_id;
     if (shape)
@@ -94,8 +94,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         }
     }
 
-    old_width = ctx->shape_args.width;
-    old_height = ctx->shape_args.height;
     if (!ctx->shape_args.animation && !ctx->shape_args.multi_shapes)
     {
         num_x_elements = 1;
@@ -127,14 +125,14 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             case 1:
                 // Circle
                 shape_type = CB_SHAPE_CIRCLE;
-                ctx->shape_args.center_x = x+r;
-                ctx->shape_args.center_y = y+r;
+                ctx->shape_args.center_x = x + r;
+                ctx->shape_args.center_y = y + r;
                 ctx->shape_args.radius = r;
 
                 y1 = y;
-                y2 = y+2*r;
-                cx = x+r;
-                cy = y+r;
+                y2 = y + 2*r;
+                cx = x + r;
+                cy = y + r;
                 rr = r;
 
                 break;
@@ -145,21 +143,17 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 ctx->shape_args.center_x = x;
                 ctx->shape_args.center_y = y;
 
-                if (ctx->shape_args.width)
-                    ctx->shape_args.width = x + ctx->shape_args.width;
-                else
-                    ctx->shape_args.width = x + 2*r;
+                if (!ctx->shape_args.width)
+                    ctx->shape_args.width = 2*r;
 
-                if (ctx->shape_args.height)
-                    ctx->shape_args.height = y + ctx->shape_args.height;
-                else
-                    ctx->shape_args.height = y + 2*r;
+                if (!ctx->shape_args.height)
+                    ctx->shape_args.height = 2*r;
 
                 y1 = y;
-                y2 = y + ctx->shape_args.height/4;
-                cx = (x + ctx->shape_args.width)/2;
-                cy = (y + ctx->shape_args.height)/2;
-                rr = (ctx->shape_args.height - y)/2;
+                y2 = y + 2*r;
+                cx = x + r;
+                cy = y + r;
+                rr = r;
 
                 break;
 
@@ -168,9 +162,9 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 shape_type = CB_SHAPE_TRIANGLE;
 
                 y1 = y;
-                y2 = y+2*r;
+                y2 = y + 2*r;
                 cx = x;
-                cy = y+2*r;
+                cy = y + 2*r;
                 rr = r;
 
                 break;
@@ -180,9 +174,9 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 shape_type = CB_SHAPE_STAR;
 
                 y1 = y;
-                y2 = y+2*r;
-                cx = x + 2*r * star_points[0][0]/200.0;
-                cy = y + 2*r * star_points[0][1]/200.0;
+                y2 = y + 2*r;
+                cx = x;
+                cy = y + 2*r;
                 rr = r;
 
                 break;
@@ -254,9 +248,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
             skiaShapes[shape_type] (ctx, &ctx->shape_args);
 
-            ctx->shape_args.width = old_width;
-            ctx->shape_args.height = old_height;
-
             ctx->skia_canvas->flush();
             if (ctx->shape_args.fill_type != NULL)
                 if (shader != NULL)
@@ -272,8 +263,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
     {
         ctx->shape_args.center_x = old_x;
         ctx->shape_args.center_y = old_y;
-        ctx->shape_args.width = old_width;
-        ctx->shape_args.height = old_height;
     }
 }
 

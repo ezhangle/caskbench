@@ -28,12 +28,10 @@ static int line_length;
 static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *particles=NULL)
 {
     cairo_t *cr = ctx->cairo_cr;
-    int old_x, old_y,old_width, old_height;
-    old_width = ctx->shape_args.width;
-    old_height = ctx->shape_args.height;
-
+    int old_x, old_y;
     int i,shape,p;
     double r;
+
     r = particles?50:0.9 * element_spacing /2;
     if(!ctx->shape_args.shape_id)
         shape = ((4.0 * rand())/RAND_MAX) +1;
@@ -53,11 +51,9 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
         // Rectangle
         ctx->shape_args.center_x =  x;
         ctx->shape_args.center_y = y;
-        ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
-        ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
-        skiaShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
-        ctx->shape_args.width = old_width;
-        ctx->shape_args.height = old_height;
+        ctx->shape_args.width = ctx->shape_args.width? ctx->shape_args.width : 2*r;
+        ctx->shape_args.height = ctx->shape_args.height? ctx->shape_args.height: 2*r;
+        skiaShapes[CB_SHAPE_RECTANGLE](ctx, &ctx->shape_args);
         break;
 
     case 3:

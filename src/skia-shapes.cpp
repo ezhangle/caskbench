@@ -36,9 +36,10 @@ void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 
 void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->skia_canvas->drawRectCoords(args->center_x, args->center_y,
-                                     args->width, args->height,
-                                     *(ctx->skia_paint));
+    SkRect r;
+    r.set(args->center_x, args->center_y,
+          args->center_x + args->width, args->center_y + args->height);
+    ctx->skia_canvas->drawRect(r, *(ctx->skia_paint));
 }
 
 void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)

@@ -31,8 +31,6 @@ typedef struct shapes
     double radius;
     double width;
     double height;
-    int numpoints;
-    double (*points)[2];
 
     int shape_id;
     char* shape_name;

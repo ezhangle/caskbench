@@ -116,7 +116,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 cairo_set_source (cr, pattern);
             }
 
-
             if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
                 x = ctx->shape_args.center_x;
                 y = ctx->shape_args.center_y;
@@ -131,7 +130,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_x = x;
                 ctx->shape_args.center_y = y;
                 ctx->shape_args.radius = r;
-                ctx->shape_args.points = NULL;
 
                 cx = x;
                 cy = y;
@@ -148,7 +146,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_y = y;
                 ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
-                ctx->shape_args.points = NULL;
 
                 cx = x+(ctx->shape_args.width/2);
                 cy = y+(ctx->shape_args.height/2);
@@ -161,14 +158,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 3:
                 // Triangle
                 shape_type = CB_SHAPE_TRIANGLE;
-                ctx->shape_args.numpoints = 3;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-                ctx->shape_args.points[0][0] = x;
-                ctx->shape_args.points[0][1] = y+2*r;
-                ctx->shape_args.points[1][0] = 2*r;
-                ctx->shape_args.points[1][1] = 0;
-                ctx->shape_args.points[2][0] = -r;
-                ctx->shape_args.points[2][1] = -2*r;
 
                 cx = x;
                 cy = y + 2*r;
@@ -181,13 +170,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 4:
                 // Star
                 shape_type = CB_SHAPE_STAR;
-                ctx->shape_args.numpoints = 10;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-
-                for (p = 0; p < 10; p++ ) {
-                    ctx->shape_args.points[p][0] = x + 2*r * star_points[p][0]/200.0;
-                    ctx->shape_args.points[p][1] = y + 2*r * star_points[p][1]/200.0;
-                }
 
                 cx = x + 2*r * star_points[0][0]/200.0;
                 cy = y + 2*r * star_points[0][1]/200.0;
@@ -225,8 +207,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             // Reset
             ctx->shape_args.width = old_width;
             ctx->shape_args.height = old_height;
-            if (ctx->shape_args.points)
-                free (ctx->shape_args.points);
 
             newPath = cairo_copy_path(cr);
             cairo_fill (cr);

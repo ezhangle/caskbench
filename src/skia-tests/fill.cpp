@@ -12,7 +12,6 @@
 #include <SkCanvas.h>
 #include <SkPaint.h>
 #include <effects/SkGradientShader.h>
-#include <SkUnitMappers.h>
 #include <SkDraw.h>
 #include <effects/SkGradientShader.h>
 #include <SkGraphics.h>
@@ -75,9 +74,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particles)
             shape = 2;
     }
 
-    SkUnitMapper* linearMapper;
     //Stroke styles
-
     if (ctx->shape_args.stroke_width)
     {
         ctx->skia_paint->setStyle(SkPaint::kStroke_Style);

@@ -129,34 +129,6 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
 
-            // Options for fill, gradient and transparency
-            SkShader* shader = NULL;
-            if (ctx->shape_args.fill_type == NULL)
-            {
-                if (randomize_color)
-                    skiaRandomizeColor(ctx);
-            }
-            else if ((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
-            {
-                if (randomize_color)
-                    skiaRandomizeColor(ctx);
-            }
-            else if ((strcmp(ctx->shape_args.fill_type,"image-pattern")) == 0 &&(ctx->shape_args.image_path))
-            {
-                SkBitmap    bm;
-
-                SkImageDecoder::DecodeFile(ctx->shape_args.image_path, &bm);
-                shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
-                                        SkShader::kClamp_TileMode);
-            }
-            if (shader)
-                ctx->skia_paint->setShader (shader);
-
-            if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
-                x = ctx->shape_args.center_x;
-                y = ctx->shape_args.center_y;
-            }
-
             double y1, y2, cx, cy, rr;
             shape_type_t shape_type;
             switch (shape) {
@@ -229,6 +201,35 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
                 // TODO: Should never reach this point
                 break;
             }
+
+            if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
+                x = ctx->shape_args.center_x;
+                y = ctx->shape_args.center_y;
+            }
+
+            // Options for fill, gradient and transparency
+            SkShader* shader = NULL;
+            if (ctx->shape_args.fill_type == NULL)
+            {
+                if (randomize_color)
+                    skiaRandomizeColor(ctx);
+            }
+            else if ((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
+            {
+                if (randomize_color)
+                    skiaRandomizeColor(ctx);
+            }
+            else if ((strcmp(ctx->shape_args.fill_type,"image-pattern")) == 0 &&(ctx->shape_args.image_path))
+            {
+                SkBitmap    bm;
+
+                SkImageDecoder::DecodeFile(ctx->shape_args.image_path, &bm);
+                shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
+                                        SkShader::kClamp_TileMode);
+            }
+            if (shader)
+                ctx->skia_paint->setShader (shader);
+
 
             if (ctx->shape_args.fill_type != NULL)
             {

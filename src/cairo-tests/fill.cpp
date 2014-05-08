@@ -24,7 +24,8 @@ static kinetics_t *cairo_particles;
 
 void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 {
-    int i, j, x, y, r, p, shape;
+    int i, j, x, y, r, p;
+    shape_type_t shape;
     cairo_t *cr = ctx->cairo_cr;
     r = 0.9 * element_spacing /2;
     int old_x, old_y,old_width, old_height;
@@ -34,16 +35,13 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     static const double dashed3[] = {1.0};
     static const double dashed2[] = {14.0, 6.0};
     cairo_path_t *newPath;
-    shape = ctx->shape_defaults.shape_id;
-    if(!shape)
+    shape = ctx->shape_defaults.shape_type;
+    if(shape == CB_SHAPE_NONE)
     {
-        shape = ((4.0 * rand())/RAND_MAX) + 1;
+        shape = (shape_type_t) (((4.0 * rand())/RAND_MAX) + 1);
         if(!ctx->shape_defaults.multi_shapes)
-            shape = 2;
-    }
-
-    if(shape)
-    {
+            shape = CB_SHAPE_RECTANGLE;
+    } else {
         if(!(ctx->shape_defaults.x && ctx->shape_defaults.y))
         {
             ctx->shape_defaults.x = x = ctx->canvas_width/2;

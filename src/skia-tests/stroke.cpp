@@ -29,14 +29,15 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
 {
     cairo_t *cr = ctx->cairo_cr;
     int old_x, old_y;
-    int i,shape,p;
+    int i, p;
     double r;
+    shape_type_t shape;
 
     r = particles?50:0.9 * element_spacing /2;
-    if(!ctx->shape_defaults.shape_id)
-        shape = ((4.0 * rand())/RAND_MAX) +1;
+    if(ctx->shape_defaults.shape_type == CB_SHAPE_NONE)
+        shape = (shape_type_t) (((4.0 * rand())/RAND_MAX) + 1);
     else
-        shape = ctx->shape_defaults.shape_id ;
+        shape = ctx->shape_defaults.shape_type;
 
     switch (shape) {
     case 1:

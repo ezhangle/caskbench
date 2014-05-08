@@ -285,7 +285,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
 
     opt->enable_egl_sample_buffers = 0;
-    opt->shape_name = NULL;
     opt->x_position = 0;
     opt->y_position = 0;
     opt->width = 0;
@@ -340,17 +339,18 @@ get_tick (void)
     return (double)now.tv_sec + (double)now.tv_usec / 1000000.0;
 }
 
-int
-convertToShapeID(const char* shape_name)
+shape_type_t
+convertToShapeType(const char* shape_name)
 {
     int i =0;
     if (shape_name == NULL)
-        return 0;
+        return (shape_type_t) 0;
     while (gShapes[i] != NULL) {
         if (strcmp(gShapes[i], shape_name) == 0)
-            return i + 1;
+            return (shape_type_t)(i + 1);
         i++;
     }
+    return (shape_type_t) 0;
 }
 
 fill_type_t
@@ -364,6 +364,7 @@ convertToFillType(const char *fill_name)
             return (fill_type_t) i ;
         i++;
     }
+    return (fill_type_t) 0;
 }
 
 void
@@ -522,7 +523,7 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->y = opt->y_position;
     shape_defaults->width = opt->width;
     shape_defaults->height = opt->height;
-    shape_defaults->shape_name = opt->shape_name;
+    shape_defaults->shape_type = convertToShapeType(opt->shape_name);
     shape_defaults->fill_type = convertToFillType(opt->fill_type);
     shape_defaults->red = opt->red;
     shape_defaults->green = opt->green;

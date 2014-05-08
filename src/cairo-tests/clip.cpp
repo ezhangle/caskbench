@@ -40,12 +40,13 @@ void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool is
 {
 
     cairo_t *cr = ctx->cairo_cr;
-    int i, r,shape,p;
+    int i, r, p;
+    shape_type_t shape;
     r = 0.9 * element_spacing /2;
-    if(!ctx->shape_defaults.shape_id)
-        shape = ((4.0 * rand())/RAND_MAX) +1;
+    if(!ctx->shape_defaults.shape_type)
+        shape = (shape_type_t) (((4.0 * rand())/RAND_MAX) + 1);
     else
-        shape = ctx->shape_defaults.shape_id ;
+        shape = ctx->shape_defaults.shape_type;
     ctx->shape_defaults.x = x;
     ctx->shape_defaults.y = y;
     ctx->shape_defaults.radius = isClip?clipr:r;

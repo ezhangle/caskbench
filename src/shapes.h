@@ -33,8 +33,7 @@ typedef struct shapes
     double width;
     double height;
 
-    int shape_id;
-    char* shape_name;
+    shape_type_t shape_type;
     fill_type_t fill_type;
     double red;
     double green;

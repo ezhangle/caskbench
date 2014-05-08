@@ -53,7 +53,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
     r = 0.9 * element_spacing / 2;
 
-    shape_type_t shape_type = (shape_type_t) ctx->shape_defaults.shape_id;
+    shape_type_t shape_type = (shape_type_t) ctx->shape_defaults.shape_type;
     if (shape_type != CB_SHAPE_NONE)
     {
         if (!(ctx->shape_defaults.x && ctx->shape_defaults.y))

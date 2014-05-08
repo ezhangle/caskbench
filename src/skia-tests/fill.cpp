@@ -47,7 +47,7 @@ sk_teardown_fill(void)
 {
 }
 
-void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
+void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particles)
 {
     int i, j, x, y, r, p, shape;
     unsigned int red, green, blue, alpha;
@@ -247,6 +247,7 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
             {
                 SkColor linearColors[2];
                 SkPoint linearPoints[2];
+
                 red = 255*(double)rand()/RAND_MAX;
                 green = 255*(double)rand()/RAND_MAX;
                 blue = 255*(double)rand()/RAND_MAX;
@@ -314,7 +315,7 @@ sk_test_fill(caskbench_context_t *ctx)
 
                 for (i = 0; i < num_particles; i++) {
                     kinetics_update(&skia_particles[i], 0.1);
-                    drawSkiashapes(ctx, &skia_particles[i]);
+                    drawSkiaShapes(ctx, &skia_particles[i]);
                 }
                 stop_frame = get_tick();
                 delta = stop_frame - start_frame;
@@ -325,7 +326,7 @@ sk_test_fill(caskbench_context_t *ctx)
         // Drawing of multishape on a grid
         else
         {
-            drawSkiashapes(ctx, NULL);
+            drawSkiaShapes(ctx, NULL);
         }
     }
     return 1;

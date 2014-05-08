@@ -55,13 +55,6 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
     int old_x, old_y, old_width, old_height;
 
     shape = ctx->shape_args.shape_id;
-    if (!shape)
-    {
-        shape = ((4.0 * rand())/RAND_MAX) + 1;
-        if (!ctx->shape_args.multi_shapes)
-            shape = 2;
-    }
-
     if (shape)
     {
         if (!(ctx->shape_args.center_x && ctx->shape_args.center_y))
@@ -76,6 +69,10 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
                 ctx->shape_args.height = 50;
             }
         ctx->shape_args.radius = r;
+    } else {
+        shape = ((4.0 * rand())/RAND_MAX) + 1;
+        if (!ctx->shape_args.multi_shapes)
+            shape = 2;
     }
 
     SkUnitMapper* linearMapper;

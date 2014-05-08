@@ -115,32 +115,25 @@ sk_test_fill(caskbench_context_t *ctx)
     // Animation / Kinematics of single or multi shape
     if (ctx->shape_defaults.animation) {
         int num_particles = ctx->size;
-        double start_frame, stop_frame, delta;
         skia_particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         for (int i = 0; i < num_particles; i++)
             kinetics_init(&skia_particles[i]);
-        delta = 0;
 
-        for (int j=0; j<num_particles; j++){
-            start_frame = get_tick();
-            ctx->skia_canvas->drawColor(SK_ColorBLACK);
+        ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
-            for (int i = 0; i < num_particles; i++) {
-                shapes_t shape;
-                kinetics_t *particle = &skia_particles[i];
+        for (int i = 0; i < num_particles; i++) {
+            shapes_t shape;
+            kinetics_t *particle = &skia_particles[i];
 
-                kinetics_update(particle, 0.1);
+            kinetics_update(particle, 0.1);
 
-                shape_copy(&ctx->shape_defaults, &shape);
-                shape.width = particle->width;
-                shape.height = particle->height;
-                shape.x = particle->x;
-                shape.y = particle->y;
+            shape_copy(&ctx->shape_defaults, &shape);
+            shape.width = particle->width;
+            shape.height = particle->height;
+            shape.x = particle->x;
+            shape.y = particle->y;
 
-                _draw_shape(ctx, &shape);
-            }
-            stop_frame = get_tick();
-            delta = stop_frame - start_frame;
+            _draw_shape(ctx, &shape);
         }
     }
 

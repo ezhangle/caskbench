@@ -122,9 +122,11 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 y = ctx->shape_args.center_y;
             }
 
+            shape_type_t shape_type;
             switch (shape) {
             case 1:
                 // Circle
+                shape_type = CB_SHAPE_CIRCLE;
                 ctx->shape_args.center_x = x;
                 ctx->shape_args.center_y = y;
                 ctx->shape_args.radius = r;
@@ -146,11 +148,11 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                         cairo_set_source (cr, pattern);
                     }
                 }
-                cairoShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
                 break;
 
             case 2:
                 // Rectangle
+                shape_type = CB_SHAPE_RECTANGLE;
                 ctx->shape_args.center_x = x;
                 ctx->shape_args.center_y = y;
                 ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
@@ -179,11 +181,11 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                         cairo_set_source (cr, pattern);
                     }
                 }
-                cairoShapes[CB_SHAPE_RECTANGLE](ctx,&ctx->shape_args);
                 break;
 
             case 3:
                 // Triangle
+                shape_type = CB_SHAPE_TRIANGLE;
                 ctx->shape_args.numpoints = 3;
                 ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
                 ctx->shape_args.points[0][0] = x;
@@ -211,11 +213,11 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     }
 
                 }
-                cairoShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
                 break;
 
             case 4:
                 // Star
+                shape_type = CB_SHAPE_STAR;
                 ctx->shape_args.numpoints = 10;
                 ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
 
@@ -242,13 +244,16 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                         cairo_set_source (cr, pattern);
                     }
                 }
-                cairoShapes[CB_SHAPE_STAR] (ctx,&ctx->shape_args);
                 break;
 
             default:
+                // TODO: Should never reach here
                 break;
             }
 
+            cairoShapes[shape_type] (ctx,&ctx->shape_args);
+
+            // Reset
             ctx->shape_args.width = old_width;
             ctx->shape_args.height = old_height;
             if (ctx->shape_args.points)

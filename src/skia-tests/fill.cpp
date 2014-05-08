@@ -183,9 +183,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 y = ctx->shape_args.center_y;
             }
 
+            shape_type_t shape_type;
             switch (shape) {
             case 1:
                 // Circle
+                shape_type = CB_SHAPE_CIRCLE;
                 ctx->shape_args.center_x = x+r;
                 ctx->shape_args.center_y = y+r;
                 ctx->shape_args.radius = r;
@@ -221,13 +223,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-
-                skiaShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
-
                 break;
 
             case 2:
                 // Rectangle
+                shape_type = CB_SHAPE_RECTANGLE;
                 ctx->shape_args.center_x = x;
                 ctx->shape_args.center_y = y;
 
@@ -264,11 +264,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-                skiaShapes[CB_SHAPE_RECTANGLE] (ctx, &ctx->shape_args);
                 break;
 
             case 3:
                 // Triangle
+                shape_type = CB_SHAPE_TRIANGLE;
                 ctx->shape_args.path.reset();
 
                 ctx->shape_args.numpoints = 3;
@@ -310,11 +310,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-                skiaShapes[CB_SHAPE_TRIANGLE] (ctx,&ctx->shape_args);
                 break;
 
             case 4:
                 // Star
+                shape_type = CB_SHAPE_STAR;
                 ctx->shape_args.path.reset();
                 ctx->shape_args.numpoints = 10;
                 ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
@@ -357,12 +357,13 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                         ctx->skia_paint->setShader (shader);
                     }
                 }
-                skiaShapes[CB_SHAPE_STAR] (ctx, &ctx->shape_args);
                 break;
 
             default:
+                // TODO: Should never reach this point
                 break;
             }
+            skiaShapes[shape_type] (ctx, &ctx->shape_args);
 
             ctx->shape_args.width = old_width;
             ctx->shape_args.height = old_height;

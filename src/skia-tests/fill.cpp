@@ -76,12 +76,7 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
     }
 
     SkUnitMapper* linearMapper;
-    SkColor linearColors[2];
-    SkPoint linearPoints[2];
-    SkScalar radialPoints[4];
-    SkPoint center;
     //Stroke styles
-    SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
 
     if (ctx->shape_args.stroke_width)
     {
@@ -91,6 +86,7 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
         ctx->skia_paint->setStrokeCap((SkPaint::Cap)ctx->shape_args.cap_style);
         if (ctx->shape_args.dash_style == 0)
         {
+            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
 #if USE_LEGACY_SKIA_SRA
             pE.reset(new SkDashPathEffect(vals, 2, 0));
             ctx->skia_paint->setPathEffect(new SkDashPathEffect(vals, 2, 0));
@@ -229,6 +225,10 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
             }
             else if ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
             {
+                SkPoint center;
+                SkColor linearColors[2];
+                SkScalar radialPoints[4];
+
                 red = 255*(double)rand()/RAND_MAX;
                 green = 255*(double)rand()/RAND_MAX;
                 blue = 255*(double)rand()/RAND_MAX;
@@ -245,6 +245,8 @@ void drawSkiashapes(caskbench_context_t *ctx, kinetics_t *particles)
             }
             else if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
             {
+                SkColor linearColors[2];
+                SkPoint linearPoints[2];
                 red = 255*(double)rand()/RAND_MAX;
                 green = 255*(double)rand()/RAND_MAX;
                 blue = 255*(double)rand()/RAND_MAX;

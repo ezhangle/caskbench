@@ -50,36 +50,38 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
     int i, j, r, p;
     int old_x, old_y;
+    shapes_t shape;
+
+    shape_copy(&ctx->shape_defaults, &shape);
 
     r = 0.9 * element_spacing / 2;
 
-    shape_type_t shape_type = (shape_type_t) ctx->shape_defaults.shape_type;
-    if (shape_type != CB_SHAPE_NONE)
+    if (shape.shape_type != CB_SHAPE_NONE)
     {
-        if (!(ctx->shape_defaults.x && ctx->shape_defaults.y))
+        if (!(shape.x && shape.y))
         {
-            ctx->shape_defaults.x = ctx->canvas_width/2;
-            ctx->shape_defaults.y = ctx->canvas_height/2;
+            shape.x = ctx->canvas_width/2;
+            shape.y = ctx->canvas_height/2;
         }
-        if (!ctx->shape_defaults.multi_shapes)
-            if (!(ctx->shape_defaults.width && ctx->shape_defaults.height))
+        if (!shape.multi_shapes)
+            if (!(shape.width && shape.height))
             {
-                ctx->shape_defaults.width = 100;
-                ctx->shape_defaults.height = 50;
+                shape.width = 100;
+                shape.height = 50;
             }
-        ctx->shape_defaults.radius = r;
-    } else if (!ctx->shape_defaults.multi_shapes) {
-        shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
+        shape.radius = r;
+    } else if (!shape.multi_shapes) {
+        shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
     }
 
     //Stroke styles
-    if (ctx->shape_defaults.stroke_width)
+    if (shape.stroke_width)
     {
         ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-        ctx->skia_paint->setStrokeWidth(ctx->shape_defaults.stroke_width);
-        ctx->skia_paint->setStrokeJoin((SkPaint::Join)ctx->shape_defaults.join_style);
-        ctx->skia_paint->setStrokeCap((SkPaint::Cap)ctx->shape_defaults.cap_style);
-        if (ctx->shape_defaults.dash_style == 0)
+        ctx->skia_paint->setStrokeWidth(shape.stroke_width);
+        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape.join_style);
+        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape.cap_style);
+        if (shape.dash_style == 0)
         {
             SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
 #if USE_LEGACY_SKIA_SRA
@@ -93,30 +95,28 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         }
     }
 
-    if (!ctx->shape_defaults.animation && !ctx->shape_defaults.multi_shapes)
+    if (!shape.animation && !shape.multi_shapes)
     {
         num_x_elements = 1;
         num_y_elements = 1;
 
         r = 40;
-        old_x = ctx->shape_defaults.x;
-        old_y = ctx->shape_defaults.y;
     }
 
-    if (!ctx->shape_defaults.width)
-        ctx->shape_defaults.width = 2*r;
+    if (!shape.width)
+        shape.width = 2*r;
 
-    if (!ctx->shape_defaults.height)
-        ctx->shape_defaults.height = 2*r;
+    if (!shape.height)
+        shape.height = 2*r;
 
     bool randomize_color = true;
-    if (ctx->shape_defaults.red > 0 || ctx->shape_defaults.blue > 0 || ctx->shape_defaults.green > 0 || ctx->shape_defaults.alpha > 0)
+    if (shape.red > 0 || shape.blue > 0 || shape.green > 0 || shape.alpha > 0)
     {
         randomize_color = false;
-        ctx->skia_paint->setARGB(255*((double)ctx->shape_defaults.alpha ? (double)ctx->shape_defaults.alpha:(double)1),
-                                 255*((double)ctx->shape_defaults.red ? (double)ctx->shape_defaults.red:(double)0),
-                                 255*((double)ctx->shape_defaults.green ? (double)ctx->shape_defaults.green:(double)0),
-                                 255*(ctx->shape_defaults.blue ? (double)ctx->shape_defaults.blue:(double)0) );
+        ctx->skia_paint->setARGB(255*((double)shape.alpha ? (double)shape.alpha:(double)1),
+                                 255*((double)shape.red ? (double)shape.red:(double)0),
+                                 255*((double)shape.green ? (double)shape.green:(double)0),
+                                 255*(shape.blue ? (double)shape.blue:(double)0) );
     }
 
     for (j=0; j<num_y_elements; j++) {
@@ -124,28 +124,28 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         for (i=0; i<num_x_elements; i++) {
             int x = particle? particle->x : i * element_spacing;
 
-            ctx->shape_defaults.radius = r;
-            if (!ctx->shape_defaults.multi_shapes && !ctx->shape_defaults.animation) {
-                x = ctx->shape_defaults.x;
-                y = ctx->shape_defaults.y;
+            shape.radius = r;
+            if (!shape.multi_shapes && !shape.animation) {
+                x = shape.x;
+                y = shape.y;
             } else {
-                ctx->shape_defaults.x = x;
-                ctx->shape_defaults.y = y;
+                shape.x = x;
+                shape.y = y;
             }
 
             // Options for fill, gradient and transparency
             SkShader* shader = NULL;
-            if (ctx->shape_defaults.fill_type == CB_FILL_NONE)
+            if (shape.fill_type == CB_FILL_NONE)
             {
                 if (randomize_color)
                     skiaRandomizePaintColor(ctx);
             }
-            else if (ctx->shape_defaults.fill_type == CB_FILL_SOLID)
+            else if (shape.fill_type == CB_FILL_SOLID)
             {
                 if (randomize_color)
                     skiaRandomizePaintColor(ctx);
             }
-            else if (ctx->shape_defaults.fill_type == CB_FILL_IMAGE_PATTERN)
+            else if (shape.fill_type == CB_FILL_IMAGE_PATTERN)
             {
                 SkBitmap    bm;
 
@@ -153,7 +153,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
                                         SkShader::kClamp_TileMode);
             }
-            else if (ctx->shape_defaults.fill_type == CB_FILL_RADIAL_GRADIENT)
+            else if (shape.fill_type == CB_FILL_RADIAL_GRADIENT)
             {
                 SkPoint center;
                 SkColor linearColors[2];
@@ -168,7 +168,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                     linearColors, NULL, 2,
                     SkShader::kClamp_TileMode, NULL);
             }
-            else if (ctx->shape_defaults.fill_type == CB_FILL_LINEAR_GRADIENT)
+            else if (shape.fill_type == CB_FILL_LINEAR_GRADIENT)
             {
                 SkColor linearColors[2];
                 SkPoint linearPoints[2];
@@ -178,7 +178,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 linearPoints[0].fX = SkIntToScalar(0);
                 linearPoints[0].fY = SkIntToScalar(y);
                 linearPoints[1].fX = SkIntToScalar(0);
-                linearPoints[1].fY = SkIntToScalar(y + ctx->shape_defaults.height);
+                linearPoints[1].fY = SkIntToScalar(y + shape.height);
 
                 shader = SkGradientShader::CreateLinear(
                     linearPoints, linearColors, NULL, 2,
@@ -188,10 +188,10 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             if (shader)
                 ctx->skia_paint->setShader (shader);
 
-            skiaShapes[shape_type] (ctx, &ctx->shape_defaults);
+            skiaShapes[shape.shape_type] (ctx, &shape);
 
             ctx->skia_canvas->flush();
-            if (ctx->shape_defaults.fill_type != CB_FILL_NONE)
+            if (shape.fill_type != CB_FILL_NONE)
                 if (shader != NULL)
                 {
                     ctx->skia_paint->setShader (NULL);
@@ -199,12 +199,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 }
             ctx->skia_paint->setPathEffect(NULL);
         }
-    }
-
-    if (!ctx->shape_defaults.animation && !ctx->shape_defaults.multi_shapes)
-    {
-        ctx->shape_defaults.x = old_x;
-        ctx->shape_defaults.y = old_y;
     }
 }
 

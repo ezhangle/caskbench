@@ -54,6 +54,15 @@ typedef struct shapes
 
 extern int star_points[11][2];
 
+void
+shape_init(shapes_t *shape);
+
+void
+shape_copy(const shapes_t *shape_defaults, shapes_t *shape);
+
+void
+shape_randomize(shapes_t *shape);
+
 #endif
 /*
   Local Variables:

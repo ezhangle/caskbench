@@ -104,65 +104,13 @@ _draw_shape(caskbench_context_t *ctx, shapes_t *shape)
     }
 }
 
-void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
-{
-    int i, j, r, p;
-    int old_x, old_y;
-    shapes_t shape;
-
-    shape_copy(&ctx->shape_defaults, &shape);
-
-    shape.radius = 0.9 * element_spacing / 2;
-
-    if (shape.shape_type != CB_SHAPE_NONE)
-    {
-        if (!(shape.x && shape.y))
-        {
-            shape.x = ctx->canvas_width/2;
-            shape.y = ctx->canvas_height/2;
-        }
-        if (!shape.multi_shapes)
-            if (!(shape.width && shape.height))
-            {
-                shape.width = 100;
-                shape.height = 50;
-            }
-    } else if (!shape.multi_shapes) {
-        shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
-    }
-
-    if (!shape.width)
-        shape.width = 2*shape.radius;
-
-    if (!shape.height)
-        shape.height = 2*shape.radius;
-
-    if (shape.animation) {
-        shape.x = particle->x;
-        shape.y = particle->y;
-        _draw_shape(ctx, &shape);
-    } else if (shape.multi_shapes) {
-        for (j=0; j<num_y_elements; j++) {
-            for (i=0; i<num_x_elements; i++) {
-                shape.x = i * element_spacing;
-                shape.y = j * element_spacing;
-                _draw_shape(ctx, &shape);
-            }
-        }
-    } else {
-        shape.radius = 40;
-        _draw_shape(ctx, &shape);
-    }
-}
-
 int
 sk_test_fill(caskbench_context_t *ctx)
 {
     for (int i = 0;i < ctx->size; i++)
     {
         // Animation / Kinematics of single or multi shape
-        if (ctx->shape_defaults.animation)
-        {
+        if (ctx->shape_defaults.animation) {
             int num_particles = ctx->shape_defaults.animation;
             double start_frame, stop_frame, delta;
             skia_particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
@@ -176,19 +124,68 @@ sk_test_fill(caskbench_context_t *ctx)
                 ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
                 for (i = 0; i < num_particles; i++) {
-                    kinetics_update(&skia_particles[i], 0.1);
-                    drawSkiaShapes(ctx, &skia_particles[i]);
+                    shapes_t shape;
+                    kinetics_t *particle = &skia_particles[i];
+
+                    kinetics_update(particle, 0.1);
+                    shape_copy(&ctx->shape_defaults, &shape);
+                    if (shape.shape_type == CB_SHAPE_NONE)
+                        shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
+
+                    shape.width = particle->width;
+                    shape.height = particle->height;
+                    shape.x = particle->x;
+                    shape.y = particle->y;
+                    _draw_shape(ctx, &shape);
                 }
                 stop_frame = get_tick();
                 delta = stop_frame - start_frame;
             }
-
         }
 
         // Drawing of multishape on a grid
-        else
-        {
-            drawSkiaShapes(ctx, NULL);
+        else if (ctx->shape_defaults.multi_shapes) {
+            shapes_t shape;
+            shape_copy(&ctx->shape_defaults, &shape);
+            if (shape.shape_type == CB_SHAPE_NONE)
+                shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
+
+            shape.radius = 0.9 * element_spacing / 2;
+
+            if (!shape.width)
+                shape.width = 2*shape.radius;
+
+            if (!shape.height)
+                shape.height = 2*shape.radius;
+
+            for (int j=0; j<num_y_elements; j++) {
+                for (int i=0; i<num_x_elements; i++) {
+                    shape.x = i * element_spacing;
+                    shape.y = j * element_spacing;
+                    _draw_shape(ctx, &shape);
+                }
+            }
+        }
+        else {
+            shapes_t shape;
+            shape_copy(&ctx->shape_defaults, &shape);
+            if (shape.shape_type == CB_SHAPE_NONE)
+                shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
+
+            if (!(shape.x && shape.y))
+            {
+                shape.x = ctx->canvas_width/2;
+                shape.y = ctx->canvas_height/2;
+            }
+            if (!(shape.width && shape.height))
+            {
+                shape.width = 100;
+                shape.height = 50;
+            }
+            if (!shape.radius)
+                shape.radius = 40;
+
+            _draw_shape(ctx, &shape);
         }
     }
     return 1;

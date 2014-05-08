@@ -44,6 +44,66 @@ sk_teardown_fill(void)
 {
 }
 
+static void
+_draw_shape(caskbench_context_t *ctx, shapes_t *shape)
+{
+    bool randomize_color = true;
+    if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0)
+    {
+        randomize_color = false;
+        ctx->skia_paint->setARGB(255.0*(shape->alpha ? shape->alpha : 1.0),
+                                 255.0*(shape->red ? shape->red : 0.0),
+                                 255.0*(shape->green ? shape->green : 0.0),
+                                 255.0*(shape->blue ? shape->blue : 0.0) );
+    }
+
+    // Stroke styles
+    if (shape->stroke_width)
+    {
+        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+        ctx->skia_paint->setStrokeWidth(shape->stroke_width);
+        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape->join_style);
+        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape->cap_style);
+        if (shape->dash_style == 0)
+        {
+            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
+#if USE_LEGACY_SKIA_SRA
+            pE.reset(new SkDashPathEffect(vals, 2, 0));
+            ctx->skia_paint->setPathEffect(new SkDashPathEffect(vals, 2, 0));
+#else
+            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
+            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0));
+#endif
+            ctx->skia_paint->setPathEffect(pE);
+        }
+    }
+
+    // Options for fill, gradient and transparency
+    SkShader* shader = NULL;
+    if (shape->fill_type == CB_FILL_NONE ||
+        shape->fill_type == CB_FILL_SOLID)
+        if (randomize_color)
+            ctx->skia_paint->setColor(skiaRandomColor());
+        else if (shape->fill_type == CB_FILL_IMAGE_PATTERN)
+            shader = skiaCreateBitmapShader(ctx->stock_image_path);
+        else if (shape->fill_type == CB_FILL_RADIAL_GRADIENT)
+            shader = skiaCreateRadialGradientShader(shape->x, shape->y, shape->radius);
+        else if (shape->fill_type == CB_FILL_LINEAR_GRADIENT)
+            shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
+
+    if (shader)
+        ctx->skia_paint->setShader (shader);
+
+    skiaShapes[shape->shape_type] (ctx, shape);
+
+    ctx->skia_canvas->flush();
+    ctx->skia_paint->setPathEffect(NULL);
+    if (shader != NULL) {
+        ctx->skia_paint->setShader (NULL);
+        delete shader;
+    }
+}
+
 void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
     int i, j, r, p;
@@ -71,86 +131,27 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
     }
 
-    //Stroke styles
-    if (shape.stroke_width)
-    {
-        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-        ctx->skia_paint->setStrokeWidth(shape.stroke_width);
-        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape.join_style);
-        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape.cap_style);
-        if (shape.dash_style == 0)
-        {
-            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
-#if USE_LEGACY_SKIA_SRA
-            pE.reset(new SkDashPathEffect(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(new SkDashPathEffect(vals, 2, 0));
-#else
-            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0));
-#endif
-            ctx->skia_paint->setPathEffect(pE);
-        }
-    }
-
-    if (!shape.animation && !shape.multi_shapes)
-    {
-        num_x_elements = 1;
-        num_y_elements = 1;
-
-        shape.radius = 40;
-    }
-
     if (!shape.width)
         shape.width = 2*shape.radius;
 
     if (!shape.height)
         shape.height = 2*shape.radius;
 
-    bool randomize_color = true;
-    if (shape.red > 0 || shape.blue > 0 || shape.green > 0 || shape.alpha > 0)
-    {
-        randomize_color = false;
-        ctx->skia_paint->setARGB(255*((double)shape.alpha ? (double)shape.alpha:(double)1),
-                                 255*((double)shape.red ? (double)shape.red:(double)0),
-                                 255*((double)shape.green ? (double)shape.green:(double)0),
-                                 255*(shape.blue ? (double)shape.blue:(double)0) );
-    }
-
-    for (j=0; j<num_y_elements; j++) {
-        for (i=0; i<num_x_elements; i++) {
-            if (shape.multi_shapes) {
+    if (shape.animation) {
+        shape.x = particle->x;
+        shape.y = particle->y;
+        _draw_shape(ctx, &shape);
+    } else if (shape.multi_shapes) {
+        for (j=0; j<num_y_elements; j++) {
+            for (i=0; i<num_x_elements; i++) {
                 shape.x = i * element_spacing;
                 shape.y = j * element_spacing;
-            } else if (shape.animation && particle) {
-                shape.x = particle->x;
-                shape.y = particle->y;
-            }
-
-            // Options for fill, gradient and transparency
-            SkShader* shader = NULL;
-            if (shape.fill_type == CB_FILL_NONE ||
-                shape.fill_type == CB_FILL_SOLID)
-                if (randomize_color)
-                    ctx->skia_paint->setColor(skiaRandomColor());
-            else if (shape.fill_type == CB_FILL_IMAGE_PATTERN)
-                shader = skiaCreateBitmapShader(ctx->stock_image_path);
-            else if (shape.fill_type == CB_FILL_RADIAL_GRADIENT)
-                shader = skiaCreateRadialGradientShader(shape.x, shape.y, shape.radius);
-            else if (shape.fill_type == CB_FILL_LINEAR_GRADIENT)
-                shader = skiaCreateLinearGradientShader(shape.y, shape.y + shape.height);
-
-            if (shader)
-                ctx->skia_paint->setShader (shader);
-
-            skiaShapes[shape.shape_type] (ctx, &shape);
-
-            ctx->skia_canvas->flush();
-            ctx->skia_paint->setPathEffect(NULL);
-            if (shader != NULL) {
-                ctx->skia_paint->setShader (NULL);
-                delete shader;
+                _draw_shape(ctx, &shape);
             }
         }
+    } else {
+        shape.radius = 40;
+        _draw_shape(ctx, &shape);
     }
 }
 

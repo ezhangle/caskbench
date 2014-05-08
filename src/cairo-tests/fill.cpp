@@ -122,6 +122,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 y = ctx->shape_args.center_y;
             }
 
+            double cx, cy, rr, x1, x2;
             shape_type_t shape_type;
             switch (shape) {
             case 1:
@@ -132,22 +133,12 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.radius = r;
                 ctx->shape_args.points = NULL;
 
-                if(ctx->shape_args.fill_type != NULL)
-                {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (ctx->shape_args.center_x, ctx->shape_args.center_y ,r,ctx->shape_args.center_x, ctx->shape_args.center_y,0 );
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.center_y-r ,0, ctx->shape_args.center_y+r );
+                cx = ctx->shape_args.center_x;
+                cy = ctx->shape_args.center_y;
+                rr = r;
+                x1 = ctx->shape_args.center_y-r;
+                x2 = ctx->shape_args.center_y+r;
 
-                    if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                       cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-                    if(((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
-                    {
-                        cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
-                        cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
-                        cairo_set_source (cr, pattern);
-                    }
-                }
                 break;
 
             case 2:
@@ -159,28 +150,12 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
                 ctx->shape_args.points = NULL;
 
-                if(ctx->shape_args.fill_type != NULL)
-                {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (ctx->shape_args.center_x+(ctx->shape_args.width/2),
-                                                               ctx->shape_args.center_y+(ctx->shape_args.height/2),
-                                                               ctx->shape_args.height/2, ctx->shape_args.center_x+(ctx->shape_args.width/2),
-                                                               ctx->shape_args.center_y+(ctx->shape_args.height/2),
-                                                               0/*ctx->shape_args.height/2 */);
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.center_y, 0,
-                                                               ctx->shape_args.center_y+ctx->shape_args.height );
+                cx = ctx->shape_args.center_x+(ctx->shape_args.width/2);
+                cy = ctx->shape_args.center_y+(ctx->shape_args.height/2);
+                rr = ctx->shape_args.height/2;
+                x1 = ctx->shape_args.center_y;
+                x2 = ctx->shape_args.center_y+ctx->shape_args.height;
 
-                    if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                       cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-                    if(((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || \
-                       ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
-                    {
-                        cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
-                        cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
-                        cairo_set_source (cr, pattern);
-                    }
-                }
                 break;
 
             case 3:
@@ -195,24 +170,12 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.points[2][0] = -r;
                 ctx->shape_args.points[2][1] = -2*r;
 
-                if (ctx->shape_args.fill_type != NULL)
-                {
-                    if ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (x, y+2*r, r, x, y+2*r,0/*2*r*/);
-                    else if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.points[0][1] ,0, ctx->shape_args.points[0][1]+(4*r) );
+                cx = x;
+                cy = y+2*r;
+                rr = r;
+                x1 = ctx->shape_args.points[0][1];
+                x2 = ctx->shape_args.points[0][1]+(4*r);
 
-                    if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-                    if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || \
-                        ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
-                    {
-                        cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
-                        cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
-                        cairo_set_source (cr, pattern);
-                    }
-
-                }
                 break;
 
             case 4:
@@ -228,27 +191,35 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                     ctx->shape_args.points[p][1] = py;
                 }
 
-                if (ctx->shape_args.fill_type != NULL) {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                        pattern = cairo_pattern_create_radial (ctx->shape_args.points[0][0], ctx->shape_args.points[0][1], r, x, ctx->shape_args.points[0][1],0/*r*/);
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        pattern = cairo_pattern_create_linear (0, ctx->shape_args.points[0][1]-r ,0, ctx->shape_args.points[0][1]+(r) );
+                cx = ctx->shape_args.points[0][0];
+                cy = ctx->shape_args.points[0][1];
+                rr = r;
+                x1 = ctx->shape_args.points[0][1]-r;
+                x2 = ctx->shape_args.points[0][1]+r;
 
-
-                    if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                        cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
-                    if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
-                    {
-                        cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
-                        cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
-                        cairo_set_source (cr, pattern);
-                    }
-                }
                 break;
 
             default:
                 // TODO: Should never reach here
                 break;
+            }
+
+            if (ctx->shape_args.fill_type != NULL)
+            {
+                if ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                    pattern = cairo_pattern_create_radial (cx, cy, rr, cx, cy, 0);
+                else if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                    pattern = cairo_pattern_create_linear (0, x1, 0, x2);
+
+                if ((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                    cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
+                if (((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0) || \
+                    ((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0))
+                {
+                    cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
+                    cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
+                    cairo_set_source (cr, pattern);
+                }
             }
 
             cairoShapes[shape_type] (ctx,&ctx->shape_args);

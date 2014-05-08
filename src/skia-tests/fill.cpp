@@ -183,6 +183,7 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 y = ctx->shape_args.center_y;
             }
 
+            double y1, y2, cx, cy, rr;
             shape_type_t shape_type;
             switch (shape) {
             case 1:
@@ -193,36 +194,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.radius = r;
                 ctx->shape_args.points = NULL;
 
-                if(ctx->shape_args.fill_type != NULL)
-                {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                    {
-                        linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[0] = SkColorSetARGB (200,200,200,200);
-                        center.set(ctx->shape_args.center_x, ctx->shape_args.center_y);
+                y1 = ctx->shape_args.center_y-r;
+                y2 = ctx->shape_args.center_y+r;
+                cx = ctx->shape_args.center_x;
+                cy = ctx->shape_args.center_y;
+                rr = r;
 
-                        shader = SkGradientShader::CreateRadial (center,r,
-                                            linearColors, NULL,2,
-                                            SkShader::kClamp_TileMode, NULL);
-                        ctx->skia_paint->setShader (shader);
-                    }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                    {
-                        linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[1] = SkColorSetARGB (200,200,200,200);
-                        linearPoints[0].fX = SkIntToScalar(0);
-                        linearPoints[0].fY = SkIntToScalar(ctx->shape_args.center_y-r);
-                        linearPoints[1].fX = SkIntToScalar(0);
-                        linearPoints[1].fY = SkIntToScalar(ctx->shape_args.center_y+r);
-
-                        shader = SkGradientShader::CreateLinear (
-                                            linearPoints, linearColors, NULL, 2,
-                                            SkShader::kClamp_TileMode, NULL);
-
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                }
                 break;
 
             case 2:
@@ -234,36 +211,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.width = (ctx->shape_args.center_x) +((ctx->shape_args.width)?ctx->shape_args.width:2*r);
                 ctx->shape_args.height = (ctx->shape_args.center_y) + ((ctx->shape_args.height)?ctx->shape_args.height:2*r);
 
-                if(ctx->shape_args.fill_type != NULL)
-                {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                    {
-                        linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[0] = SkColorSetARGB (200,200,200,200);
-                        center.set((ctx->shape_args.center_x+ctx->shape_args.width)/2, (ctx->shape_args.center_y+ctx->shape_args.height)/2);
+                y1 = ctx->shape_args.center_y;
+                y2 = ctx->shape_args.center_y+ctx->shape_args.height/4;
+                cx = (ctx->shape_args.center_x+ctx->shape_args.width)/2;
+                cy = (ctx->shape_args.center_y+ctx->shape_args.height)/2;
+                rr = (ctx->shape_args.height-ctx->shape_args.center_y)/2;
 
-                        shader = SkGradientShader::CreateRadial (center, (ctx->shape_args.height-ctx->shape_args.center_y)/2,
-                                                                 linearColors, NULL,2,
-                                                                 SkShader::kClamp_TileMode, NULL);
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                    {
-                        linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[1] = SkColorSetARGB (200,200,200,200);
-                        linearPoints[0].fX = SkIntToScalar(0);
-                        linearPoints[0].fY = SkIntToScalar(ctx->shape_args.center_y);
-                        linearPoints[1].fX = SkIntToScalar(0);
-                        linearPoints[1].fY = SkIntToScalar(ctx->shape_args.center_y+ctx->shape_args.height/4);
-
-                        shader = SkGradientShader::CreateLinear (
-                            linearPoints, linearColors, NULL, 2,
-                            SkShader::kClamp_TileMode, NULL);
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                }
                 break;
 
             case 3:
@@ -280,36 +233,12 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.points[2][0] = -r;
                 ctx->shape_args.points[2][1] = -2*r;
 
-                if(ctx->shape_args.fill_type != NULL)
-                {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                    {
-                        linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[0] = SkColorSetARGB (200,200,200,200);
-                        center.set(ctx->shape_args.points[0][0],ctx->shape_args.points[0][1]);
+                y1 = y;
+                y2 = y+2*r;
+                cx = ctx->shape_args.points[0][0];
+                cy = ctx->shape_args.points[0][1];
+                rr = r;
 
-                        shader = SkGradientShader::CreateRadial (center, r,
-                            linearColors, NULL,2,
-                            SkShader::kClamp_TileMode, NULL);
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                    {
-                        linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[1] = SkColorSetARGB (200,200,200,200);
-                        linearPoints[0].fX = SkIntToScalar(0);
-                        linearPoints[0].fY = SkIntToScalar(y);
-                        linearPoints[1].fX = SkIntToScalar(0);
-                        linearPoints[1].fY = SkIntToScalar(y+2*r);
-
-                        shader = SkGradientShader::CreateLinear (
-                            linearPoints, linearColors, NULL, 2,
-                            SkShader::kClamp_TileMode, NULL);
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                }
                 break;
 
             case 4:
@@ -326,43 +255,48 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                     ctx->shape_args.points[p][1] = py;
                 }
 
-                if(ctx->shape_args.fill_type != NULL)
-                {
-                    if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
-                    {
-                        linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[0] = SkColorSetARGB (200,200,200,200);
+                y1 = y;
+                y2 = y+2*r;
+                cx = ctx->shape_args.points[0][0];
+                cy = ctx->shape_args.points[0][1];
+                rr = r;
 
-                        center.set(ctx->shape_args.points[0][0],ctx->shape_args.points[0][1]);
-
-                        shader = SkGradientShader::CreateRadial (center, r,
-                                                                 linearColors, NULL,2,
-                                                                 SkShader::kClamp_TileMode, NULL);
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                    else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
-                    {
-                        linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
-                        linearColors[1] = SkColorSetARGB (200,200,200,200);
-                        linearPoints[0].fX = SkIntToScalar(0);
-                        linearPoints[0].fY = SkIntToScalar(y);
-                        linearPoints[1].fX = SkIntToScalar(0);
-                        linearPoints[1].fY = SkIntToScalar(y+2*r);
-
-                        shader = SkGradientShader::CreateLinear (
-                                                                 linearPoints, linearColors, NULL, 2,
-                                                                 SkShader::kClamp_TileMode, NULL);
-
-                        ctx->skia_paint->setShader (shader);
-                    }
-                }
                 break;
 
             default:
                 // TODO: Should never reach this point
                 break;
             }
+
+            if(ctx->shape_args.fill_type != NULL)
+            {
+                if((strcmp(ctx->shape_args.fill_type,"radial-gradient")) == 0)
+                {
+                    linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
+                    linearColors[0] = SkColorSetARGB (200,200,200,200);
+
+                    center.set(cx, cy);
+
+                    shader = SkGradientShader::CreateRadial (center, rr,
+                                                             linearColors, NULL,2,
+                                                             SkShader::kClamp_TileMode, NULL);
+                }
+                else if((strcmp(ctx->shape_args.fill_type,"linear-gradient")) == 0)
+                {
+                    linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
+                    linearColors[1] = SkColorSetARGB (200,200,200,200);
+                    linearPoints[0].fX = SkIntToScalar(0);
+                    linearPoints[0].fY = SkIntToScalar(y1);
+                    linearPoints[1].fX = SkIntToScalar(0);
+                    linearPoints[1].fY = SkIntToScalar(y2);
+
+                    shader = SkGradientShader::CreateLinear (
+                        linearPoints, linearColors, NULL, 2,
+                        SkShader::kClamp_TileMode, NULL);
+                }
+                ctx->skia_paint->setShader (shader);
+            }
+
             skiaShapes[shape_type] (ctx, &ctx->shape_args);
 
             ctx->shape_args.width = old_width;

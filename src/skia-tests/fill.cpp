@@ -192,7 +192,6 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 ctx->shape_args.center_x = x+r;
                 ctx->shape_args.center_y = y+r;
                 ctx->shape_args.radius = r;
-                ctx->shape_args.points = NULL;
 
                 y1 = ctx->shape_args.center_y-r;
                 y2 = ctx->shape_args.center_y+r;
@@ -224,19 +223,10 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 shape_type = CB_SHAPE_TRIANGLE;
                 ctx->shape_args.path.reset();
 
-                ctx->shape_args.numpoints = 3;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-                ctx->shape_args.points[0][0] = x;
-                ctx->shape_args.points[0][1] = y+2*r;
-                ctx->shape_args.points[1][0] = 2*r;
-                ctx->shape_args.points[1][1] = 0;
-                ctx->shape_args.points[2][0] = -r;
-                ctx->shape_args.points[2][1] = -2*r;
-
                 y1 = y;
                 y2 = y+2*r;
-                cx = ctx->shape_args.points[0][0];
-                cy = ctx->shape_args.points[0][1];
+                cx = x;
+                cy = y+2*r;
                 rr = r;
 
                 break;
@@ -245,20 +235,11 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
                 // Star
                 shape_type = CB_SHAPE_STAR;
                 ctx->shape_args.path.reset();
-                ctx->shape_args.numpoints = 10;
-                ctx->shape_args.points = (double (*)[2]) malloc(ctx->shape_args.numpoints*2*(sizeof(double)));
-
-                for (p = 0; p < 10; p++ ) {
-                    int px = x + 2*r * star_points[p][0]/200.0;
-                    int py = y + 2*r * star_points[p][1]/200.0;
-                    ctx->shape_args.points[p][0] = px;
-                    ctx->shape_args.points[p][1] = py;
-                }
 
                 y1 = y;
                 y2 = y+2*r;
-                cx = ctx->shape_args.points[0][0];
-                cy = ctx->shape_args.points[0][1];
+                cx = x + 2*r * star_points[0][0]/200.0;
+                cy = y + 2*r * star_points[0][1]/200.0;
                 rr = r;
 
                 break;
@@ -301,8 +282,6 @@ void drawSkiashapes(caskbench_context_t *ctx,kinetics_t *particles)
 
             ctx->shape_args.width = old_width;
             ctx->shape_args.height = old_height;
-            if (ctx->shape_args.points)
-                free (ctx->shape_args.points);
 
             ctx->skia_canvas->flush();
             if(ctx->shape_args.fill_type != NULL)

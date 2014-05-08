@@ -48,13 +48,13 @@ sk_teardown_fill(void)
 
 void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
-    int i, j, r, p, shape;
+    int i, j, r, p;
     int old_x, old_y;
 
     r = 0.9 * element_spacing / 2;
 
-    shape = ctx->shape_args.shape_id;
-    if (shape)
+    shape_type_t shape_type = (shape_type_t) ctx->shape_args.shape_id;
+    if (shape_type != CB_SHAPE_NONE)
     {
         if (!(ctx->shape_args.x && ctx->shape_args.y))
         {
@@ -68,10 +68,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 ctx->shape_args.height = 50;
             }
         ctx->shape_args.radius = r;
-    } else {
-        shape = ((4.0 * rand())/RAND_MAX) + 1;
-        if (!ctx->shape_args.multi_shapes)
-            shape = 2;
+    } else if (!ctx->shape_args.multi_shapes) {
+        shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
     }
 
     //Stroke styles
@@ -133,33 +131,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             } else {
                 ctx->shape_args.x = x;
                 ctx->shape_args.y = y;
-            }
-
-            shape_type_t shape_type;
-            switch (shape) {
-            case 1:
-                // Circle
-                shape_type = CB_SHAPE_CIRCLE;
-                break;
-
-            case 2:
-                // Rectangle
-                shape_type = CB_SHAPE_RECTANGLE;
-                break;
-
-            case 3:
-                // Triangle
-                shape_type = CB_SHAPE_TRIANGLE;
-                break;
-
-            case 4:
-                // Star
-                shape_type = CB_SHAPE_STAR;
-                break;
-
-            default:
-                // TODO: Should never reach this point
-                break;
             }
 
             // Options for fill, gradient and transparency

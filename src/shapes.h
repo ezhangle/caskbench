@@ -17,6 +17,7 @@ typedef enum {
 } fill_type_t;
 
 typedef enum {
+    CB_SHAPE_NONE,
     CB_SHAPE_CIRCLE,
     CB_SHAPE_RECTANGLE,
     CB_SHAPE_TRIANGLE,

@@ -131,28 +131,16 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
             // Options for fill, gradient and transparency
             SkShader* shader = NULL;
-            if (shape.fill_type == CB_FILL_NONE)
-            {
+            if (shape.fill_type == CB_FILL_NONE ||
+                shape.fill_type == CB_FILL_SOLID)
                 if (randomize_color)
-                    skiaRandomizePaintColor(ctx);
-            }
-            else if (shape.fill_type == CB_FILL_SOLID)
-            {
-                if (randomize_color)
-                    skiaRandomizePaintColor(ctx);
-            }
+                    ctx->skia_paint->setColor(skiaRandomColor());
             else if (shape.fill_type == CB_FILL_IMAGE_PATTERN)
-            {
                 shader = skiaCreateBitmapShader(ctx->stock_image_path);
-            }
             else if (shape.fill_type == CB_FILL_RADIAL_GRADIENT)
-            {
                 shader = skiaCreateRadialGradientShader(x, y, shape.radius);
-            }
             else if (shape.fill_type == CB_FILL_LINEAR_GRADIENT)
-            {
                 shader = skiaCreateLinearGradientShader(y, y + shape.height);
-            }
 
             if (shader)
                 ctx->skia_paint->setShader (shader);

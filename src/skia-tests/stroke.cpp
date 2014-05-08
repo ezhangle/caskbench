@@ -41,16 +41,16 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
     switch (shape) {
     case 1:
         // Circle
-        ctx->shape_args.center_x = x+r;
-        ctx->shape_args.center_y = y+r;
+        ctx->shape_args.x = x;
+        ctx->shape_args.y = y;
         ctx->shape_args.radius = r;
         skiaShapes[CB_SHAPE_CIRCLE](ctx,&ctx->shape_args);
         break;
 
     case 2:
         // Rectangle
-        ctx->shape_args.center_x =  x;
-        ctx->shape_args.center_y = y;
+        ctx->shape_args.x =  x;
+        ctx->shape_args.y = y;
         ctx->shape_args.width = ctx->shape_args.width? ctx->shape_args.width : 2*r;
         ctx->shape_args.height = ctx->shape_args.height? ctx->shape_args.height: 2*r;
         skiaShapes[CB_SHAPE_RECTANGLE](ctx, &ctx->shape_args);
@@ -137,7 +137,7 @@ sk_test_stroke(caskbench_context_t *ctx)
     }
     /* Static clip */
     else
-        ctx->shape_args.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_args.center_x?ctx->shape_args.center_x:100,ctx->shape_args.center_y?ctx->shape_args.center_y:100);
+        ctx->shape_args.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_args.x?ctx->shape_args.x:100,ctx->shape_args.y?ctx->shape_args.y:100);
     return 1;
 }
 

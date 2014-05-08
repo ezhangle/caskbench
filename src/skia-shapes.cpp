@@ -29,7 +29,8 @@ skiaRandomizePaintColor(caskbench_context_t *ctx)
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
-    ctx->skia_canvas->drawCircle(args->center_x, args->center_y,
+    ctx->skia_canvas->drawCircle(args->x + args->radius,
+                                 args->y + args->radius,
                                  args->radius,
                                  *(ctx->skia_paint));
 }
@@ -37,8 +38,8 @@ void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 {
     SkRect r;
-    r.set(args->center_x, args->center_y,
-          args->center_x + args->width, args->center_y + args->height);
+    r.set(args->x, args->y,
+          args->x + args->width, args->y + args->height);
     ctx->skia_canvas->drawRect(r, *(ctx->skia_paint));
 }
 
@@ -49,7 +50,7 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
     // Temporarily disable anti-aliasing to work around crash in GlShader
     ctx->skia_paint->setAntiAlias(false);
 
-    path.moveTo(args->center_x, args->center_y + 2*args->radius);
+    path.moveTo(args->x, args->y + 2*args->radius);
     path.rLineTo(2*args->radius, 0);
     path.rLineTo(-args->radius, -2*args->radius);
 
@@ -60,14 +61,14 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 
 void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 {
-    int px = args->center_x + 2*args->radius * star_points[0][0]/200.0;
-    int py = args->center_y + 2*args->radius * star_points[0][1]/200.0;
+    int px = args->x + 2*args->radius * star_points[0][0]/200.0;
+    int py = args->y + 2*args->radius * star_points[0][1]/200.0;
     SkPath path;
     path.moveTo(px, py);
 
     for (int p = 1; p < 10; p++ ) {
-        px = args->center_x + 2*args->radius * star_points[p][0]/200.0;
-        py = args->center_y + 2*args->radius * star_points[p][1]/200.0;
+        px = args->x + 2*args->radius * star_points[p][0]/200.0;
+        py = args->y + 2*args->radius * star_points[p][1]/200.0;
         path.lineTo(px, py);
     }
 
@@ -77,7 +78,7 @@ void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 {
     SkRect rect;
-    rect.set(args->center_x, args->center_y, args->width, args->height);
+    rect.set(args->x, args->y, args->width, args->height);
 
     ctx->skia_canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->skia_paint));
 }

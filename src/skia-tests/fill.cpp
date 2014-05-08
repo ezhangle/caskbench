@@ -55,10 +55,10 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
     shape = ctx->shape_args.shape_id;
     if (shape)
     {
-        if (!(ctx->shape_args.center_x && ctx->shape_args.center_y))
+        if (!(ctx->shape_args.x && ctx->shape_args.y))
         {
-            ctx->shape_args.center_x = ctx->canvas_width/2;
-            ctx->shape_args.center_y = ctx->canvas_height/2;
+            ctx->shape_args.x = ctx->canvas_width/2;
+            ctx->shape_args.y = ctx->canvas_height/2;
         }
         if (!ctx->shape_args.multi_shapes)
             if (!(ctx->shape_args.width && ctx->shape_args.height))
@@ -100,8 +100,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         num_y_elements = 1;
 
         r = 40;
-        old_x = ctx->shape_args.center_x;
-        old_y = ctx->shape_args.center_y;
+        old_x = ctx->shape_args.x;
+        old_y = ctx->shape_args.y;
     }
 
     bool randomize_color = true;
@@ -125,8 +125,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             case 1:
                 // Circle
                 shape_type = CB_SHAPE_CIRCLE;
-                ctx->shape_args.center_x = x + r;
-                ctx->shape_args.center_y = y + r;
+                ctx->shape_args.x = x;
+                ctx->shape_args.y = y;
                 ctx->shape_args.radius = r;
 
                 y1 = y;
@@ -140,8 +140,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             case 2:
                 // Rectangle
                 shape_type = CB_SHAPE_RECTANGLE;
-                ctx->shape_args.center_x = x;
-                ctx->shape_args.center_y = y;
+                ctx->shape_args.x = x;
+                ctx->shape_args.y = y;
 
                 if (!ctx->shape_args.width)
                     ctx->shape_args.width = 2*r;
@@ -187,8 +187,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             }
 
             if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
-                x = ctx->shape_args.center_x;
-                y = ctx->shape_args.center_y;
+                x = ctx->shape_args.x;
+                y = ctx->shape_args.y;
             }
 
             // Options for fill, gradient and transparency
@@ -261,8 +261,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
     if (!ctx->shape_args.animation && !ctx->shape_args.multi_shapes)
     {
-        ctx->shape_args.center_x = old_x;
-        ctx->shape_args.center_y = old_y;
+        ctx->shape_args.x = old_x;
+        ctx->shape_args.y = old_y;
     }
 }
 

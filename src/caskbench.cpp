@@ -580,8 +580,8 @@ main (int argc, char *argv[])
         context_init(&context, opt.size);
 
         // Command line setup for shapes
-        context.shape_args.center_x = opt.x_position;
-        context.shape_args.center_y = opt.y_position;
+        context.shape_args.x = opt.x_position;
+        context.shape_args.y = opt.y_position;
         context.shape_args.width = opt.width;
         context.shape_args.height = opt.height;
         context.shape_args.shape_name = opt.shape_name;

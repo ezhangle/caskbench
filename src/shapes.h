@@ -26,8 +26,8 @@ typedef enum {
 
 typedef struct shapes
 {
-    double center_x;
-    double center_y;
+    double x;
+    double y;
     double radius;
     double width;
     double height;

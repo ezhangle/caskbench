@@ -44,10 +44,10 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
     if(shape)
     {
-        if(!(ctx->shape_args.center_x && ctx->shape_args.center_y))
+        if(!(ctx->shape_args.x && ctx->shape_args.y))
         {
-            ctx->shape_args.center_x = x = ctx->canvas_width/2;
-            ctx->shape_args.center_y = y = ctx->canvas_height/2;
+            ctx->shape_args.x = x = ctx->canvas_width/2;
+            ctx->shape_args.y = y = ctx->canvas_height/2;
         }
         if(!ctx->shape_args.multi_shapes)
             if(!(ctx->shape_args.width && ctx->shape_args.height))
@@ -65,8 +65,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
         num_y_elements = 1;
 
         r = 40;
-        old_x = ctx->shape_args.center_x;
-        old_y = ctx->shape_args.center_y;
+        old_x = ctx->shape_args.x;
+        old_y = ctx->shape_args.y;
         old_width = ctx->shape_args.width;
         old_height = ctx->shape_args.height;
     }
@@ -117,8 +117,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             }
 
             if (!ctx->shape_args.multi_shapes && !ctx->shape_args.animation) {
-                x = ctx->shape_args.center_x;
-                y = ctx->shape_args.center_y;
+                x = ctx->shape_args.x;
+                y = ctx->shape_args.y;
             }
 
             double cx, cy, rr, x1, x2;
@@ -127,8 +127,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 1:
                 // Circle
                 shape_type = CB_SHAPE_CIRCLE;
-                ctx->shape_args.center_x = x;
-                ctx->shape_args.center_y = y;
+                ctx->shape_args.x = x;
+                ctx->shape_args.y = y;
                 ctx->shape_args.radius = r;
 
                 cx = x;
@@ -142,8 +142,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             case 2:
                 // Rectangle
                 shape_type = CB_SHAPE_RECTANGLE;
-                ctx->shape_args.center_x = x;
-                ctx->shape_args.center_y = y;
+                ctx->shape_args.x = x;
+                ctx->shape_args.y = y;
                 ctx->shape_args.width = (ctx->shape_args.width)?ctx->shape_args.width:2*r;
                 ctx->shape_args.height = (ctx->shape_args.height)?ctx->shape_args.height:2*r;
 
@@ -247,8 +247,8 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
 
     if (!ctx->shape_args.animation && !ctx->shape_args.multi_shapes)
     {
-        ctx->shape_args.center_x = old_x;
-        ctx->shape_args.center_y = old_y;
+        ctx->shape_args.x = old_x;
+        ctx->shape_args.y = old_y;
         ctx->shape_args.width = old_width;
         ctx->shape_args.height = old_height;
     }

@@ -112,7 +112,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
     {
         randomize_color = false;
         ctx->skia_paint->setARGB(255*((double)ctx->shape_args.alpha ? (double)ctx->shape_args.alpha:(double)1),
-                                 255*(double)ctx->shape_args.red,
+                                 255*((double)ctx->shape_args.red ? (double)ctx->shape_args.red:(double)0),
                                  255*((double)ctx->shape_args.green ? (double)ctx->shape_args.green:(double)0),
                                  255*(ctx->shape_args.blue ? (double)ctx->shape_args.blue:(double)0) );
     }

@@ -17,6 +17,11 @@ SkColor skiaRandomColor();
 
 void skiaRandomizePaintColor(caskbench_context_t *ctx);
 
+SkShader *skiaCreateLinearGradientShader(int y1, int y2);
+
+SkShader *skiaCreateRadialGradientShader(int x, int y, int r);
+
+SkShader *skiaCreateBitmapShader(const char *image_path);
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args);
 
 void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args);

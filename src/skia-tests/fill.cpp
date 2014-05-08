@@ -15,7 +15,6 @@
 #include <SkDraw.h>
 #include <effects/SkGradientShader.h>
 #include <SkGraphics.h>
-#include <SkImageDecoder.h>
 #include <SkDashPathEffect.h>
 
 #include "caskbench.h"
@@ -54,7 +53,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 
     shape_copy(&ctx->shape_defaults, &shape);
 
-    r = 0.9 * element_spacing / 2;
+    shape.radius = 0.9 * element_spacing / 2;
 
     if (shape.shape_type != CB_SHAPE_NONE)
     {
@@ -69,7 +68,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 shape.width = 100;
                 shape.height = 50;
             }
-        shape.radius = r;
     } else if (!shape.multi_shapes) {
         shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
     }
@@ -100,14 +98,14 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         num_x_elements = 1;
         num_y_elements = 1;
 
-        r = 40;
+        shape.radius = 40;
     }
 
     if (!shape.width)
-        shape.width = 2*r;
+        shape.width = 2*shape.radius;
 
     if (!shape.height)
-        shape.height = 2*r;
+        shape.height = 2*shape.radius;
 
     bool randomize_color = true;
     if (shape.red > 0 || shape.blue > 0 || shape.green > 0 || shape.alpha > 0)
@@ -124,7 +122,6 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
         for (i=0; i<num_x_elements; i++) {
             int x = particle? particle->x : i * element_spacing;
 
-            shape.radius = r;
             if (!shape.multi_shapes && !shape.animation) {
                 x = shape.x;
                 y = shape.y;
@@ -147,42 +144,15 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             }
             else if (shape.fill_type == CB_FILL_IMAGE_PATTERN)
             {
-                SkBitmap    bm;
-
-                SkImageDecoder::DecodeFile(ctx->stock_image_path, &bm);
-                shader = SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
-                                        SkShader::kClamp_TileMode);
+                shader = skiaCreateBitmapShader(ctx->stock_image_path);
             }
             else if (shape.fill_type == CB_FILL_RADIAL_GRADIENT)
             {
-                SkPoint center;
-                SkColor linearColors[2];
-                SkScalar radialPoints[4];
-
-                linearColors[0] = SkColorSetARGB (200,200,200,200);
-                linearColors[1] = skiaRandomColor();
-                center.set(x+r, y+r);
-
-                shader = SkGradientShader::CreateRadial(
-                    center, r,
-                    linearColors, NULL, 2,
-                    SkShader::kClamp_TileMode, NULL);
+                shader = skiaCreateRadialGradientShader(x, y, shape.radius);
             }
             else if (shape.fill_type == CB_FILL_LINEAR_GRADIENT)
             {
-                SkColor linearColors[2];
-                SkPoint linearPoints[2];
-
-                linearColors[0] = skiaRandomColor();
-                linearColors[1] = SkColorSetARGB (200,200,200,200);
-                linearPoints[0].fX = SkIntToScalar(0);
-                linearPoints[0].fY = SkIntToScalar(y);
-                linearPoints[1].fX = SkIntToScalar(0);
-                linearPoints[1].fY = SkIntToScalar(y + shape.height);
-
-                shader = SkGradientShader::CreateLinear(
-                    linearPoints, linearColors, NULL, 2,
-                    SkShader::kClamp_TileMode, NULL);
+                shader = skiaCreateLinearGradientShader(y, y + shape.height);
             }
 
             if (shader)

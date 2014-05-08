@@ -7,6 +7,9 @@
 #include <config.h>
 
 #include <SkCanvas.h>
+#include <SkShader.h>
+#include <SkImageDecoder.h>
+#include <effects/SkGradientShader.h>
 
 #include "skia-shapes.h"
 
@@ -25,6 +28,51 @@ void
 skiaRandomizePaintColor(caskbench_context_t *ctx)
 {
     ctx->skia_paint->setColor(skiaRandomColor());
+}
+
+SkShader*
+skiaCreateLinearGradientShader(int y1, int y2)
+{
+    SkColor linearColors[2];
+    SkPoint linearPoints[2];
+
+    linearColors[0] = skiaRandomColor();
+    linearColors[1] = SkColorSetARGB (200,200,200,200);
+    linearPoints[0].fX = SkIntToScalar(0);
+    linearPoints[0].fY = SkIntToScalar(y1);
+    linearPoints[1].fX = SkIntToScalar(0);
+    linearPoints[1].fY = SkIntToScalar(y2);
+
+    return SkGradientShader::CreateLinear(
+        linearPoints, linearColors, NULL, 2,
+        SkShader::kClamp_TileMode, NULL);
+}
+
+SkShader*
+skiaCreateRadialGradientShader(int x, int y, int r)
+{
+    SkPoint center;
+    SkColor linearColors[2];
+    SkScalar radialPoints[4];
+
+    linearColors[0] = SkColorSetARGB (200,200,200,200);
+    linearColors[1] = skiaRandomColor();
+    center.set(x+r, y+r);
+
+    return SkGradientShader::CreateRadial(
+        center, r,
+        linearColors, NULL, 2,
+        SkShader::kClamp_TileMode, NULL);
+}
+
+SkShader*
+skiaCreateBitmapShader(const char *image_path)
+{
+    SkBitmap bm;
+
+    SkImageDecoder::DecodeFile(image_path, &bm);
+    return SkShader::CreateBitmapShader(bm, SkShader::kClamp_TileMode,
+                                        SkShader::kClamp_TileMode);
 }
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)

@@ -18,6 +18,7 @@ typedef struct _cairo_surface cairo_surface_t;
 // Skia forward declarations
 class SkPaint;
 class SkCanvas;
+class SkShader;
 class SkBaseDevice;
 
 

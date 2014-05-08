@@ -40,6 +40,8 @@ shape_randomize(shapes_t *shape)
     // TODO
 }
 
+
+
 /*
   Local Variables:
   mode:c++

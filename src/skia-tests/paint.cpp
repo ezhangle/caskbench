@@ -30,7 +30,7 @@ sk_test_paint(caskbench_context_t *ctx)
 {
     int i;
     for (i=0; i<ctx->size; i++) {
-        skiaRandomizeColor(ctx);
+        skiaRandomizePaintColor(ctx);
         ctx->skia_canvas->drawPaint(*ctx->skia_paint);
     }
 

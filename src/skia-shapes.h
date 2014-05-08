@@ -13,7 +13,9 @@
 #include "shapes.h"
 #include "caskbench.h"
 
-void skiaRandomizeColor(caskbench_context_t *ctx);
+SkColor skiaRandomColor();
+
+void skiaRandomizePaintColor(caskbench_context_t *ctx);
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args);
 

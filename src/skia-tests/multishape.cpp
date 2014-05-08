@@ -49,7 +49,7 @@ sk_test_multishape(caskbench_context_t *ctx)
             x = i * element_spacing;
 
             // TODO: Select a pre-defined paint object at random
-            skiaRandomizeColor(ctx);
+            skiaRandomizePaintColor(ctx);
 
             shape = (4.0 * rand())/RAND_MAX;
             switch (shape) {

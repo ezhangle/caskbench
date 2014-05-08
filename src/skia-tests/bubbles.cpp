@@ -32,7 +32,7 @@ sk_test_bubbles(caskbench_context_t *ctx)
 {
     int i, x, y, r;
     for (i=0; i<ctx->size; i++) {
-        skiaRandomizeColor(ctx);
+        skiaRandomizePaintColor(ctx);
 
         r = ((double)max_dim*rand())/RAND_MAX + 1;
         x = (0.5*(double)ctx->canvas_width*rand())/RAND_MAX;

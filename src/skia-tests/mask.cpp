@@ -36,7 +36,7 @@ sk_test_mask(caskbench_context_t *ctx)
     int i;
 
     for (i=0; i<ctx->size; i++) {
-        skiaRandomizeColor(ctx);
+        skiaRandomizePaintColor(ctx);
 
         // Apply mask on a circle
         ctx->skia_canvas->drawCircle(40*i, 40, 30, *ctx->skia_paint);

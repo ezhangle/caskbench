@@ -36,7 +36,7 @@ sk_test_rectangles(caskbench_context_t *ctx)
     SkRect rect;
 
     for (i=0; i<ctx->size; i++) {
-        skiaRandomizeColor(ctx);
+        skiaRandomizePaintColor(ctx);
         w = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX ) + 1;
         h = trunc( (0.5*(double)ctx->canvas_height*rand())/RAND_MAX ) + 1;
         x = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX );

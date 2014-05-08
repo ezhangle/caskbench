@@ -10,15 +10,21 @@
 
 #include "skia-shapes.h"
 
-void
-skiaRandomizeColor(caskbench_context_t *ctx)
+SkColor
+skiaRandomColor()
 {
     unsigned int red, blue, green, alpha;
     red = int( 255 * (double)rand()/RAND_MAX );
     green = int( 255 * (double)rand()/RAND_MAX );
     blue = int( 255 * (double)rand()/RAND_MAX );
     alpha = int( 255 * (double)rand()/RAND_MAX );
-    ctx->skia_paint->setARGB(alpha,red, green, blue );
+    return SkColorSetARGB(alpha, red, green, blue);
+}
+
+void
+skiaRandomizePaintColor(caskbench_context_t *ctx)
+{
+    ctx->skia_paint->setColor(skiaRandomColor());
 }
 
 void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)

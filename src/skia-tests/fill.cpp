@@ -49,7 +49,6 @@ sk_teardown_fill(void)
 void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
     int i, j, r, p, shape;
-    unsigned int red, green, blue, alpha;
     r = 0.9 * element_spacing /2;
     int old_x, old_y, old_width, old_height;
 
@@ -205,12 +204,12 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
             if (ctx->shape_args.fill_type == NULL)
             {
                 if (randomize_color)
-                    skiaRandomizeColor(ctx);
+                    skiaRandomizePaintColor(ctx);
             }
             else if ((strcmp(ctx->shape_args.fill_type,"solid")) == 0)
             {
                 if (randomize_color)
-                    skiaRandomizeColor(ctx);
+                    skiaRandomizePaintColor(ctx);
             }
             else if ((strcmp(ctx->shape_args.fill_type,"image-pattern")) == 0 &&(ctx->shape_args.image_path))
             {
@@ -226,13 +225,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 SkColor linearColors[2];
                 SkScalar radialPoints[4];
 
-                red = 255*(double)rand()/RAND_MAX;
-                green = 255*(double)rand()/RAND_MAX;
-                blue = 255*(double)rand()/RAND_MAX;
-                alpha = 255*(double)rand()/RAND_MAX;
-
                 linearColors[0] = SkColorSetARGB (200,200,200,200);
-                linearColors[1] = SkColorSetARGB (alpha, red, green, blue);
+                linearColors[1] = skiaRandomColor();
                 center.set(cx, cy);
 
                 shader = SkGradientShader::CreateRadial(
@@ -245,12 +239,7 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
                 SkColor linearColors[2];
                 SkPoint linearPoints[2];
 
-                red = 255*(double)rand()/RAND_MAX;
-                green = 255*(double)rand()/RAND_MAX;
-                blue = 255*(double)rand()/RAND_MAX;
-                alpha = 255*(double)rand()/RAND_MAX;
-
-                linearColors[0] = SkColorSetARGB (alpha, red, green, blue);
+                linearColors[0] = skiaRandomColor();
                 linearColors[1] = SkColorSetARGB (200,200,200,200);
                 linearPoints[0].fX = SkIntToScalar(0);
                 linearPoints[0].fY = SkIntToScalar(y1);

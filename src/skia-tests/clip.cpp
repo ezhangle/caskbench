@@ -157,7 +157,7 @@ draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles
         y = particles?particles->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
             x = particles?particles->x : i * element_spacing;
-            skiaRandomizeColor(ctx);
+            skiaRandomizePaintColor(ctx);
             if (!draw_square(ctx,canvas, x,y))
                 return false;
         }

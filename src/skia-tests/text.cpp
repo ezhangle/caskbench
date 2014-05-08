@@ -78,7 +78,7 @@ sk_test_text(caskbench_context_t *ctx)
         for(font_size = 18; font_size <= 36; font_size++)
         {
             ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
-            skiaRandomizeColor(ctx);
+            skiaRandomizePaintColor(ctx);
 
             SkPaint newpaint (*ctx->skia_paint);;
             newpaint.setTextEncoding (SkPaint::kGlyphID_TextEncoding);
@@ -97,7 +97,7 @@ sk_test_text(caskbench_context_t *ctx)
         for(font_size = 36; font_size >= 18; font_size--)
         {
             ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
-            skiaRandomizeColor(ctx);
+            skiaRandomizePaintColor(ctx);
 
             SkPaint localPaint (*ctx->skia_paint);;
             localPaint.setTextEncoding (SkPaint::kGlyphID_TextEncoding);

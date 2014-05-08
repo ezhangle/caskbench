@@ -48,7 +48,7 @@ sk_teardown_fill(void)
 
 void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
 {
-    int i, j, x, y, r, p, shape;
+    int i, j, r, p, shape;
     unsigned int red, green, blue, alpha;
     r = 0.9 * element_spacing /2;
     int old_x, old_y, old_width, old_height;
@@ -58,8 +58,8 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
     {
         if (!(ctx->shape_args.center_x && ctx->shape_args.center_y))
         {
-            ctx->shape_args.center_x = x = ctx->canvas_width/2;
-            ctx->shape_args.center_y = y = ctx->canvas_height/2;
+            ctx->shape_args.center_x = ctx->canvas_width/2;
+            ctx->shape_args.center_y = ctx->canvas_height/2;
         }
         if (!ctx->shape_args.multi_shapes)
             if (!(ctx->shape_args.width && ctx->shape_args.height))
@@ -118,9 +118,9 @@ void drawSkiaShapes(caskbench_context_t *ctx, kinetics_t *particle)
     }
 
     for (j=0; j<num_y_elements; j++) {
-        y = particle? particle->y : j * element_spacing;
+        int y = particle? particle->y : j * element_spacing;
         for (i=0; i<num_x_elements; i++) {
-            x = particle? particle->x : i * element_spacing;
+            int x = particle? particle->x : i * element_spacing;
 
             double y1, y2, cx, cy, rr;
             shape_type_t shape_type;

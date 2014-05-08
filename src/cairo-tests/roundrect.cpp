@@ -44,7 +44,7 @@ int
 ca_test_roundrect(caskbench_context_t *ctx)
 {
     int i;
-    double line_width, x, y;
+    double line_width, x, y, radius;
     cairo_t *cr = ctx->cairo_cr;
 
     for (i=0; i<ctx->size; i++) {
@@ -52,12 +52,16 @@ ca_test_roundrect(caskbench_context_t *ctx)
 
         x = 10 + trunc( (((double)ctx->canvas_width-20.0)*rand())/RAND_MAX );
         y = 10 + trunc( (((double)ctx->canvas_height-20.0)*rand())/RAND_MAX );
+
+        /* vary radius upto half of MIN(X,Y) */
+        radius = (double)rand()/RAND_MAX * 20;
 #if USE_CAIROGLES
-        cairo_rounded_rectangle (cr, x, y, 100, 40, 4, 4, 4, 4);
+        cairo_rounded_rectangle (cr, x, y, 100, 40, radius, radius, radius, radius);
 #else
-        rounded_rectangle (cr, x, y, 100, 40, 4);
+        rounded_rectangle (cr, x, y, 100, 40, radius);
 #endif
-        line_width = trunc( ((double)ctx->size*rand())/RAND_MAX ) + 1;
+        /* line_width cannot be more than twice of radius due to skia limitation - Issue #4 in skia https://github.com/Samsung/skia/issues/4 */
+        line_width = (double)rand()/RAND_MAX * (2*radius);
         cairo_set_line_width (cr, line_width);
 
         cairo_stroke (cr);

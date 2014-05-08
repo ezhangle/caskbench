@@ -32,7 +32,7 @@ int
 sk_test_roundrect(caskbench_context_t *ctx)
 {
     int i;
-    double line_width, x, y;
+    double line_width, x, y, radius;
     SkRect rect;
 
     for (i=0; i<ctx->size; i++) {
@@ -42,10 +42,13 @@ sk_test_roundrect(caskbench_context_t *ctx)
         y = trunc( (((double)ctx->canvas_height-20)*rand())/RAND_MAX ) + 10;
         rect.set(x, y, x+100, y+40);
 
-        line_width = trunc( ((double)ctx->size*rand())/RAND_MAX ) + 1;
-        ctx->skia_paint->setStrokeWidth(line_width);
+        /* vary radius upto half of MIN(X,Y) */
+        radius = (double)rand()/RAND_MAX * 20;
 
-        ctx->skia_canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->skia_paint));
+        /* line_width cannot be more than twice of radius due to skia limitation - Issue #4 in skia https://github.com/Samsung/skia/issues/4 */
+        line_width = (double)rand()/RAND_MAX * (2*radius);
+        ctx->skia_paint->setStrokeWidth(line_width);
+        ctx->skia_canvas->drawRoundRect(rect, radius, radius, *(ctx->skia_paint));
     }
 
     return 1;

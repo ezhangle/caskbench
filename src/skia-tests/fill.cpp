@@ -47,6 +47,11 @@ sk_teardown_fill(void)
 static void
 _draw_shape(caskbench_context_t *ctx, shapes_t *shape)
 {
+    // Shape Type
+    if (shape->shape_type == CB_SHAPE_NONE)
+        shape->shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
+
+    // Color
     bool randomize_color = true;
     if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0)
     {
@@ -125,14 +130,13 @@ sk_test_fill(caskbench_context_t *ctx)
                 kinetics_t *particle = &skia_particles[i];
 
                 kinetics_update(particle, 0.1);
-                shape_copy(&ctx->shape_defaults, &shape);
-                if (shape.shape_type == CB_SHAPE_NONE)
-                    shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
 
+                shape_copy(&ctx->shape_defaults, &shape);
                 shape.width = particle->width;
                 shape.height = particle->height;
                 shape.x = particle->x;
                 shape.y = particle->y;
+
                 _draw_shape(ctx, &shape);
             }
             stop_frame = get_tick();
@@ -142,23 +146,17 @@ sk_test_fill(caskbench_context_t *ctx)
 
     // Drawing of multishape on a grid
     else if (ctx->shape_defaults.multi_shapes) {
-        shapes_t shape;
-        shape_copy(&ctx->shape_defaults, &shape);
-        if (shape.shape_type == CB_SHAPE_NONE)
-            shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
-
-        shape.radius = 0.9 * element_spacing / 2;
-
-        if (!shape.width)
-            shape.width = 2*shape.radius;
-
-        if (!shape.height)
-            shape.height = 2*shape.radius;
+        ctx->shape_defaults.radius = 0.9 * element_spacing / 2;
+        ctx->shape_defaults.width = 2*ctx->shape_defaults.radius;
+        ctx->shape_defaults.height = 2*ctx->shape_defaults.radius;
 
         for (int j=0; j<num_y_elements; j++) {
             for (int i=0; i<num_x_elements; i++) {
+                shapes_t shape;
+                shape_copy(&ctx->shape_defaults, &shape);
                 shape.x = i * element_spacing;
                 shape.y = j * element_spacing;
+
                 _draw_shape(ctx, &shape);
             }
         }
@@ -169,8 +167,6 @@ sk_test_fill(caskbench_context_t *ctx)
         {
             shapes_t shape;
             shape_copy(&ctx->shape_defaults, &shape);
-            if (shape.shape_type == CB_SHAPE_NONE)
-                shape.shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
 
             if (!(shape.x && shape.y))
             {

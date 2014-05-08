@@ -24,6 +24,7 @@ class SkBaseDevice;
 
 // Caskbench forward declarations
 struct _caskbench_context;
+typedef struct _caskbench_context caskbench_context_t;
 
 struct _device_config;
 typedef struct _device_config device_config_t;

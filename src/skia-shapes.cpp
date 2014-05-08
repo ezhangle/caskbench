@@ -11,6 +11,7 @@
 #include <SkImageDecoder.h>
 #include <effects/SkGradientShader.h>
 
+#include "caskbench.h"
 #include "skia-shapes.h"
 
 SkColor

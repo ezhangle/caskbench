@@ -7,11 +7,8 @@
 #ifndef __SKIA_SHAPES_H_
 #define __SKIA_SHAPES_H_
 
-#include <cairo.h>
-#include <math.h>
-
+#include "forward.h"
 #include "shapes.h"
-#include "caskbench.h"
 
 SkColor skiaRandomColor();
 

@@ -11,7 +11,6 @@
 
 #include <SkCanvas.h>
 #include <SkPaint.h>
-#include <effects/SkGradientShader.h>
 #include <SkDraw.h>
 #include <effects/SkGradientShader.h>
 #include <SkGraphics.h>

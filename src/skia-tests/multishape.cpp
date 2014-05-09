@@ -6,11 +6,10 @@
  */
 #include <config.h>
 
-#include <math.h>
-
 #include <SkCanvas.h>
-#include <SkPaint.h>
+#include <effects/SkGradientShader.h>
 
+#include "forward.h"
 #include "caskbench.h"
 #include "skia-shapes.h"
 
@@ -21,9 +20,10 @@ static int num_y_elements;
 int
 sk_setup_multishape(caskbench_context_t *ctx)
 {
-    if (ctx->size < 0)
+    if (ctx->size <= 0)
         return 0;
 
+    // Multi-shape setup
     element_spacing = sqrt( ((double)ctx->canvas_width * ctx->canvas_height) / ctx->size);
     num_x_elements = ctx->canvas_width / element_spacing;
     num_y_elements = ctx->canvas_height / element_spacing;
@@ -39,64 +39,21 @@ sk_teardown_multishape(void)
 int
 sk_test_multishape(caskbench_context_t *ctx)
 {
-    int i, j, x, y, r, p, shape;
+    ctx->shape_defaults.radius = 0.9 * element_spacing / 2;
+    ctx->shape_defaults.width = 2*ctx->shape_defaults.radius;
+    ctx->shape_defaults.height = 2*ctx->shape_defaults.radius;
 
-    r = 0.9 * element_spacing / 2;
-    for (j=0; j<num_y_elements; j++) {
-        y = j * element_spacing;
-        for (i=0; i<num_x_elements; i++) {
-            SkPath path;
-            x = i * element_spacing;
+    for (int j=0; j<num_y_elements; j++) {
+        for (int i=0; i<num_x_elements; i++) {
+            shapes_t shape;
+            shape_copy(&ctx->shape_defaults, &shape);
+            shape.x = i * element_spacing;
+            shape.y = j * element_spacing;
 
-            // TODO: Select a pre-defined paint object at random
-            skiaRandomizePaintColor(ctx);
-
-            shape = (4.0 * rand())/RAND_MAX;
-            switch (shape) {
-            case 0:
-                // Circle
-                ctx->skia_canvas->drawCircle(x+r, y+r, r,
-                                             *(ctx->skia_paint));
-                break;
-
-            case 1:
-                // Rectangle
-                ctx->skia_canvas->drawRectCoords(x, y, x+2*r, y+2*r,
-                                                 *(ctx->skia_paint));
-                break;
-
-            case 2:
-                // Triangle
-                ctx->skia_paint->setAntiAlias(false);
-                path.moveTo(x, y+2*r);
-                path.rLineTo(2*r, 0);
-                path.rLineTo(-r, -2*r);
-                ctx->skia_canvas->drawPath(path,
-                                           *(ctx->skia_paint));
-                ctx->skia_paint->setAntiAlias(true);
-                break;
-
-            case 3:
-                // Star
-                path.moveTo(x, y);
-                for (p = 0; p < 10; p++ ) {
-                    int px = x + 2*r * star_points[p][0]/200.0;
-                    int py = y + 2*r * star_points[p][1]/200.0;
-                    if (p == 0)
-                        path.moveTo(px, py);
-                    else
-                        path.lineTo(px, py);
-                }
-                ctx->skia_canvas->drawPath(path,
-                                           *(ctx->skia_paint));
-                break;
-
-            default:
-                break;
-            }
-            ctx->skia_canvas->flush();
+            skiaDrawRandomizedShape(ctx, &shape);
         }
     }
+
     return 1;
 }
 

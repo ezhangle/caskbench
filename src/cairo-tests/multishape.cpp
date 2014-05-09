@@ -24,6 +24,7 @@ ca_setup_multishape(caskbench_context_t *ctx)
     if (ctx->size < 0)
         return 0;
 
+    // Multi-shape setup
     element_spacing = sqrt( ((double)ctx->canvas_width * ctx->canvas_height) / ctx->size);
     num_x_elements = ctx->canvas_width / element_spacing;
     num_y_elements = ctx->canvas_height / element_spacing;
@@ -39,58 +40,21 @@ ca_teardown_multishape(void)
 int
 ca_test_multishape(caskbench_context_t *ctx)
 {
-    int i, j, x, y, r, p, shape;
-    cairo_t *cr = ctx->cairo_cr;
+    ctx->shape_defaults.radius = 0.9 * element_spacing / 2;
+    ctx->shape_defaults.width = 2*ctx->shape_defaults.radius;
+    ctx->shape_defaults.height = 2*ctx->shape_defaults.radius;
 
-    r = 0.9 * element_spacing / 2;
-    for (j=0; j<num_y_elements; j++) {
-        y = j * element_spacing;
-        for (i=0; i<num_x_elements; i++) {
-            x = i * element_spacing;
+    for (int j=0; j<num_y_elements; j++) {
+        for (int i=0; i<num_x_elements; i++) {
+            shapes_t shape;
+            shape_copy(&ctx->shape_defaults, &shape);
+            shape.x = i * element_spacing;
+            shape.y = j * element_spacing;
 
-            cairoRandomizeColor(ctx);
-
-            shape = (4.0 * rand())/RAND_MAX;
-            switch (shape) {
-            case 0:
-                // Circle
-                cairo_arc (cr, x+r, y+r, r, 0, 2*M_PI);
-                cairo_fill (cr);
-                break;
-
-            case 1:
-                // Rectangle
-                cairo_rectangle (cr, x, y, 2*r, 2*r);
-                cairo_fill (cr);
-                break;
-
-            case 2:
-                // Triangle
-                cairo_move_to (cr, x, y+2*r);
-                cairo_rel_line_to (cr, 2*r, 0);
-                cairo_rel_line_to (cr, -r, -2*r);
-                cairo_fill (cr);
-                break;
-
-            case 3:
-                // Star
-                cairo_move_to (cr, x, y);
-                for (p = 0; p < 10; p++ ) {
-                    int px = x + 2*r * star_points[p][0]/200.0;
-                    int py = y + 2*r * star_points[p][1]/200.0;
-                    if (p == 0)
-                        cairo_move_to (cr, px, py);
-                    else
-                        cairo_line_to(cr, px, py);
-                }
-                cairo_close_path(cr);
-                break;
-
-            default:
-                break;
-            }
+            cairoDrawRandomizedShape(ctx, &shape);
         }
     }
+
     return 1;
 }
 

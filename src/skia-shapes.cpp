@@ -198,8 +198,10 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
     if (shader)
         ctx->skia_paint->setShader (shader);
 
+    // Draw
     skiaShapes[shape->shape_type] (ctx, shape);
 
+    // Cleanup
     ctx->skia_canvas->flush();
     ctx->skia_paint->setPathEffect(NULL);
     if (shader != NULL) {

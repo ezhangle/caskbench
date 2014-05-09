@@ -14,45 +14,45 @@
 #include "skia-shapes.h"
 #include "kinetics.h"
 
-static kinetics_t *skia_particles;
-static int element_spacing;
-static int num_x_elements;
-static int num_y_elements;
+static kinetics_t *particles;
 
 int
-sk_setup_fill(caskbench_context_t *ctx)
+sk_setup_animation(caskbench_context_t *ctx)
 {
     if (ctx->size <= 0)
         return 0;
+
+    // Animation setup
+    particles = (kinetics_t *) malloc (sizeof (kinetics_t) * ctx->size);
+    for (int i = 0; i < ctx->size; i++)
+        kinetics_init(&particles[i]);
 
     return 1;
 }
 
 void
-sk_teardown_fill(void)
+sk_teardown_animation(void)
 {
+    free(particles);
 }
 
 int
-sk_test_fill(caskbench_context_t *ctx)
+sk_test_animation(caskbench_context_t *ctx)
 {
-    for (int i = 0; i < ctx->size; i++)
-    {
-        shapes_t shape;
-        shape_copy(&ctx->shape_defaults, &shape);
+    // Animation / Kinematics of single or multi shape
+    ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
-        if (!(shape.x && shape.y))
-        {
-            shape.x = ctx->canvas_width/2;
-            shape.y = ctx->canvas_height/2;
-        }
-        if (!(shape.width && shape.height))
-        {
-            shape.width = 100;
-            shape.height = 50;
-        }
-        if (!shape.radius)
-            shape.radius = 40;
+    for (int i = 0; i < ctx->size; i++) {
+        shapes_t shape;
+        kinetics_t *particle = &particles[i];
+
+        kinetics_update(particle, 0.1);
+
+        shape_copy(&ctx->shape_defaults, &shape);
+        shape.width = particle->width;
+        shape.height = particle->height;
+        shape.x = particle->x;
+        shape.y = particle->y;
 
         skiaDrawRandomizedShape(ctx, &shape);
     }

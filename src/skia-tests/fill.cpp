@@ -8,14 +8,12 @@
 
 #include <SkCanvas.h>
 #include <effects/SkGradientShader.h>
-#include <SkDashPathEffect.h>
 
 #include "forward.h"
 #include "caskbench.h"
 #include "skia-shapes.h"
 #include "kinetics.h"
 
-SkAutoTUnref<SkPathEffect> pE;
 static kinetics_t *skia_particles;
 static int element_spacing;
 static int num_x_elements;
@@ -46,69 +44,6 @@ sk_teardown_fill(void)
     free(skia_particles);
 }
 
-static void
-_draw_shape(caskbench_context_t *ctx, shapes_t *shape)
-{
-    // Shape Type
-    if (shape->shape_type == CB_SHAPE_NONE)
-        shape->shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
-
-    // Stroke styles
-    if (shape->stroke_width)
-    {
-        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-        ctx->skia_paint->setStrokeWidth(shape->stroke_width);
-        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape->join_style);
-        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape->cap_style);
-        if (shape->dash_style == 0)
-        {
-            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
-            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(pE);
-        }
-    }
-
-    // Options for fill, gradient and transparency
-    SkShader* shader = NULL;
-    switch (shape->fill_type) {
-        case CB_FILL_IMAGE_PATTERN:
-            shader = skiaCreateBitmapShader(ctx->stock_image_path);
-            break;
-        case CB_FILL_RADIAL_GRADIENT:
-            shader = skiaCreateRadialGradientShader(shape->x, shape->y, shape->radius);
-            break;
-        case CB_FILL_LINEAR_GRADIENT:
-            shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
-            break;
-        case CB_FILL_NONE:
-        case CB_FILL_SOLID:
-        default:
-            SkColor color;
-            if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0) {
-                color = SkColorSetARGB(255.0*(shape->alpha ? shape->alpha : 1.0),
-                                       255.0*(shape->red ? shape->red : 0.0),
-                                       255.0*(shape->green ? shape->green : 0.0),
-                                       255.0*(shape->blue ? shape->blue : 0.0) );
-            } else {
-                color = skiaRandomColor();
-            }
-            ctx->skia_paint->setColor(color);
-            break;
-    }
-    if (shader)
-        ctx->skia_paint->setShader (shader);
-
-    skiaShapes[shape->shape_type] (ctx, shape);
-
-    ctx->skia_canvas->flush();
-    ctx->skia_paint->setPathEffect(NULL);
-    if (shader != NULL) {
-        ctx->skia_paint->setShader (NULL);
-        delete shader;
-    }
-}
-
 int
 sk_test_fill(caskbench_context_t *ctx)
 {
@@ -128,7 +63,7 @@ sk_test_fill(caskbench_context_t *ctx)
             shape.x = particle->x;
             shape.y = particle->y;
 
-            _draw_shape(ctx, &shape);
+            skiaDrawRandomizedShape(ctx, &shape);
         }
     }
 
@@ -145,7 +80,7 @@ sk_test_fill(caskbench_context_t *ctx)
                 shape.x = i * element_spacing;
                 shape.y = j * element_spacing;
 
-                _draw_shape(ctx, &shape);
+                skiaDrawRandomizedShape(ctx, &shape);
             }
         }
     }
@@ -169,7 +104,7 @@ sk_test_fill(caskbench_context_t *ctx)
             if (!shape.radius)
                 shape.radius = 40;
 
-            _draw_shape(ctx, &shape);
+            skiaDrawRandomizedShape(ctx, &shape);
         }
     }
 

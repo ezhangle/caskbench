@@ -31,6 +31,8 @@ void skiaDrawRoundedRectangle(caskbench_context_t *ctx, shapes_t *args);
 
 extern void (*skiaShapes[5])(caskbench_context_t *ctx , shapes_t *args);
 
+void skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape);
+
 #endif
 /*
   Local Variables:

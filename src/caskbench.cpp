@@ -34,9 +34,7 @@
 int32_t SkToS32(intmax_t x) { return (int32_t)x; }
 #endif
 
-#ifndef USE_LEGACY_SKIA_SRA
 bool gPrintInstCount = false;
-#endif
 
 typedef struct _caskbench_options {
     int dry_run;

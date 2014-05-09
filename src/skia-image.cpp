@@ -25,9 +25,6 @@ create_skia_device_image (const device_config_t& config)
         warnx("Failed to configure bitmap\n");
         return NULL;
     }
-#ifdef USE_LEGACY_SKIA_SRA
-    skia_bitmap.allocPixels();
-#else
     SkImageInfo info = SkImageInfo::Make(config.width, config.height,
                                          kBGRA_8888_SkColorType,
                                          kPremul_SkAlphaType);
@@ -35,7 +32,6 @@ create_skia_device_image (const device_config_t& config)
         warnx("Failed to allocate pixels\n");
         return NULL;
     }
-#endif
     return new SkBitmapDevice (skia_bitmap);
 }
 

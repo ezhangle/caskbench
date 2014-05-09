@@ -99,11 +99,7 @@ sk_setup_stroke(caskbench_context_t *ctx)
     ctx->skia_paint->setStrokeWidth(ctx->shape_defaults.stroke_width?ctx->shape_defaults.stroke_width:5);
     ctx->skia_paint->setStrokeJoin(ctx->shape_defaults.join_style?(SkPaint::Join)(ctx->shape_defaults.join_style % 5):SkPaint::kDefault_Join);
     ctx->skia_paint->setStrokeCap(ctx->shape_defaults.cap_style?(SkPaint::Cap)(ctx->shape_defaults.cap_style % 5):SkPaint::kDefault_Cap);
-#if USE_LEGACY_SKIA_SRA
-    fPE.reset(new SkDashPathEffect(vals, 4, 0));
-#else
     fPE.reset(SkDashPathEffect::Create(vals, 4, 0));
-#endif
     ctx->skia_paint->setPathEffect(fPE);
 
     return 1;

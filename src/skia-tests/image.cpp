@@ -21,14 +21,10 @@ sk_setup_image(caskbench_context_t *ctx)
 {
     int i, x, y;
     bitmap.setConfig(SkBitmap::kARGB_8888_Config, 160, 40);
-#ifdef USE_LEGACY_SKIA_SRA
-    bitmap.allocPixels();
-#else
     SkImageInfo info = SkImageInfo::Make(160, 40,
                                          kBGRA_8888_SkColorType,
                                          kPremul_SkAlphaType);
     bitmap.allocPixels(info);
-#endif
     SkBitmapDevice device(bitmap);
     SkCanvas canvas(&device);
     SkPaint paint;

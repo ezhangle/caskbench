@@ -63,13 +63,8 @@ _draw_shape(caskbench_context_t *ctx, shapes_t *shape)
         if (shape->dash_style == 0)
         {
             SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
-#if USE_LEGACY_SKIA_SRA
-            pE.reset(new SkDashPathEffect(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(new SkDashPathEffect(vals, 2, 0));
-#else
             pE.reset(SkDashPathEffect::Create(vals, 2, 0));
             ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0));
-#endif
             ctx->skia_paint->setPathEffect(pE);
         }
     }

@@ -9,7 +9,6 @@
 #cmakedefine USE_EGL 1
 #cmakedefine USE_GLX 0
 #cmakedefine USE_CAIROGLES 0
-#cmakedefine USE_LEGACY_SKIA_SRA 1
 
 #define PACKAGE "${PROJECT_NAME}"
 #define PACKAGE_NAME "${PROJECT_NAME}"
@@ -19,9 +18,6 @@
 // Workarounds for skia packaging bug
 #define SK_ATOMICS_PLATFORM_H "ports/SkAtomics_sync.h"
 #define SK_MUTEX_PLATFORM_H   "ports/SkMutex_pthread.h"
-
-#if !defined(USE_LEGACY_SKIA_SRA) || (USE_LEGACY_SKIA_SRA != 0)
-# define SK_ENABLE_INST_COUNT 0
-#endif
+#define SK_ENABLE_INST_COUNT 0
 
 #endif /* _CONFIG_H_ */

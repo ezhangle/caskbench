@@ -6,16 +6,11 @@
  */
 #include <config.h>
 
-#include <math.h>
-#include <unistd.h>
-
 #include <SkCanvas.h>
-#include <SkPaint.h>
-#include <SkDraw.h>
 #include <effects/SkGradientShader.h>
-#include <SkGraphics.h>
 #include <SkDashPathEffect.h>
 
+#include "forward.h"
 #include "caskbench.h"
 #include "skia-shapes.h"
 #include "kinetics.h"

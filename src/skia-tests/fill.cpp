@@ -48,6 +48,7 @@ sk_setup_fill(caskbench_context_t *ctx)
 void
 sk_teardown_fill(void)
 {
+    free(skia_particles);
 }
 
 static void
@@ -56,17 +57,6 @@ _draw_shape(caskbench_context_t *ctx, shapes_t *shape)
     // Shape Type
     if (shape->shape_type == CB_SHAPE_NONE)
         shape->shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
-
-    // Color
-    bool randomize_color = true;
-    if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0)
-    {
-        randomize_color = false;
-        ctx->skia_paint->setARGB(255.0*(shape->alpha ? shape->alpha : 1.0),
-                                 255.0*(shape->red ? shape->red : 0.0),
-                                 255.0*(shape->green ? shape->green : 0.0),
-                                 255.0*(shape->blue ? shape->blue : 0.0) );
-    }
 
     // Stroke styles
     if (shape->stroke_width)
@@ -91,17 +81,31 @@ _draw_shape(caskbench_context_t *ctx, shapes_t *shape)
 
     // Options for fill, gradient and transparency
     SkShader* shader = NULL;
-    if (shape->fill_type == CB_FILL_NONE ||
-        shape->fill_type == CB_FILL_SOLID)
-        if (randomize_color)
-            ctx->skia_paint->setColor(skiaRandomColor());
-        else if (shape->fill_type == CB_FILL_IMAGE_PATTERN)
+    switch (shape->fill_type) {
+        case CB_FILL_IMAGE_PATTERN:
             shader = skiaCreateBitmapShader(ctx->stock_image_path);
-        else if (shape->fill_type == CB_FILL_RADIAL_GRADIENT)
+            break;
+        case CB_FILL_RADIAL_GRADIENT:
             shader = skiaCreateRadialGradientShader(shape->x, shape->y, shape->radius);
-        else if (shape->fill_type == CB_FILL_LINEAR_GRADIENT)
+            break;
+        case CB_FILL_LINEAR_GRADIENT:
             shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
-
+            break;
+        case CB_FILL_NONE:
+        case CB_FILL_SOLID:
+        default:
+            SkColor color;
+            if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0) {
+                color = SkColorSetARGB(255.0*(shape->alpha ? shape->alpha : 1.0),
+                                       255.0*(shape->red ? shape->red : 0.0),
+                                       255.0*(shape->green ? shape->green : 0.0),
+                                       255.0*(shape->blue ? shape->blue : 0.0) );
+            } else {
+                color = skiaRandomColor();
+            }
+            ctx->skia_paint->setColor(color);
+            break;
+    }
     if (shader)
         ctx->skia_paint->setShader (shader);
 

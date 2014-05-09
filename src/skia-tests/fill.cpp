@@ -29,9 +29,15 @@ static int num_y_elements;
 int
 sk_setup_fill(caskbench_context_t *ctx)
 {
-    if (ctx->size < 0)
+    if (ctx->size <= 0)
         return 0;
 
+    // Animation setup
+    skia_particles = (kinetics_t *) malloc (sizeof (kinetics_t) * ctx->size);
+    for (int i = 0; i < ctx->size; i++)
+        kinetics_init(&skia_particles[i]);
+
+    // Multi-shape setup
     element_spacing = sqrt( ((double)ctx->canvas_width * ctx->canvas_height) / ctx->size);
     num_x_elements = ctx->canvas_width / element_spacing;
     num_y_elements = ctx->canvas_height / element_spacing;
@@ -114,14 +120,9 @@ sk_test_fill(caskbench_context_t *ctx)
 {
     // Animation / Kinematics of single or multi shape
     if (ctx->shape_defaults.animation) {
-        int num_particles = ctx->size;
-        skia_particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
-        for (int i = 0; i < num_particles; i++)
-            kinetics_init(&skia_particles[i]);
-
         ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
-        for (int i = 0; i < num_particles; i++) {
+        for (int i = 0; i < ctx->size; i++) {
             shapes_t shape;
             kinetics_t *particle = &skia_particles[i];
 

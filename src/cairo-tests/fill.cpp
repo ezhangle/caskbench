@@ -30,7 +30,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     r = 0.9 * element_spacing /2;
     int old_x, old_y,old_width, old_height;
     cairo_pattern_t *pattern;
-    cairo_surface_t *image;
+    cairo_surface_t *image = NULL;
     double red, green, blue, alpha;
     static const double dashed3[] = {1.0};
     static const double dashed2[] = {14.0, 6.0};

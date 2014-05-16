@@ -302,7 +302,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->cap_style = 0;
     opt->join_style = 0;
     opt->dash_style = 0;
-
+    opt->shape_name = NULL;
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
     poptSetOtherOptionHelp(pc, "[ARG...]");

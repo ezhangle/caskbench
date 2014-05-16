@@ -10,8 +10,8 @@
 #include <assert.h>
 
 #include <SkBitmapDevice.h>
-
-#include <cairo.h>
+#include <SkImageEncoder.h>
+#include <SkString.h>
 
 #include "caskbench.h"
 
@@ -21,8 +21,7 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
 {
     SkBitmap bitmap;
     void * data;
-    cairo_surface_t* surface;
-
+    SkString path(fname);
     bitmap.setConfig(SkBitmap::kARGB_8888_Config,
                      context->canvas_width, context->canvas_height);
     SkImageInfo info = SkImageInfo::Make(context->canvas_width, context->canvas_height,
@@ -34,21 +33,7 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
         warnx("Could not read pixels from skia device\n");
         return;
     }
-
-    data = bitmap.getPixels();
-    assert(data);
-    surface = cairo_image_surface_create_for_data((unsigned char*)data,
-                                                  CAIRO_FORMAT_ARGB32,
-                                                  context->canvas_width, context->canvas_height,
-                                                  4 * context->canvas_width);
-
-    cairo_status_t status = cairo_surface_status (surface);
-    if (status != CAIRO_STATUS_SUCCESS) {
-        warnx("Error writing skia surface to file: %s\n", cairo_status_to_string(status));
-        return;
-    }
-    cairo_surface_write_to_png (surface, fname);
-    cairo_surface_destroy(surface);
+    SkImageEncoder::EncodeFile(path.c_str(), bitmap, SkImageEncoder::kPNG_Type, 0);    
 }
 
 /*

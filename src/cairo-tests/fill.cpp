@@ -197,7 +197,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 }
             }
 
-            cairoShapes[shape_type] (ctx,&ctx->shape_defaults);
+            cairoShapes[shape_type-1] (ctx,&ctx->shape_defaults);
 
             // Reset
             ctx->shape_defaults.width = old_width;

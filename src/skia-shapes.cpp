@@ -199,7 +199,7 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         ctx->skia_paint->setShader (shader);
 
     // Draw
-    skiaShapes[shape->shape_type] (ctx, shape);
+    skiaShapes[shape->shape_type-1] (ctx, shape);
 
     // Cleanup
     ctx->skia_canvas->flush();

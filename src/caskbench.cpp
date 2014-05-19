@@ -276,36 +276,10 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     };
 
     // Initialize options
-    opt->dry_run = 0;
+    memset (opt, 0, sizeof(caskbench_options_t));
     opt->iterations = 10;
-    opt->list_surfaces = 0;
-    opt->output_file = NULL;
     opt->size = 64;
-    opt->surface_type = NULL;
-    opt->version = 0;
 
-
-    opt->enable_egl_sample_buffers = 0;
-    opt->x_position = 0;
-    opt->y_position = 0;
-    opt->width = 0;
-    opt->height = 0;
-    opt->fill_type = NULL;
-    opt->red = 0;
-    opt->green = 0;
-    opt->blue = 0;
-    opt->alpha = 0;
-    opt->animation = 0;
-    opt->stock_image_path = NULL;
-    opt->multi_shapes = 0;
-    opt->stroke_width = 0;
-    opt->stroke_red = 0;
-    opt->stroke_green = 0;
-    opt->stroke_blue = 0;
-    opt->cap_style = 0;
-    opt->join_style = 0;
-    opt->dash_style = 0;
-    opt->shape_name = NULL;
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);
     poptSetOtherOptionHelp(pc, "[ARG...]");

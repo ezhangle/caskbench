@@ -134,7 +134,7 @@ sk_test_stroke(caskbench_context_t *ctx)
     }
     /* Static clip */
     else
-        ctx->shape_defaults.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100,ctx->shape_defaults.y?ctx->shape_defaults.y:100);
+        drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100,ctx->shape_defaults.y?ctx->shape_defaults.y:100);
     return 1;
 }
 

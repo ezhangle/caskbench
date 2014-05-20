@@ -133,8 +133,7 @@ ca_test_stroke(caskbench_context_t *ctx)
         }
     }
     else
-        //drawStroke(ctx,NULL);
-        ctx->shape_defaults.multi_shapes?drawStroke(ctx,NULL):drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100.0,ctx->shape_defaults.y?ctx->shape_defaults.y:100.0);
+        drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100.0,ctx->shape_defaults.y?ctx->shape_defaults.y:100.0);
 
     return 1;
 }

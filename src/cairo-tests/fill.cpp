@@ -39,7 +39,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     if(shape == CB_SHAPE_NONE)
     {
         shape = (shape_type_t) (((4.0 * rand())/RAND_MAX) + 1);
-        if(!ctx->shape_defaults.multi_shapes)
             shape = CB_SHAPE_RECTANGLE;
     } else {
         if(!(ctx->shape_defaults.x && ctx->shape_defaults.y))
@@ -47,7 +46,6 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
             ctx->shape_defaults.x = x = ctx->canvas_width/2;
             ctx->shape_defaults.y = y = ctx->canvas_height/2;
         }
-        if(!ctx->shape_defaults.multi_shapes)
             if(!(ctx->shape_defaults.width && ctx->shape_defaults.height))
             {
                 ctx->shape_defaults.width = 100;
@@ -57,7 +55,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     }
 
 
-    if(!ctx->shape_defaults.animation && !ctx->shape_defaults.multi_shapes)
+    if(!ctx->shape_defaults.animation)
     {
         num_x_elements = 1;
         num_y_elements = 1;
@@ -113,7 +111,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
                 pattern = cairo_pattern_create_for_surface (image);
                 cairo_set_source (cr, pattern);
             }
-            if (!ctx->shape_defaults.multi_shapes && !ctx->shape_defaults.animation) {
+            if (!ctx->shape_defaults.animation) {
                 x = ctx->shape_defaults.x;
                 y = ctx->shape_defaults.y;
             }
@@ -240,7 +238,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
         }
     }
 
-    if (!ctx->shape_defaults.animation && !ctx->shape_defaults.multi_shapes)
+    if (!ctx->shape_defaults.animation)
     {
         ctx->shape_defaults.x = old_x;
         ctx->shape_defaults.y = old_y;

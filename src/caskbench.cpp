@@ -59,7 +59,6 @@ typedef struct _caskbench_options {
     int animation;
     char *stock_image_path;
     int stroke_width;
-    int multi_shapes;
 
     double stroke_red;
     double stroke_green;
@@ -202,72 +201,32 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
          NULL},
         {"shape", 'S', POPT_ARG_STRING, &opt->shape_name, 0,
-         "Controls which shape to be drawn ",
+         "Specify type of shape - circle/rectangle/triangle/star ",
          NULL},
         {"x-position", 'X', POPT_ARG_INT, &opt->x_position, 0,
-         "The X location to draw the object",
+         "X coordinate of the object",
          NULL},
         {"y-position", 'Y', POPT_ARG_INT, &opt->y_position, 0,
-         "The Y location to draw the object",
+         "Y coordinate of the object",
          NULL},
         {"width", 'W', POPT_ARG_INT, &opt->width, 0,
-         "Width of the shape bject ",
+         "Width dimension of the shape ",
          NULL},
         {"height", 'H', POPT_ARG_INT, &opt->height, 0,
-         "Height of the shape object ",
+         "Height dimension of the shape ",
          NULL},
         {"fill-type", 'f', POPT_ARG_STRING, &opt->fill_type, 0,
-         "Controls the fill type of the objects draw either solid, gradient, image pattern type",
+         "Specify fill type  - solid/gradient/image pattern type",
          NULL},
-#if 0
-        {"red", 'R', POPT_ARG_DOUBLE, &opt->red, 0,
-         "R Color Value",
-         NULL},
-        {"green", 'G', POPT_ARG_DOUBLE, &opt->green, 0,
-         "g Color Value",
-         NULL},
-        {"blue", 'B', POPT_ARG_DOUBLE, &opt->blue, 0,
-         "B Color Value",
-         NULL},
-        {"alpha", 'A', POPT_ARG_DOUBLE, &opt->alpha, 0,
-         "Transparency value for the solid fill",
-         NULL},
-#endif
-        {"animation", 'g', POPT_ARG_INT, &opt->animation, 0,
-         "Controls the kinematics of the objects drawn",
+        {"animation", 'A', POPT_ARG_INT, &opt->animation, 0,
+         "Animates with user specified number of iterations ",
          NULL},
         {"image-path", 'I', POPT_ARG_STRING, &opt->stock_image_path, 0,
          "Path to a stock image for use in clipping, patterns, etc.",
          NULL},
         {"stroke-width", 'w', POPT_ARG_INT, &opt->stroke_width, 0,
-         "represents stroke width of the object",
+         "Stroke width ",
          NULL},
-        // TODO: Crashes
-        {"multi-shapes", 'm', POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents stroke width of the object",
-         NULL},
-#if 0
-        {"stroke-red", "SR", POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents r value for stroke color",
-         NULL},
-        {"stroke-green", "SG", POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents represents g value for stroke color",
-         NULL},
-        {"stroke-blue", "SB", POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents represents b value for stroke color",
-         NULL},
-#endif
-#if 0
-        {"cap-style", 'C', POPT_ARG_INT, &opt->cap_style, 0,
-         "represents r value for stroke color",
-         NULL},
-        {"join-style", 'J', POPT_ARG_INT, &opt->join_style, 0,
-         "represents r value for stroke color",
-         NULL},
-        {"dash-style", 'D', POPT_ARG_INT, &opt->dash_style, 0,
-         "represents r value for stroke color",
-         NULL},
-#endif
         POPT_AUTOHELP
         {NULL}
     };
@@ -294,7 +253,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     opt->alpha = 0;
     opt->animation = 0;
     opt->stock_image_path = NULL;
-    opt->multi_shapes = 0;
     opt->stroke_width = 0;
     opt->stroke_red = 0;
     opt->stroke_green = 0;
@@ -528,7 +486,6 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->blue = opt->blue;
     shape_defaults->alpha = opt->alpha;
     shape_defaults->stroke_width = opt->stroke_width;
-    shape_defaults->multi_shapes = opt->multi_shapes;
     shape_defaults->animation = opt->animation;
     shape_defaults->stroke_width = opt->stroke_width;
     shape_defaults->stroke_red = opt->stroke_red;

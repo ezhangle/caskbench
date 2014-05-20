@@ -41,7 +41,6 @@ typedef struct shapes
     double alpha;
     int animation;
     int stroke_width;
-    int multi_shapes;
 
     double stroke_red;
     double stroke_green;

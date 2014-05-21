@@ -68,6 +68,7 @@ typedef struct _caskbench_options {
     int cap_style;
     int join_style;
     int dash_style;
+    char *seed_value;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -271,6 +272,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "represents r value for stroke color",
          NULL},
 #endif
+        {"seed-value", 'r', POPT_ARG_STRING, &opt->seed_value, 0,
+         "represents seed value for Random Number generater eg. -r ABCDEFFF",
+         NULL},
         POPT_AUTOHELP
         {NULL}
     };
@@ -568,7 +572,7 @@ main (int argc, char *argv[])
     double cairo_avg_time = 0.0;
     double perf_improvement = 0.0;
     FILE *fp;
-    char fname[256];
+    char fname[256], *end_ptr;
     device_config_t config;
 
     process_options(&opt, argc, argv);
@@ -607,7 +611,15 @@ main (int argc, char *argv[])
             !strncmp(perf_tests[c].name, "skia-clip", 9))
             continue;
 
-        srand(0xdeadbeef);
+        if(opt.seed_value == NULL)
+        {
+            srand (0xdeadbeef);
+        }
+        else
+        {
+            srand (strtoul(opt.seed_value,&end_ptr,16));
+        }
+
         context_init(&context, opt.size);
         shape_defaults_init(&context.shape_defaults, &opt);
         result_init(&result, perf_tests[c].name);

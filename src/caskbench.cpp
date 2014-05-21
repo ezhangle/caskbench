@@ -76,6 +76,9 @@ typedef struct _caskbench_result {
     int iterations;
     double min_run_time;
     double avg_run_time;
+    double max_run_time;
+    double median_run_time;
+    double standard_deviation;
     int status;
 } caskbench_result_t;
 
@@ -548,6 +551,38 @@ result_init(caskbench_result_t *result, const char* name)
     result->size = 0;
     result->min_run_time = -1.0;
     result->avg_run_time = -1.0;
+    result->max_run_time = -1.0;
+    result->median_run_time = -1.0;
+    result->standard_deviation = -1.0;
+}
+
+double median_run_time (double data[], int n)
+{
+    double temp;
+    int i, j;
+    for (i = 0; i < n; i++)
+        for (j = i+1; j < n; j++)
+        {
+            if (data[i] > data[j])
+            {
+                temp = data[j];
+                data[j] = data[i];
+                data[i] = temp;
+            }
+        }
+    if (n % 2 == 0)
+        return (data[n/2] + data[n/2-1])/2;
+    else
+        return data[n/2];
+}
+
+double standard_deviation (const double data[], int n, double mean)
+{
+    double sum_deviation = 0.0;
+    int i;
+    for (i = 0; i < n; ++i)
+    sum_deviation += (data[i]-mean) * (data[i]-mean);
+    return sqrt (sum_deviation / n);
 }
 
 int
@@ -563,6 +598,7 @@ main (int argc, char *argv[])
     device_config_t config;
 
     process_options(&opt, argc, argv);
+    double run_time_values[opt.iterations];
 
     memset (&config, 0, sizeof(device_config_t));
 
@@ -637,10 +673,12 @@ main (int argc, char *argv[])
 
                 stop_time = get_tick();
                 run_time = stop_time - start_time;
+                run_time_values[opt.iterations-i] = run_time;
                 if (result.min_run_time < 0)
                     result.min_run_time = run_time;
                 else
                     result.min_run_time = MIN(run_time, result.min_run_time);
+                result.max_run_time = MAX(run_time, result.max_run_time);
                 run_total += run_time;
             } catch (...) {
                 warnx("Unknown exception encountered\n");
@@ -651,6 +689,8 @@ main (int argc, char *argv[])
         result.iterations = opt.iterations - i;
         result.avg_run_time = run_total / (double)result.iterations;
         result.size = opt.size;
+        result.median_run_time = median_run_time (run_time_values, result.iterations);
+        result.standard_deviation = standard_deviation (run_time_values, result.iterations, result.avg_run_time);
 
         // Write image to file
         if (perf_tests[c].write_image) {
@@ -685,6 +725,9 @@ main (int argc, char *argv[])
             fprintf(fp, "       \"iterations\": %d,\n", result.iterations);
             fprintf(fp, "       \"minimum run time (s)\": %f,\n", result.min_run_time);
             fprintf(fp, "       \"average run time (s)\": %f\n", result.avg_run_time);
+            fprintf(fp, "       \"maximum run time (s)\": %f\n", result.max_run_time);
+            fprintf(fp, "       \"median run time (s)\": %f\n", result.median_run_time);
+            fprintf(fp, "       \"standard deviation of run time (s)\": %f\n", result.standard_deviation);
             fprintf(fp, "   }");
 
             if (c != num_perf_tests-1)

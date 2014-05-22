@@ -1,5 +1,6 @@
 file(GLOB caskbench_SOURCES
   caskbench.cpp
+  caskbench_context.cpp
   kinetics.cpp
   image.cpp
   shapes.cpp

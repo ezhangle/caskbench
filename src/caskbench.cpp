@@ -29,6 +29,7 @@
 #include "caskbench.h"
 #include "device_config.h"
 #include "tests.h"
+#include "caskbench_result.h"
 
 #ifndef SkToS32
 int32_t SkToS32(intmax_t x) { return (int32_t)x; }
@@ -70,18 +71,6 @@ typedef struct _caskbench_options {
     int dash_style;
     char *seed_value;
 } caskbench_options_t;
-
-typedef struct _caskbench_result {
-    const char *test_case_name;
-    int size;
-    int iterations;
-    double min_run_time;
-    double avg_run_time;
-    double max_run_time;
-    double median_run_time;
-    double standard_deviation;
-    int status;
-} caskbench_result_t;
 
 const char *gShapes[] = {
     "circle",
@@ -518,20 +507,6 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->cap_style = opt->cap_style;
     shape_defaults->join_style = opt->join_style;
     shape_defaults->dash_style = opt->dash_style;
-}
-
-void
-result_init(caskbench_result_t *result, const char* name)
-{
-    assert(result);
-
-    result->test_case_name = name;
-    result->size = 0;
-    result->min_run_time = -1.0;
-    result->avg_run_time = -1.0;
-    result->max_run_time = -1.0;
-    result->median_run_time = -1.0;
-    result->standard_deviation = -1.0;
 }
 
 double median_run_time (double data[], int n)

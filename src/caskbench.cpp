@@ -564,10 +564,7 @@ main (int argc, char *argv[])
 
     process_options(&opt, argc, argv);
 
-    config.width = 0;
-    config.height = 0;
-    config.egl_samples = 0;
-    config.egl_sample_buffers = 0;
+    memset (&config, 0, sizeof(device_config_t));
 
     if (opt.version) {
         print_version();

@@ -136,7 +136,7 @@ void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
     ctx->skia_canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->skia_paint));
 }
 
-void (*skiaShapes[5])(caskbench_context_t *ctx , shapes_t *args) = {
+void (*skiaShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args) = {
     skiaDrawCircle,
     skiaDrawRectangle,
     skiaDrawTriangle,
@@ -150,7 +150,7 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
 {
     // Shape Type
     if (shape->shape_type == CB_SHAPE_NONE)
-        shape->shape_type = (shape_type_t) (1 + (4.0 * rand())/RAND_MAX);
+        shape->shape_type = generate_random_shape();
 
     // Stroke styles
     if (shape->stroke_width)

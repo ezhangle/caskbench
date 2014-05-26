@@ -23,6 +23,10 @@
 # define NUM_ELEM(x) (sizeof(x)/sizeof(x[0]))
 #endif
 
+#ifndef MAX_BUFFER
+# define MAX_BUFFER 256
+#endif
+
 #include "caskbench_context.h"
 // Framework
 double get_tick (void);

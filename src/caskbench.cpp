@@ -68,7 +68,8 @@ typedef struct _caskbench_options {
     int cap_style;
     int join_style;
     int dash_style;
-    char *seed_value;
+    char* seed_value;
+    char* tests;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -244,7 +245,10 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
 #endif
         {"seed-value", 'r', POPT_ARG_STRING, &opt->seed_value, 0,
-         "represents seed value for Random Number generater eg. -r ABCDEFFF",
+         "Represents seed value for Random Number generater eg. -r ABCDEFFF",
+         NULL},
+        {"tests", 'T', POPT_ARG_STRING, &opt->tests, 0,
+         "Controls list of tests to run eg. -T \"bubbles roundrect ...\" " ,
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -386,9 +390,55 @@ double standard_deviation (const double data[], int n, double mean)
 }
 
 int
+convertToTestId(const char* test_name)
+{
+    int j = 0;
+    if (test_name == NULL)
+        return -1;
+    /* Checks whether the user provided test case is valid */
+    for(j = 0; j < num_perf_tests; j++) {
+        if (strstr (perf_tests[j].name, test_name))
+            return j;
+    }
+    return -1;
+}
+
+void populate_user_tests (const char* input, int& num_tests, int* test_ids)
+{
+    int i = 0, test_index = 0, k = 0, id = -1;
+    char temp[MAX_BUFFER];
+    if(input == NULL)
+        return;
+    for (i = 0; i <= strlen(input); i++) {
+        if ((input[i]!=' ') && (input[i]!='\0')) {
+            temp[k++] = input[i];
+            if (k >= MAX_BUFFER)
+                errx (0, "Please check test case name, it exceeds maximum buffer limit \n");
+            continue;
+        }
+        temp[k] = '\0';
+        k = 0;
+        /* Check whether the user specified test is present in performance test list */
+        id = convertToTestId (temp);
+        if (id < 0)
+            errx (0, "Incorrect test case, please check the test case provided as input \n");
+        /* Add cairo test index to the test list */
+        test_ids[test_index++] = id;
+#ifdef USE_SKIA
+        /* Add skia test index to the test list */
+        test_ids[test_index++] = id + 1;
+        num_tests = num_tests + 2;
+#else
+        num_tests = num_tests + 1;
+#endif
+    }
+}
+
+int
 main (int argc, char *argv[])
 {
-    int c, i;
+    int c, i, num_user_tests = 0, num_tests = 0;
+    int user_test_ids[num_perf_tests];
     caskbench_options_t opt;
     double start_time, stop_time, run_time, run_total;
     double cairo_avg_time = 0.0;
@@ -419,7 +469,11 @@ main (int argc, char *argv[])
         config.egl_samples = 4;
         config.egl_sample_buffers = 1;
     }
-    for (c=0; c<num_perf_tests; c++) {
+    memset (user_test_ids, -1, sizeof(user_test_ids));
+    populate_user_tests (opt.tests, num_user_tests, user_test_ids);
+    num_tests = num_user_tests?num_user_tests:num_perf_tests;
+    for(int s = 0; s < num_tests; s++) {
+        c = num_user_tests ? user_test_ids[s]:s;
         caskbench_context_t context;
         caskbench_result_t result;
 

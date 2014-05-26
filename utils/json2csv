@@ -17,5 +17,7 @@ with open(csv_file, "w") as file:
      csv_file = csv.writer(file)
      for item in data:
          csv_file.writerow([item['test case'], item['size'],
-             item['iterations'], item['minimum run time (s)'],
-	     item['average run time (s)']])
+                           item['iterations'], item['minimum run time (s)'],
+                           item['average run time (s)'], item['maximum run time (s)'],
+                           item['median run time (s)'], item['standard deviation of run time (s)'],
+                           item['avg frames per second (fps)']])

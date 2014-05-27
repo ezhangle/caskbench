@@ -15,6 +15,50 @@
 #include "caskbench.h"
 #include "cairo-shapes.h"
 
+cairo_pattern_t*
+cairoCreateRadialGradientPattern (int x, int y, int r)
+{
+    double red, green, blue, alpha;
+    red = (double)rand()/RAND_MAX;
+    green = (double)rand()/RAND_MAX;
+    blue = (double)rand()/RAND_MAX;
+    alpha = (double)rand()/RAND_MAX;
+    cairo_pattern_t *pattern;
+    pattern = cairo_pattern_create_radial (x+r, y+r, r, x+r, y+r, 0);
+    cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
+    cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
+    return pattern;
+}
+
+cairo_pattern_t*
+cairoCreateLinearGradientPattern (int y1, int y2)
+{
+    double red, green, blue, alpha;
+
+    red = (double)rand()/RAND_MAX;
+    green = (double)rand()/RAND_MAX;
+    blue = (double)rand()/RAND_MAX;
+    alpha = (double)rand()/RAND_MAX;
+    cairo_pattern_t *pattern;
+    pattern = cairo_pattern_create_linear (0, y1, 0, y2);
+    cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
+    cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
+    cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
+    return pattern;
+}
+
+cairo_pattern_t*
+cairoCreateBitmapPattern (const char *image_path)
+{
+    cairo_matrix_t   matrix;
+    cairo_surface_t *image = NULL;
+    cairo_pattern_t *pattern;
+    image = cairo_image_surface_create_from_png (image_path);
+    int w = cairo_image_surface_get_width (image);
+    int h = cairo_image_surface_get_height (image);
+    pattern = cairo_pattern_create_for_surface (image);
+    return pattern;
+}
 
 void
 cairoRandomizeColor(caskbench_context_t *ctx)
@@ -122,13 +166,13 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
     // Options for fill, gradient, and transparency
     switch (shape->fill_type) {
         case CB_FILL_IMAGE_PATTERN:
-            // TODO
+            pattern = cairoCreateBitmapPattern (ctx->stock_image_path);
             break;
         case CB_FILL_RADIAL_GRADIENT:
-            // TODO
+            pattern = cairoCreateRadialGradientPattern (shape->x, shape->y, shape->radius);
             break;
         case CB_FILL_LINEAR_GRADIENT:
-            // TODO
+            pattern = cairoCreateLinearGradientPattern (shape->y, shape->y + shape->height);
             break;
         case CB_FILL_NONE:
         case CB_FILL_SOLID:

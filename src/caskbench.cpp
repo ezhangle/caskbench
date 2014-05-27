@@ -340,6 +340,7 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->cap_style = opt->cap_style;
     shape_defaults->join_style = opt->join_style;
     shape_defaults->dash_style = opt->dash_style;
+    shape_defaults->radius = 0.0;
 }
 
 void

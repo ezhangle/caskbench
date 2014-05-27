@@ -46,8 +46,8 @@ ca_test_fill(caskbench_context_t *ctx)
         }
         if (!shape.radius)
             shape.radius = 40;
-
-        shape.shape_type = CB_SHAPE_RECTANGLE;
+        /* Use rectangle as default shape */
+        shape.shape_type = shape.shape_type ? shape.shape_type:CB_SHAPE_RECTANGLE;
         cairoDrawRandomizedShape(ctx, &shape);
     }
     return 1;

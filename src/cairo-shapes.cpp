@@ -143,6 +143,7 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
 {
     cairo_pattern_t *pattern = NULL;
     cairo_surface_t *image = NULL;
+    cairo_path_t *new_path = NULL;
 
     static const double dashed3[] = {1.0};
     static const double dashed2[] = {14.0, 6.0};
@@ -150,18 +151,6 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
     // Shape Type
     if (shape->shape_type == CB_SHAPE_NONE)
         shape->shape_type = generate_random_shape();
-
-    // Stroke styles
-    if (shape->stroke_width)
-    {
-        cairo_set_line_width(ctx->cairo_cr, shape->stroke_width);
-        cairo_set_line_join(ctx->cairo_cr,  (cairo_line_join_t)shape->join_style);
-        cairo_set_line_cap(ctx->cairo_cr, (cairo_line_cap_t)shape->cap_style);
-        if (shape->dash_style == 1)
-            cairo_set_dash(ctx->cairo_cr, dashed3, 1, 0);
-        else if (shape->dash_style == 2)
-            cairo_set_dash(ctx->cairo_cr, dashed2, 2, 0);
-    }
 
     // Options for fill, gradient, and transparency
     switch (shape->fill_type) {
@@ -191,8 +180,41 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
             break;
     }
 
-    // Draw
-    cairoShapes[shape->shape_type] (ctx, shape);
+    if (pattern)
+        cairo_set_source (ctx->cairo_cr, pattern);
+ 
+     // Draw
+    cairoShapes[shape->shape_type-1] (ctx, shape);
+    new_path = cairo_copy_path(ctx->cairo_cr);
+    cairo_fill (ctx->cairo_cr);
+    
+    // Stroke styles
+    if (shape->stroke_width)
+    {
+        cairo_new_path (ctx->cairo_cr);
+        cairo_append_path (ctx->cairo_cr, new_path);
+
+        cairo_set_line_width (ctx->cairo_cr, shape->stroke_width);
+        cairo_set_line_join (ctx->cairo_cr,  (cairo_line_join_t)shape->join_style);
+        cairo_set_line_cap (ctx->cairo_cr, (cairo_line_cap_t)shape->cap_style);
+        if (shape->dash_style == 0)
+            cairo_set_dash (ctx->cairo_cr, dashed3, 1, 0);
+        else if (shape->dash_style == 1)
+            cairo_set_dash (ctx->cairo_cr, dashed2, 2, 0);
+
+        if (shape->stroke_red > 0 || shape->stroke_blue > 0 || shape->stroke_green > 0)
+        {
+            cairo_set_source_rgb (ctx->cairo_cr,
+                                  shape->stroke_red ? (double)shape->stroke_red : 0.0,
+                                  shape->stroke_green ? (double)shape->stroke_green : 0.0,
+                                  shape->stroke_blue ? (double)shape->stroke_blue : 0.0);
+        }
+        else {
+            cairoRandomizeColor (ctx);
+        }
+
+        cairo_stroke (ctx->cairo_cr);
+    }
 
     // Cleanup
     if (pattern != NULL)

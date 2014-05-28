@@ -80,6 +80,7 @@ typedef struct _caskbench_result {
     double max_run_time;
     double median_run_time;
     double standard_deviation;
+    double avg_frames_per_second;
     int status;
 } caskbench_result_t;
 
@@ -354,6 +355,7 @@ result_init(caskbench_result_t *result, const char* name)
     result->max_run_time = -1.0;
     result->median_run_time = -1.0;
     result->standard_deviation = -1.0;
+    result->avg_frames_per_second = -1.0;
 }
 
 double median_run_time (double data[], int n)
@@ -499,6 +501,8 @@ main (int argc, char *argv[])
         result.size = opt.size;
         result.median_run_time = median_run_time (run_time_values, result.iterations);
         result.standard_deviation = standard_deviation (run_time_values, result.iterations, result.avg_run_time);
+        result.avg_frames_per_second = (1.0 / result.avg_run_time);
+        result.avg_frames_per_second = (result.avg_frames_per_second<9999) ? result.avg_frames_per_second:9999;
 
         // Write image to file
         if (perf_tests[c].write_image) {
@@ -507,13 +511,13 @@ main (int argc, char *argv[])
         }
 
     FINAL:
-        printf("%-20s %-4d   %s  %d  %f  %f",
+        /* Removed min_run_time, avg_run_time to avoid confusion as min/max/avg run times are captured in json output */
+        printf("%-20s %-4d   %s  %d  %-4.0f",
                result.test_case_name,
                result.size,
                _status_to_string(result.status),
                result.iterations,
-               result.min_run_time,
-               result.avg_run_time);
+               result.avg_frames_per_second);
 
         if (result.test_case_name[0] == 'c') {
             perf_improvement = 0.0;
@@ -532,10 +536,11 @@ main (int argc, char *argv[])
             fprintf(fp, "       \"status\": \"%s\",\n", _status_to_string(result.status));
             fprintf(fp, "       \"iterations\": %d,\n", result.iterations);
             fprintf(fp, "       \"minimum run time (s)\": %f,\n", result.min_run_time);
-            fprintf(fp, "       \"average run time (s)\": %f\n", result.avg_run_time);
-            fprintf(fp, "       \"maximum run time (s)\": %f\n", result.max_run_time);
-            fprintf(fp, "       \"median run time (s)\": %f\n", result.median_run_time);
-            fprintf(fp, "       \"standard deviation of run time (s)\": %f\n", result.standard_deviation);
+            fprintf(fp, "       \"average run time (s)\": %f,\n", result.avg_run_time);
+            fprintf(fp, "       \"maximum run time (s)\": %f,\n", result.max_run_time);
+            fprintf(fp, "       \"median run time (s)\": %f,\n", result.median_run_time);
+            fprintf(fp, "       \"standard deviation of run time (s)\": %f,\n", result.standard_deviation);
+            fprintf(fp, "       \"avg frames per second (fps)\": %-4.0f\n", result.avg_frames_per_second);
             fprintf(fp, "   }");
 
             if (c != num_perf_tests-1)

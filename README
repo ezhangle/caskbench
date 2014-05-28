@@ -42,9 +42,8 @@ Caskbench builds to a single executable which you can run directly
 
   $ ./src/caskbench
 
-  cairo-bubbles        64     PASS  64  0.005676  0.006731
-  skia-bubbles         64     PASS  64  0.000987  0.001234  81.66%
-  cairo-fill           64     PASS  64  0.000789  0.000851
+  cairo-bubbles        64     PASS  10  115.60
+  skia-bubbles         64     PASS  10  311.93  62.94%
   ...
 
 The testing will alternate between cairo and skia versions of each

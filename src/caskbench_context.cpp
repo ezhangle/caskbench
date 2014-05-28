@@ -32,6 +32,7 @@ context_init(caskbench_context_t *context, int size)
     context->destroy_skia = NULL;
     context->update_cairo = NULL;
     context->update_skia = NULL;
+    context->tolerance = 0.25;
 }
 
 void
@@ -77,7 +78,7 @@ context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
     cairo_set_antialias (context->cairo_cr, CAIRO_ANTIALIAS_DEFAULT);
 
     // Ease up Cairo's tessellation tolerance (default is 0.001)
-    cairo_set_tolerance (context->cairo_cr, 0.25);
+    cairo_set_tolerance (context->cairo_cr, context->tolerance);
 }
 
 void

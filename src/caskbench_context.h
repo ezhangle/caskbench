@@ -25,6 +25,7 @@ typedef struct _caskbench_context {
 
     const char      *stock_image_path;
     shapes_t         shape_defaults;
+    double tolerance;
 
 } caskbench_context_t;
 

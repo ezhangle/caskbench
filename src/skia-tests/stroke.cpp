@@ -35,7 +35,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
 
     r = particles?50:0.9 * element_spacing /2;
     if(ctx->shape_defaults.shape_type == CB_SHAPE_NONE)
-        shape = (shape_type_t) (((4.0 * rand())/RAND_MAX) + 1);
+        shape = generate_random_shape();
     else
         shape = ctx->shape_defaults.shape_type;
 

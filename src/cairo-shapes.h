@@ -23,7 +23,7 @@ void cairoDrawStar(caskbench_context_t *ctx, shapes_t *args);
 
 void cairoDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args);
 
-extern void (*cairoShapes[5])(caskbench_context_t *ctx , shapes_t *args);
+extern void (*cairoShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args);
 
 void cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape);
 

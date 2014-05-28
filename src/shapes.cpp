@@ -40,7 +40,11 @@ shape_randomize(shapes_t *shape)
     // TODO
 }
 
-
+shape_type_t
+generate_random_shape()
+{
+    return (shape_type_t) ((((double)(CB_SHAPE_END-1) * rand())/RAND_MAX) + 1);
+}
 
 /*
   Local Variables:

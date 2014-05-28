@@ -6,6 +6,7 @@
  */
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
+#include <stdlib.h>
 
 typedef enum {
     CB_FILL_NONE,
@@ -22,7 +23,8 @@ typedef enum {
     CB_SHAPE_RECTANGLE,
     CB_SHAPE_TRIANGLE,
     CB_SHAPE_STAR,
-    CB_SHAPE_ROUNDED_RECTANGLE
+    CB_SHAPE_ROUNDED_RECTANGLE,
+    CB_SHAPE_END
 } shape_type_t;
 
 typedef struct shapes
@@ -62,6 +64,9 @@ shape_copy(const shapes_t *shape_defaults, shapes_t *shape);
 
 void
 shape_randomize(shapes_t *shape);
+
+shape_type_t
+generate_random_shape();
 
 #endif
 /*

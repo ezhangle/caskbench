@@ -38,7 +38,7 @@ void drawshapes(caskbench_context_t *ctx,kinetics_t *particles)
     shape = ctx->shape_defaults.shape_type;
     if(shape == CB_SHAPE_NONE)
     {
-        shape = (shape_type_t) (((4.0 * rand())/RAND_MAX) + 1);
+        shape = generate_random_shape();
         if(!ctx->shape_defaults.multi_shapes)
             shape = CB_SHAPE_RECTANGLE;
     } else {

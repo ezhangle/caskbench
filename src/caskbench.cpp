@@ -72,6 +72,8 @@ typedef struct _caskbench_options {
     char* tests;
     unsigned int enable_output_images;
     double tolerance;
+    int canvas_width;
+    int canvas_height;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -189,10 +191,10 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"y-position", 'Y', POPT_ARG_INT, &opt->y_position, 0,
          "The Y location to draw the object",
          NULL},
-        {"width", 'W', POPT_ARG_INT, &opt->width, 0,
+        {"object-width", '\0', POPT_ARG_INT, &opt->width, 0,
          "Width of the shape bject ",
          NULL},
-        {"height", 'H', POPT_ARG_INT, &opt->height, 0,
+        {"object-height", '\0', POPT_ARG_INT, &opt->height, 0,
          "Height of the shape object ",
          NULL},
         {"fill-type", 'f', POPT_ARG_STRING, &opt->fill_type, 0,
@@ -218,7 +220,7 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"image-path", 'I', POPT_ARG_STRING, &opt->stock_image_path, 0,
          "Path to a stock image for use in clipping, patterns, etc.",
          NULL},
-        {"stroke-width", 'w', POPT_ARG_INT, &opt->stroke_width, 0,
+        {"stroke-width", '\0', POPT_ARG_INT, &opt->stroke_width, 0,
          "represents stroke width of the object",
          NULL},
         // TODO: Crashes
@@ -258,6 +260,12 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"tolerance", '\0', POPT_ARG_DOUBLE, &opt->tolerance, 0,
          "Sets tesselation tolerance value for cairo",
+         NULL},
+        {"canvas_width", 'w', POPT_ARG_INT, &opt->canvas_width, 0,
+         "Width of canvas used for each test case (defaults to 800)",
+         NULL},
+        {"canvas_height", 'h', POPT_ARG_INT, &opt->canvas_height, 0,
+         "Height of canvas used for each test case (defaults to 400)",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -508,6 +516,11 @@ main (int argc, char *argv[])
         }
 
         context_init(&context, opt.size);
+        if(opt.canvas_width)
+            context.canvas_width = opt.canvas_width;
+        if(opt.canvas_height)
+            context.canvas_height = opt.canvas_height;
+
         shape_defaults_init(&context.shape_defaults, &opt);
         result_init(&result, perf_tests[c].name);
         config.width = context.canvas_width;

@@ -106,6 +106,7 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
     path.moveTo(args->x, args->y + 2*args->radius);
     path.rLineTo(2*args->radius, 0);
     path.rLineTo(-args->radius, -2*args->radius);
+    path.close();
 
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 
@@ -124,6 +125,7 @@ void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
         py = args->y + 2*args->radius * star_points[p][1]/200.0;
         path.lineTo(px, py);
     }
+    path.close();
 
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 }
@@ -131,8 +133,7 @@ void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 {
     SkRect rect;
-    rect.set(args->x, args->y, args->width, args->height);
-
+    rect.set(args->x, args->y, args->x + args->width, args->y + args->height);
     ctx->skia_canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->skia_paint));
 }
 
@@ -151,22 +152,6 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
     // Shape Type
     if (shape->shape_type == CB_SHAPE_NONE)
         shape->shape_type = generate_random_shape();
-
-    // Stroke styles
-    if (shape->stroke_width)
-    {
-        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-        ctx->skia_paint->setStrokeWidth(shape->stroke_width);
-        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape->join_style);
-        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape->cap_style);
-        if (shape->dash_style == 0)
-        {
-            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
-            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(pE);
-        }
-    }
 
     // Options for fill, gradient and transparency
     SkShader* shader = NULL;
@@ -199,7 +184,36 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         ctx->skia_paint->setShader (shader);
 
     // Draw
-    skiaShapes[shape->shape_type] (ctx, shape);
+    ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+    skiaShapes[shape->shape_type-1] (ctx, shape);
+
+    // Stroke styles
+    if (shape->stroke_width)
+    {
+        ctx->skia_paint->setShader (NULL);
+        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+        ctx->skia_paint->setStrokeWidth(shape->stroke_width);
+        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape->join_style);
+        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape->cap_style);
+        if (shape->dash_style == 0)
+        {
+            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
+            ctx->skia_paint->setPathEffect(NULL);
+            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
+            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0))->unref();
+        }
+        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+        SkColor color;
+        if (shape->stroke_red > 0 || shape->stroke_blue > 0 || shape->stroke_green > 0) {
+            color = SkColorSetRGB(255.0*(shape->stroke_red ? shape->stroke_red : 0.0),
+                    255.0*(shape->stroke_green ? shape->stroke_green : 0.0),
+                    255.0*(shape->stroke_blue ? shape->stroke_blue : 0.0) );
+        } else {
+            color = skiaRandomColor();
+        }
+        ctx->skia_paint->setColor(color);
+        skiaShapes[shape->shape_type-1] (ctx, shape);
+    }
 
     // Cleanup
     ctx->skia_canvas->flush();

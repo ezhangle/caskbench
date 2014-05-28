@@ -70,6 +70,7 @@ typedef struct _caskbench_options {
     int dash_style;
     char* seed_value;
     char* tests;
+    unsigned int enable_output_images;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -250,6 +251,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"tests", 'T', POPT_ARG_STRING, &opt->tests, 0,
          "Controls list of tests to run eg. -T \"bubbles roundrect ...\" " ,
+         NULL},
+        {"enable-output-images", '\0', POPT_ARG_NONE, &opt->enable_output_images, 0,
+         "Generate image PNG files displaying the final rendering frame from each test run.",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -560,7 +564,7 @@ main (int argc, char *argv[])
         result.avg_frames_per_second = (result.avg_frames_per_second<9999) ? result.avg_frames_per_second:9999;
 
         // Write image to file
-        if (perf_tests[c].write_image) {
+        if (opt.enable_output_images && perf_tests[c].write_image) {
             snprintf(fname, sizeof(fname), "%s.png", perf_tests[c].name);
             perf_tests[c].write_image (fname, &context);
         }

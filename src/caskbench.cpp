@@ -71,6 +71,7 @@ typedef struct _caskbench_options {
     char* seed_value;
     char* tests;
     unsigned int enable_output_images;
+    double tolerance;
 } caskbench_options_t;
 
 typedef struct _caskbench_result {
@@ -254,6 +255,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"enable-output-images", '\0', POPT_ARG_NONE, &opt->enable_output_images, 0,
          "Generate image PNG files displaying the final rendering frame from each test run.",
+         NULL},
+        {"tolerance", '\0', POPT_ARG_DOUBLE, &opt->tolerance, 0,
+         "Sets tesselation tolerance value for cairo",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -509,6 +513,9 @@ main (int argc, char *argv[])
         config.width = context.canvas_width;
         config.height = context.canvas_height;
         config.surface_type = opt.surface_type;
+   
+        if(opt.tolerance)
+           context.tolerance = opt.tolerance;
 
         perf_tests[c].context_setup(&context, config);
 

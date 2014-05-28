@@ -513,7 +513,7 @@ main (int argc, char *argv[])
         config.width = context.canvas_width;
         config.height = context.canvas_height;
         config.surface_type = opt.surface_type;
-   
+
         if(opt.tolerance)
            context.tolerance = opt.tolerance;
 
@@ -578,7 +578,7 @@ main (int argc, char *argv[])
 
     FINAL:
         /* Removed min_run_time, avg_run_time to avoid confusion as min/max/avg run times are captured in json output */
-        printf("%-20s %-4d   %s  %d  %-4.0f",
+        printf("%-20s %-4d   %s  %d  %4.0f",
                result.test_case_name,
                result.size,
                _status_to_string(result.status),

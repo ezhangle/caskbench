@@ -54,6 +54,10 @@ sk_test_fill(caskbench_context_t *ctx)
         if (!shape.radius)
             shape.radius = 40;
 
+        /* Height is used for creating patterns, needs to be updated for star and triangle */
+        if (shape.shape_type == CB_SHAPE_STAR || shape.shape_type == CB_SHAPE_TRIANGLE)
+            shape.height = 2*shape.radius;
+
         /* Use rectangle as default shape */
         shape.shape_type = shape.shape_type ? shape.shape_type:CB_SHAPE_RECTANGLE;
         skiaDrawRandomizedShape(ctx, &shape);

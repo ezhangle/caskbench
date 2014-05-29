@@ -46,12 +46,12 @@ Caskbench builds to a single executable which you can run directly
   skia-bubbles         64     PASS  10  311.93  62.94%
   ...
 
-The testing will alternate between cairo and skia versions of each
-test.  The second column indicates the test size, the fourth column is
-the number of iterations.  If the third column shows anything other than
-a pass, something's seriously wrong.  The fifth column is the minimum
-run time, and sixth is an average.  The last column calculates the
-percent difference that skia is faster than cairo on average.
+The testing will alternate between cairo and skia versions of each test.
+The second column indicates the test size, the fourth column is the
+number of iterations.  If the third column shows anything other than a
+pass, something's seriously wrong.  The fifth column is the minimum run
+time, and sixth is an average.  The last column calculates the percent
+difference that skia is faster than cairo on average.
 
 For hardware acceleration, specify the surface type to use (e.g. glx or
 egl) via the -t parameter.

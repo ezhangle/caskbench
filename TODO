@@ -2,3 +2,7 @@
  * Add support for comparing with OpenVG
  * Add support for comparing with fog - http://code.google.com/p/fog/
  * Add support for comparing with Azure
+ * Add xcb backend
+   + http://lists.cairographics.org/archives/cairo/2008-June/014334.html
+   + http://marc.info/?l=cairo&m=121114572422121
+   + http://xcb.freedesktop.org/tutorial/

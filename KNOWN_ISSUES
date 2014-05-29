@@ -11,9 +11,3 @@
 
 * The text test case can consume excessive amounts of memory on
   large sized runs, triggering the oom killer.  Use it only on lower
-
-* The new animation option is included for experimentation but has not
-  been widely tested.  When given large values it can severely affect
-  performance of some tests.
-
-

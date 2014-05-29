@@ -80,7 +80,8 @@ skiaCreateBitmapShader(const char *image_path)
                                         SkShader::kClamp_TileMode);
 }
 
-void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
+void
+skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
     ctx->skia_canvas->drawCircle(args->x + args->radius,
                                  args->y + args->radius,
@@ -88,7 +89,8 @@ void skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
                                  *(ctx->skia_paint));
 }
 
-void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
+void
+skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 {
     SkRect r;
     r.set(args->x, args->y,
@@ -96,7 +98,8 @@ void skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
     ctx->skia_canvas->drawRect(r, *(ctx->skia_paint));
 }
 
-void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
+void
+skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 {
     SkPath path;
 
@@ -113,7 +116,8 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
     ctx->skia_paint->setAntiAlias(true);
 }
 
-void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
+void
+skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 {
     int px = args->x + 2*args->radius * star_points[0][0]/200.0;
     int py = args->y + 2*args->radius * star_points[0][1]/200.0;
@@ -130,7 +134,8 @@ void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 }
 
-void skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
+void
+skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 {
     SkRect rect;
     rect.set(args->x, args->y, args->x + args->width, args->y + args->height);

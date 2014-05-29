@@ -182,12 +182,12 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
 
     if (pattern)
         cairo_set_source (ctx->cairo_cr, pattern);
- 
+
      // Draw
     cairoShapes[shape->shape_type-1] (ctx, shape);
     new_path = cairo_copy_path(ctx->cairo_cr);
     cairo_fill (ctx->cairo_cr);
-    
+
     // Stroke styles
     if (shape->stroke_width)
     {

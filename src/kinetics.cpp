@@ -30,7 +30,7 @@ kinetics_init (kinetics_t *kinetics)
     kinetics->velocity = MAX_VELOCITY / 8.0 * 7 * drand48 () + MAX_VELOCITY / 8.0;
     kinetics->x = WIDTH / 2;
     kinetics->y = HEIGHT / 2;
-    
+
     kinetics->x_radius = drand48 () * 10 + 5;
     kinetics->y_radius = drand48 () * 10 + 5;
     kinetics->width = drand48 () * 120 + 30;

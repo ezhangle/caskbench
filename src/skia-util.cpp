@@ -33,7 +33,7 @@ write_image_file_skia (const char *fname, caskbench_context_t *context)
         warnx("Could not read pixels from skia device\n");
         return;
     }
-    SkImageEncoder::EncodeFile(path.c_str(), bitmap, SkImageEncoder::kPNG_Type, 0);    
+    SkImageEncoder::EncodeFile(path.c_str(), bitmap, SkImageEncoder::kPNG_Type, 0);
 }
 
 /*

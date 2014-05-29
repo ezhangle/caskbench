@@ -463,9 +463,9 @@ main (int argc, char *argv[])
     }
     memset (user_test_ids, -1, sizeof(user_test_ids));
     populate_user_tests (opt.tests, num_user_tests, user_test_ids);
-    num_tests = num_user_tests?num_user_tests:num_perf_tests;
+    num_tests = num_user_tests ? num_user_tests : num_perf_tests;
     for(int s = 0; s < num_tests; s++) {
-        c = num_user_tests ? user_test_ids[s]:s;
+        c = num_user_tests ? user_test_ids[s] : s;
         caskbench_context_t context;
         caskbench_result_t result;
 
@@ -480,13 +480,9 @@ main (int argc, char *argv[])
             continue;
 
         if(opt.seed_value == NULL)
-        {
             srand (0xdeadbeef);
-        }
         else
-        {
             srand (strtoul(opt.seed_value,&end_ptr,16));
-        }
 
         context_init(&context, opt.size);
         if(opt.canvas_width)
@@ -563,7 +559,6 @@ main (int argc, char *argv[])
         }
 
     FINAL:
-        /* Removed min_run_time, avg_run_time to avoid confusion as min/max/avg run times are captured in json output */
         printf("%-20s %-4d   %s  %d  %4.0f",
                result.test_case_name,
                result.size,

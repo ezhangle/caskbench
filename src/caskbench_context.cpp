@@ -1,3 +1,10 @@
+/*
+ * Copyright 2014 © Samsung Research America, Silicon Valley
+ *
+ * Use of this source code is governed by the 3-Clause BSD license
+ * specified in the COPYING file included with this source code.
+ */
+
 #include <config.h>
 #include <assert.h>
 #include <err.h>
@@ -19,7 +26,7 @@ void
 context_init(caskbench_context_t *context, int size)
 {
     assert(context);
-    assert(size > 0); 
+    assert(size > 0);
 
     context->size = size;
     context->canvas_width = 800;
@@ -163,4 +170,3 @@ context_destroy_skia(caskbench_context_t *context)
     context->skia_device = NULL;
 }
 #endif
-

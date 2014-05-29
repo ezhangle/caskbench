@@ -1,8 +1,14 @@
+/*
+ * Copyright 2014 © Samsung Research America, Silicon Valley
+ *
+ * Use of this source code is governed by the 3-Clause BSD license
+ * specified in the COPYING file included with this source code.
+ */
 #ifndef __CASKBENCH_CONTEXT_H__    // -*- mode: c++ -*-
 #define __CASKBENCH_CONTEXT_H__
+
 #include "shapes.h"
 #include "forward.h"
-#include "device_config.h"
 
 typedef struct _caskbench_context {
     int              size;

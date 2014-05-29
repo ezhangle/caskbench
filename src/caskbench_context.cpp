@@ -6,9 +6,9 @@
  */
 
 #include <config.h>
+
 #include <assert.h>
 #include <err.h>
-#include "caskbench_context.h"
 
 #include <cairo.h>
 #ifdef HAVE_CAIRO_GL_H
@@ -21,6 +21,9 @@
 #  include <SkPaint.h>
 #  include <SkCanvas.h>
 #endif
+
+#include "caskbench_context.h"
+#include "device_config.h"
 
 void
 context_init(caskbench_context_t *context, int size)

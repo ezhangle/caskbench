@@ -25,7 +25,7 @@ int star_points[11][2] = {
 void
 shape_init(shapes_t *shape)
 {
-    memset(shape, 0, sizeof(shape));
+    memset(shape, 0, sizeof(shapes_t));
 }
 
 void

@@ -7,6 +7,8 @@
 #ifndef __SKIA_SHAPES_H_
 #define __SKIA_SHAPES_H_
 
+#include <SkColor.h>
+
 #include "forward.h"
 #include "shapes.h"
 

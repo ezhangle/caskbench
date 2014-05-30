@@ -13,6 +13,7 @@
 #include <SkRect.h>
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "skia-shapes.h"
 
 int

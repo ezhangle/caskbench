@@ -10,6 +10,7 @@
 #include <SkPaint.h>
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "skia-shapes.h"
 
 static SkRect r;

@@ -11,6 +11,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 
 static cairo_surface_t *image;
 

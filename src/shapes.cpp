@@ -8,6 +8,55 @@
 
 #include "shapes.h"
 
+const char *gFillTypes[] = {
+    "none",
+    "solid",
+    "linear-gradient",
+    "radial-gradient",
+    "image-pattern",
+    "herringbone-pattern",
+    NULL
+};
+
+fill_type_t
+convertToFillType(const char *fill_name)
+{
+    int i =0;
+    if (fill_name == NULL)
+        return (fill_type_t) 0;
+    while (gFillTypes[i] != NULL) {
+        if (strcmp(gFillTypes[i], fill_name) == 0)
+            return (fill_type_t) i ;
+        i++;
+    }
+    return (fill_type_t) 0;
+}
+
+
+const char *gShapes[] = {
+    "circle",
+    "rectangle",
+    "triangle",
+    "star",
+    "roundedrectangle",
+    NULL
+};
+
+shape_type_t
+convertToShapeType(const char* shape_name)
+{
+    int i =0;
+    if (shape_name == NULL)
+        return (shape_type_t) 0;
+    while (gShapes[i] != NULL) {
+        if (strcmp(gShapes[i], shape_name) == 0)
+            return (shape_type_t)(i + 1);
+        i++;
+    }
+    return (shape_type_t) 0;
+}
+
+
 int star_points[11][2] = {
     { 0, 85 },
     { 75, 75 },

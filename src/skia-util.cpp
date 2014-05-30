@@ -14,7 +14,7 @@
 #include <SkString.h>
 
 #include "caskbench.h"
-
+#include "caskbench_context.h"
 
 void
 write_image_file_skia (const char *fname, caskbench_context_t *context)

@@ -14,9 +14,17 @@
 
 #include "forward.h"
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "skia-shapes.h"
 
 SkAutoTUnref<SkPathEffect> pE;
+
+#ifndef SkToS32
+int32_t SkToS32(intmax_t x) { return (int32_t)x; }
+#endif
+
+bool gPrintInstCount = false;
+
 
 SkColor
 skiaRandomColor()

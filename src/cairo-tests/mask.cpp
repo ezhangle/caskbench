@@ -14,6 +14,7 @@
 #endif
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "cairo-shapes.h"
 
 static cairo_pattern_t *mask;

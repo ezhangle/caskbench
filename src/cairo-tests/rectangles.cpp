@@ -12,6 +12,7 @@
 #include <cairo.h>
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "cairo-shapes.h"
 
 int

@@ -14,6 +14,7 @@
 
 #include "kinetics.h"
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "skia-shapes.h"
 
 static kinetics_t *particles;

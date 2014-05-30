@@ -8,34 +8,18 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include <string.h>
 #include <assert.h>
 #include <sys/time.h>
 #include <popt.h>
 #include <err.h>
 
-#include <cairo.h>
-#ifdef HAVE_CAIRO_GL_H
-#  include <cairo-gl.h>
-#endif
-
-#ifdef USE_SKIA
-#  include <SkBitmap.h>
-#  include <SkBitmapDevice.h>
-#  include <SkPaint.h>
-#  include <SkCanvas.h>
-#endif
-
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "caskbench_result.h"
 #include "device_config.h"
 #include "tests.h"
-
-#ifndef SkToS32
-int32_t SkToS32(intmax_t x) { return (int32_t)x; }
-#endif
-
-bool gPrintInstCount = false;
 
 typedef struct _caskbench_options {
     int dry_run;
@@ -76,25 +60,6 @@ typedef struct _caskbench_options {
     int canvas_width;
     int canvas_height;
 } caskbench_options_t;
-
-const char *gShapes[] = {
-    "circle",
-    "rectangle",
-    "triangle",
-    "star",
-    "roundedrectangle",
-    NULL
-};
-
-const char *gFillTypes[] = {
-    "none",
-    "solid",
-    "linear-gradient",
-    "radial-gradient",
-    "image-pattern",
-    "herringbone-pattern",
-    NULL
-};
 
 typedef enum {
     CB_STATUS_PASS,
@@ -296,34 +261,6 @@ get_tick (void)
     struct timeval now;
     gettimeofday (&now, NULL);
     return (double)now.tv_sec + (double)now.tv_usec / 1000000.0;
-}
-
-shape_type_t
-convertToShapeType(const char* shape_name)
-{
-    int i =0;
-    if (shape_name == NULL)
-        return (shape_type_t) 0;
-    while (gShapes[i] != NULL) {
-        if (strcmp(gShapes[i], shape_name) == 0)
-            return (shape_type_t)(i + 1);
-        i++;
-    }
-    return (shape_type_t) 0;
-}
-
-fill_type_t
-convertToFillType(const char *fill_name)
-{
-    int i =0;
-    if (fill_name == NULL)
-        return (fill_type_t) 0;
-    while (gFillTypes[i] != NULL) {
-        if (strcmp(gFillTypes[i], fill_name) == 0)
-            return (fill_type_t) i ;
-        i++;
-    }
-    return (fill_type_t) 0;
 }
 
 void

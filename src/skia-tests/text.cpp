@@ -22,6 +22,7 @@
 #include <SkGraphics.h>
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "skia-shapes.h"
 
 static int max_dim;

@@ -12,6 +12,7 @@
 #include <math.h>
 
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "cairo-shapes.h"
 #include "kinetics.h"
 

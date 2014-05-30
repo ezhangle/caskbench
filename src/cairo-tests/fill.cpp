@@ -5,8 +5,10 @@
  * specified in the COPYING file included with this source code.
  */
 #include <config.h>
+
 #include "forward.h"
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "cairo-shapes.h"
 
 static int element_spacing;

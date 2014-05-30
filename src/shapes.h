@@ -17,6 +17,9 @@ typedef enum {
     CB_FILL_HERRINGBONE_PATTERN
 } fill_type_t;
 
+fill_type_t
+convertToFillType(const char *fill_name);
+
 typedef enum {
     CB_SHAPE_NONE,
     CB_SHAPE_CIRCLE,
@@ -26,6 +29,9 @@ typedef enum {
     CB_SHAPE_ROUNDED_RECTANGLE,
     CB_SHAPE_END
 } shape_type_t;
+
+shape_type_t
+convertToShapeType(const char* shape_name);
 
 typedef struct shapes
 {

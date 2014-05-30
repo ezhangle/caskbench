@@ -10,7 +10,9 @@
 #include <assert.h>
 #include <cairo.h>
 
+#include "forward.h"
 #include "caskbench.h"
+#include "caskbench_context.h"
 
 void
 write_image_file_cairo (const char *fname, caskbench_context_t *context)

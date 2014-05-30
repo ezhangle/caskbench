@@ -13,6 +13,7 @@
 
 #include "forward.h"
 #include "caskbench.h"
+#include "caskbench_context.h"
 #include "cairo-shapes.h"
 
 cairo_pattern_t*

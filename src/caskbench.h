@@ -27,7 +27,6 @@
 # define MAX_BUFFER 256
 #endif
 
-#include "caskbench_context.h"
 // Framework
 double get_tick (void);
 void   display_results_json(int iterations, int status);

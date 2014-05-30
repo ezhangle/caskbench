@@ -12,14 +12,38 @@
 #include <SkBitmapDevice.h>
 
 #include "image.h"
-#include "device_config.h"
 
 static image_state_t *state;
+SkBitmap skia_bitmap;
+
+static bool convertBitmapToXImage(const SkBitmap& bitmap) {
+    sk_bzero(&state->image, sizeof(state->image));
+
+    int bitsPerPixel = bitmap.bytesPerPixel() * 8;
+    state->image.width = bitmap.width();
+    state->image.height = bitmap.height();
+    state->image.format = ZPixmap;
+    state->image.data = (char*) bitmap.getPixels();
+    state->image.byte_order = LSBFirst;
+    state->image.bitmap_unit = 4 * 8;
+    state->image.bitmap_bit_order = LSBFirst;
+    state->image.bitmap_pad = 4 * 8;
+    state->image.depth = 32;
+    state->image.bytes_per_line = bitmap.width() * 4;
+    state->image.bits_per_pixel = 4 * 8;
+    return XInitImage(&state->image);
+}
+
 
 SkBaseDevice *
 create_skia_device_image (const device_config_t& config)
 {
-    SkBitmap skia_bitmap;
+    state = (image_state_t*) malloc (sizeof (image_state_t));
+    if (!state) {
+        warnx ("Out of memory\n");
+        return NULL;
+    }
+
     if (!skia_bitmap.setConfig(SkBitmap::kARGB_8888_Config,
                                config.width, config.height)) {
         warnx("Failed to configure bitmap\n");
@@ -32,18 +56,28 @@ create_skia_device_image (const device_config_t& config)
         warnx("Failed to allocate pixels\n");
         return NULL;
     }
+
+    if (!createImageWindow(state, config)) {
+        cleanup_state_image(state);
+        return NULL;
+    }
+
     return new SkBitmapDevice (skia_bitmap);
 }
 
 void
 destroy_skia_image(void)
 {
+    destroyImageWindow(state);
     cleanup_state_image(state);
 }
 
 void
 update_skia_image(void)
 {
+    if (convertBitmapToXImage (skia_bitmap)) {
+        updateImageWindow(state);
+    }
 }
 
 /*

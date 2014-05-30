@@ -8,13 +8,22 @@
 #define __EGL_H__
 
 #include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <device_config.h>
 
 typedef struct {
     Display   *dpy;
     Window     window;
+    GC gc;
+    XImage image;
+    int width;
+    int height;
 } image_state_t;
 
 void cleanup_state_image(void *data);
+bool createImageWindow(image_state_t *state, const device_config_t& device_config);
+void destroyImageWindow(image_state_t *state);
+void updateImageWindow(image_state_t *state);
 
 #endif // __EGL_H__
 /*

@@ -155,11 +155,16 @@ cairoDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
     double x = args->x;
     double y = args->y;
     double r = 4.0; /* To make the output in sync with skia */
+
+#if USE_CAIROGLES
+    cairo_rounded_rectangle (cr, x, y, w, h, r, r, r, r);
+#else
     cairo_move_to (ctx->cairo_cr, x + r, y);
     cairo_arc (ctx->cairo_cr, x + w - r, y + r,     r, M_PI + M_PI / 2, M_PI * 2        );
     cairo_arc (ctx->cairo_cr, x + w - r, y + h - r, r, 0,               M_PI / 2        );
     cairo_arc (ctx->cairo_cr, x + r,     y + h - r, r, M_PI/2,          M_PI            );
     cairo_arc (ctx->cairo_cr, x + r,     y + r,     r, M_PI,            270 * M_PI / 180);
+#endif
 }
 
 

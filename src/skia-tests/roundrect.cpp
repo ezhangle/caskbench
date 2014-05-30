@@ -34,22 +34,27 @@ sk_test_roundrect(caskbench_context_t *ctx)
 {
     int i;
     double line_width, x, y, radius;
-    SkRect rect;
 
     for (i=0; i<ctx->size; i++) {
+        shapes_t shape;
+        shape_copy(&ctx->shape_defaults, &shape);
+
         skiaRandomizePaintColor(ctx);
 
-        x = trunc( (((double)ctx->canvas_width-20)*rand())/RAND_MAX ) + 10;
-        y = trunc( (((double)ctx->canvas_height-20)*rand())/RAND_MAX ) + 10;
-        rect.set(x, y, x+100, y+40);
+        shape.x = trunc( (((double)ctx->canvas_width-20)*rand())/RAND_MAX ) + 10;
+        shape.y = trunc( (((double)ctx->canvas_height-20)*rand())/RAND_MAX ) + 10;
 
         /* vary radius upto half of MIN(X,Y) */
-        radius = (double)rand()/RAND_MAX * 20;
+        shape.radius = (double)rand()/RAND_MAX * 20;
+        shape.width = 100;
+        shape.height = 40;
 
         /* line_width cannot be more than twice of radius due to skia limitation - Issue #4 in skia https://github.com/Samsung/skia/issues/4 */
-        line_width = (double)rand()/RAND_MAX * (2*radius);
-        ctx->skia_paint->setStrokeWidth(line_width);
-        ctx->skia_canvas->drawRoundRect(rect, radius, radius, *(ctx->skia_paint));
+        shape.stroke_width = (double)rand()/RAND_MAX * (2*shape.radius);
+
+        ctx->skia_paint->setStrokeWidth(shape.stroke_width);
+
+        skiaDrawRoundedRectangle (ctx, &shape);
     }
 
     return 1;

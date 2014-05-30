@@ -49,21 +49,25 @@ ca_test_roundrect(caskbench_context_t *ctx)
     cairo_t *cr = ctx->cairo_cr;
 
     for (i=0; i<ctx->size; i++) {
+        shapes_t shape;
+        shape_copy(&ctx->shape_defaults, &shape);
+
         cairoRandomizeColor(ctx);
 
-        x = 10 + trunc( (((double)ctx->canvas_width-20.0)*rand())/RAND_MAX );
-        y = 10 + trunc( (((double)ctx->canvas_height-20.0)*rand())/RAND_MAX );
+        shape.x = 10 + trunc( (((double)ctx->canvas_width-20.0)*rand())/RAND_MAX );
+        shape.y = 10 + trunc( (((double)ctx->canvas_height-20.0)*rand())/RAND_MAX );
 
         /* vary radius upto half of MIN(X,Y) */
-        radius = (double)rand()/RAND_MAX * 20;
-#if USE_CAIROGLES
-        cairo_rounded_rectangle (cr, x, y, 100, 40, radius, radius, radius, radius);
-#else
-        rounded_rectangle (cr, x, y, 100, 40, radius);
-#endif
+        shape.radius = (double)rand()/RAND_MAX * 20;
+        shape.width = 100;
+        shape.height = 40;
+
         /* line_width cannot be more than twice of radius due to skia limitation - Issue #4 in skia https://github.com/Samsung/skia/issues/4 */
-        line_width = (double)rand()/RAND_MAX * (2*radius);
-        cairo_set_line_width (cr, line_width);
+        shape.stroke_width = (double)rand()/RAND_MAX * (2*radius);
+
+        cairoDrawRoundedRectangle(ctx, &shape);
+
+        cairo_set_line_width (cr, shape.stroke_width);
 
         cairo_stroke (cr);
     }

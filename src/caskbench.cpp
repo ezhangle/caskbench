@@ -223,8 +223,8 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
 
     // Initialize options
     memset (opt, 0, sizeof(caskbench_options_t));
-    opt->iterations = 10;
-    opt->size = 64;
+    opt->iterations = 100;
+    opt->size = 100;
 
     // Process the command line
     pc = poptGetContext(NULL, argc, (const char **)argv, po, 0);

@@ -30,7 +30,7 @@ typedef struct _caskbench_options {
     int size;
     int version;
 
-    unsigned int enable_egl_sample_buffers;
+    unsigned int disable_egl_sample_buffers;
     char* shape_name;
     int x_position;
     int y_position;
@@ -132,8 +132,8 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"version", 'V', POPT_ARG_NONE, &opt->version, 0,
          "Display the program version",
          NULL},
-        {"enable-egl-sample-buffers", '\0', POPT_ARG_NONE, &opt->enable_egl_sample_buffers, 0,
-         "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list",
+        {"disable-egl-sample-buffers", '\0', POPT_ARG_NONE, &opt->disable_egl_sample_buffers, 0,
+         "Sets EGL_SAMPLES=4 and EGL_SAMPLE_BUFFERS=1 in the EGL attribute list by default unless otherwise specified by disable-egl-sample-buffers",
          NULL},
         {"shape", 'S', POPT_ARG_STRING, &opt->shape_name, 0,
          "Controls which shape to be drawn ",
@@ -380,6 +380,7 @@ main (int argc, char *argv[])
     device_config_t config;
     int foo;
 
+    setenv("CAIRO_GL_COMPOSITOR", "msaa", 1);
     process_options(&opt, argc, argv);
     double run_time_values[opt.iterations];
 
@@ -398,7 +399,7 @@ main (int argc, char *argv[])
         fp = fopen(opt.output_file, "w");
         fprintf(fp, "[\n");
     }
-    if (opt.enable_egl_sample_buffers) {
+    if (!opt.disable_egl_sample_buffers) {
         config.egl_samples = 4;
         config.egl_sample_buffers = 1;
     }

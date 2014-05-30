@@ -27,7 +27,6 @@ static int line_length;
 
 static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *particles=NULL)
 {
-    cairo_t *cr = ctx->cairo_cr;
     int old_x, old_y;
     int i, p;
     double r;

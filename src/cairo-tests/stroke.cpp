@@ -44,7 +44,6 @@ ca_teardown_stroke(void)
 
 static void drawShape(caskbench_context_t *ctx,double x,double y)
 {
-    cairo_t *cr = ctx->cairo_cr;
     int i, r, p;
     shape_type_t shape;
     r = 0.9 * element_spacing /2;
@@ -119,7 +118,6 @@ ca_test_stroke(caskbench_context_t *ctx)
         int i,j;
         for (i = 0; i < num_particles; i++)
             kinetics_init (&particles[i]);
-        delta = 0;
 
         for (j=0;j<num_particles;j++){
             cairo_set_source_rgb (cr, 1, 1, 1);

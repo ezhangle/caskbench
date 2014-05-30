@@ -62,12 +62,11 @@ sk_test_clip(caskbench_context_t *ctx)
     if(ctx->shape_defaults.animation)
     {
         int num_particles = ctx->shape_defaults.animation;
-        double start_frame, stop_frame, delta;
+        double start_frame, stop_frame;
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         int i,j ;
         for (i = 0; i < num_particles; i++)
             kinetics_init (&particles[i]);
-        delta = 0;
 
         for (j=0;j<num_particles;j++){
             ctx->skia_canvas->drawColor(SK_ColorBLACK);

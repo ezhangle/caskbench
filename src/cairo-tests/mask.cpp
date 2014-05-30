@@ -40,6 +40,9 @@ ca_setup_mask(caskbench_context_t *ctx)
     } else if (cairo_surface_get_type (ctx->cairo_surface) == CAIRO_SURFACE_TYPE_GL) {
         /* create a gl surface the same size as image surface */
         cairo_surface = cairo_gl_surface_create (cairo_device, CAIRO_CONTENT_COLOR_ALPHA, 2, 2);
+    } else {
+        /* unrecognized surface type */
+        return 0;
     }
 
     cairo_t *gl_ctx = cairo_create (cairo_surface);

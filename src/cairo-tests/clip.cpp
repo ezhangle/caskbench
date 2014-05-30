@@ -39,7 +39,6 @@ ca_teardown_clip(void)
 void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool isClip=false)
 {
 
-    cairo_t *cr = ctx->cairo_cr;
     int i, r, p;
     shape_type_t shape;
     r = 0.9 * element_spacing /2;
@@ -92,18 +91,17 @@ ca_test_clip(caskbench_context_t *ctx)
         int i,j ;
         for (i = 0; i < num_particles; i++)
             kinetics_init (&particles[i]);
-           delta = 0;
 
-           for (j=0;j<num_particles;j++){
-               cairo_set_source_rgb (cr, 1, 1, 1);
-               cairo_rectangle (cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
-               cairo_fill (cr);
+        for (j=0;j<num_particles;j++){
+            cairo_set_source_rgb (cr, 1, 1, 1);
+            cairo_rectangle (cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
+            cairo_fill (cr);
 
-               for (i = 0; i < num_particles; i++) {
-                   kinetics_update(&particles[i], 0.1);
-                   drawClip(ctx,&particles[i]);
-               }
-           }
+            for (i = 0; i < num_particles; i++) {
+                kinetics_update(&particles[i], 0.1);
+                drawClip(ctx,&particles[i]);
+            }
+        }
 
     }
     else

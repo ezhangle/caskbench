@@ -54,8 +54,6 @@ cairoCreateBitmapPattern (const char *image_path)
     cairo_surface_t *image = NULL;
     cairo_pattern_t *pattern;
     image = cairo_image_surface_create_from_png (image_path);
-    int w = cairo_image_surface_get_width (image);
-    int h = cairo_image_surface_get_height (image);
     pattern = cairo_pattern_create_for_surface (image);
     return pattern;
 }

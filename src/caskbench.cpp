@@ -434,10 +434,10 @@ main (int argc, char *argv[])
     caskbench_options_t opt;
     double start_time, stop_time, run_time, run_total;
     double cairo_avg_time = 0.0;
-    double perf_improvement = 0.0;
-    FILE *fp;
+    FILE *fp = NULL;
     char fname[256], *end_ptr;
     device_config_t config;
+    int foo;
 
     process_options(&opt, argc, argv);
     double run_time_values[opt.iterations];
@@ -567,16 +567,15 @@ main (int argc, char *argv[])
                result.avg_frames_per_second);
 
         if (result.test_case_name[0] == 'c') {
-            perf_improvement = 0.0;
             cairo_avg_time = result.avg_run_time;
         } else {
-            perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
-            cairo_avg_time = 0.0;
+            double perf_improvement = perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
             printf("  %4.2f%%", perf_improvement * 100.0);
+            cairo_avg_time = 0.0;
         }
         printf("\n");
 
-        if (opt.output_file) {
+        if (fp != NULL) {
             fprintf(fp, "   {\n");
             fprintf(fp, "       \"test case\": \"%s\",\n", result.test_case_name);
             fprintf(fp, "       \"size\": \"%d\",\n", result.size);

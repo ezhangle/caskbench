@@ -31,12 +31,12 @@ typedef struct _caskbench_options {
     int version;
 
     unsigned int enable_egl_sample_buffers;
-    char* shape_name;
+    char *shape_name;
     int x_position;
     int y_position;
     int width;
     int height;
-    char* fill_type;
+    char *fill_type;
     double red;
     double green;
     double blue;
@@ -53,12 +53,13 @@ typedef struct _caskbench_options {
     int cap_style;
     int join_style;
     int dash_style;
-    char* seed_value;
-    char* tests;
+    char *seed_value;
     unsigned int enable_output_images;
     double tolerance;
     int canvas_width;
     int canvas_height;
+
+    const char **tests;
 } caskbench_options_t;
 
 typedef enum {
@@ -205,9 +206,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"seed-value", 'r', POPT_ARG_STRING, &opt->seed_value, 0,
          "Represents seed value for Random Number generater eg. -r ABCDEFFF",
          NULL},
-        {"tests", 'T', POPT_ARG_STRING, &opt->tests, 0,
-         "Controls list of tests to run eg. -T \"bubbles roundrect ...\" " ,
-         NULL},
         {"enable-output-images", '\0', POPT_ARG_NONE, &opt->enable_output_images, 0,
          "Generate image PNG files displaying the final rendering frame from each test run.",
          NULL},
@@ -252,7 +250,8 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
     }
 
     // Remaining args are the tests to be run, or all if this list is empty
-    //const char **tests = poptGetArgs(pc);
+    opt->tests = poptGetArgs(pc);
+
 }
 
 double
@@ -336,25 +335,17 @@ convertToTestId(const char* test_name)
     return -1;
 }
 
-void populate_user_tests (const char* input, int& num_tests, int* test_ids)
+void populate_user_tests (const char** tests, int& num_tests, int* test_ids)
 {
-    int i = 0, test_index = 0, k = 0, id = -1;
-    char temp[MAX_BUFFER];
-    if(input == NULL)
+    int i = 0, id = -1, test_index = 0;
+
+    if (tests == NULL)
         return;
-    for (i = 0; i <= strlen(input); i++) {
-        if ((input[i]!=' ') && (input[i]!='\0')) {
-            temp[k++] = input[i];
-            if (k >= MAX_BUFFER)
-                errx (0, "Please check test case name, it exceeds maximum buffer limit \n");
-            continue;
-        }
-        temp[k] = '\0';
-        k = 0;
-        /* Check whether the user specified test is present in performance test list */
-        id = convertToTestId (temp);
+    while (tests[i] != NULL) {
+        id = convertToTestId (tests[i]);
         if (id < 0)
             errx (0, "Incorrect test case, please check the test case provided as input \n");
+
         /* Add cairo test index to the test list */
         test_ids[test_index++] = id;
 #ifdef USE_SKIA
@@ -364,6 +355,7 @@ void populate_user_tests (const char* input, int& num_tests, int* test_ids)
 #else
         num_tests = num_tests + 1;
 #endif
+        i++;
     }
 }
 

@@ -71,7 +71,41 @@ cairoRandomizeColor(caskbench_context_t *ctx)
     cairo_set_source_rgba (ctx->cairo_cr, red, green, blue, alpha);
 }
 
-void cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args)
+void
+cairoDrawLine(caskbench_context_t *ctx, shapes_t *args)
+{
+    cairo_move_to (ctx->cairo_cr, args->x, args->y);
+    cairo_rel_line_to (ctx->cairo_cr, args->width, args->height);
+}
+
+void
+cairoDrawQuadraticCurve(caskbench_context_t *ctx, shapes_t *args)
+{
+    double qx1 = args->dx1 * 2.0 / 3.0;
+    double qy1 = args->dy1 * 2.0 / 3.0;
+
+    double qx2 = args->width - args->dx1 * 2.0 / 3.0;
+    double qy2 = args->height - args->dy1 * 2.0 / 3.0;
+
+    cairo_move_to (ctx->cairo_cr, args->x, args->y);
+    cairo_rel_curve_to (ctx->cairo_cr,
+                        qx1, qy1,
+                        qx2, qy2,
+                        args->width, args->height);
+}
+
+void
+cairoDrawCubicCurve(caskbench_context_t *ctx, shapes_t *args)
+{
+    cairo_move_to (ctx->cairo_cr, args->x, args->y);
+    cairo_rel_curve_to (ctx->cairo_cr,
+                        args->dx1, args->dy1,
+                        args->dx2, args->dy2,
+                        args->width, args->height);
+}
+
+void
+cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
     cairo_arc (ctx->cairo_cr,
                args->x + args->radius,

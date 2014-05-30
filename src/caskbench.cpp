@@ -331,6 +331,10 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
 {
     shape_defaults->x = opt->x_position;
     shape_defaults->y = opt->y_position;
+    shape_defaults->dx1 = 0;
+    shape_defaults->dy1 = 0;
+    shape_defaults->dx2 = 0;
+    shape_defaults->dy2 = 0;
     shape_defaults->width = opt->width;
     shape_defaults->height = opt->height;
     shape_defaults->shape_type = convertToShapeType(opt->shape_name);

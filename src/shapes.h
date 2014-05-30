@@ -34,6 +34,10 @@ typedef struct shapes
     double radius;
     double width;
     double height;
+    double dx1;
+    double dy1;
+    double dx2;
+    double dy2;
 
     shape_type_t shape_type;
     fill_type_t fill_type;

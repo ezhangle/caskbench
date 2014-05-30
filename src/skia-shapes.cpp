@@ -81,6 +81,42 @@ skiaCreateBitmapShader(const char *image_path)
 }
 
 void
+skiaDrawLine(caskbench_context_t *ctx, shapes_t *args)
+{
+    SkPath path;
+
+    path.moveTo(args->x, args->y);
+    path.rLineTo(args->width, args->height);
+
+    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
+}
+
+void
+skiaDrawQuadraticCurve(caskbench_context_t *ctx, shapes_t *args)
+{
+    SkPath path;
+
+    path.moveTo(args->x, args->y);
+    path.rQuadTo(args->dx1, args->dy1,
+                 args->width, args->height);
+
+    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
+}
+
+void
+skiaDrawCubicCurve(caskbench_context_t *ctx, shapes_t *args)
+{
+    SkPath path;
+
+    path.moveTo(args->x, args->y);
+    path.rCubicTo(args->dx1, args->dy1,
+                  args->dx2, args->dy2,
+                  args->width, args->height);
+
+    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
+}
+
+void
 skiaDrawCircle(caskbench_context_t *ctx, shapes_t *args)
 {
     ctx->skia_canvas->drawCircle(args->x + args->radius,

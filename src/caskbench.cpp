@@ -25,12 +25,12 @@ typedef struct _caskbench_options {
     int dry_run;
     int iterations;
     int list_surfaces;
-    char* output_file;
-    char* surface_type;
+    char *output_file;
+    char *surface_type;
     int size;
     int version;
     unsigned int disable_egl_sample_buffers;
-    char * shape_name;
+    char *shape_name;
     int x_position;
     int y_position;
     int width;
@@ -326,11 +326,13 @@ convertToTestId(const char* test_name)
     int j = 0;
     if (test_name == NULL)
         return -1;
+
     /* Checks whether the user provided test case is valid */
     for(j = 0; j < num_perf_tests; j++) {
         if (strstr (perf_tests[j].name, test_name))
             return j;
     }
+
     return -1;
 }
 

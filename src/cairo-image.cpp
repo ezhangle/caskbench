@@ -12,28 +12,42 @@
 
 #include "forward.h"
 #include "image.h"
-#include "device_config.h"
 
 static image_state_t *state;
+cairo_surface_t *cairo_surface;
+
+static int
+convert_cairo_surface_to_ximage (cairo_surface_t *surface)
+{
+    unsigned char *data = cairo_image_surface_get_data (surface);
+    state->image.width = cairo_image_surface_get_width (surface);
+    state->image.height = cairo_image_surface_get_height (surface);
+    state->image.format = ZPixmap;
+    state->image.data = (char*)data;
+    state->image.bitmap_unit = 4 * 8;
+    state->image.byte_order = LSBFirst;
+    state->image.bitmap_bit_order = LSBFirst;
+    state->image.bitmap_pad = 4 * 8;
+    state->image.depth = 32;
+    state->image.bytes_per_line = state->image.width * 4;
+    state->image.bits_per_pixel = 4 * 8;
+    Status status =  XInitImage (&state->image);
+    return status;
+}
 
 cairo_surface_t *
 create_cairo_surface_image (const device_config_t& config)
 {
-    cairo_surface_t *cairo_surface;
-
     state = (image_state_t*) malloc (sizeof (image_state_t));
     if (!state) {
         warnx ("Out of memory\n");
         return NULL;
     }
 
-    /*
-      state->dpy = XOpenDisplay (NULL);
-      if (state->dpy == NULL) {
-      warnx ("Failed to open display: %s\n", XDisplayName (0));
-      return NULL;
-      }
-    */
+    if (!createImageWindow(state, config)) {
+        cleanup_state_image(state);
+        return NULL;
+    }
 
     cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
                                                 config.width,
@@ -45,12 +59,16 @@ create_cairo_surface_image (const device_config_t& config)
 void
 destroy_cairo_image(void)
 {
+    destroyImageWindow(state);
     cleanup_state_image(state);
 }
 
 void
 update_cairo_image(void)
 {
+    if (convert_cairo_surface_to_ximage (cairo_surface)) {
+        updateImageWindow(state);
+    }
 }
 
 /*

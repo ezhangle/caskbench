@@ -38,6 +38,8 @@ results = []
 for testcase in perfdefs:
     cmd = [ CASKBENCH, testcase[0],
             '-D', 'skia',
+            '-w', 480,
+            '-h', 480,
             '-i', '1',
             '-s', str(testcase[1])
             ]

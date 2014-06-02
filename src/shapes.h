@@ -7,6 +7,7 @@
 #ifndef __SHAPES_H_
 #define __SHAPES_H_
 #include <stdlib.h>
+#include <stdint.h>
 
 typedef enum {
     CB_FILL_NONE,
@@ -47,17 +48,11 @@ typedef struct shapes
 
     shape_type_t shape_type;
     fill_type_t fill_type;
-    double red;
-    double green;
-    double blue;
-    double alpha;
+    uint32_t fill_color;
+    uint32_t stroke_color;
     int animation;
     int stroke_width;
     int multi_shapes;
-
-    double stroke_red;
-    double stroke_green;
-    double stroke_blue;
 
     int dash_style;
     int cap_style;

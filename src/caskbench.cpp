@@ -36,6 +36,8 @@ typedef struct _caskbench_options {
     int width;
     int height;
     char *fill_type;
+    char *fill_color;
+    char *stroke_color;
     double red;
     double green;
     double blue;
@@ -44,11 +46,6 @@ typedef struct _caskbench_options {
     char *stock_image_path;
     int stroke_width;
     int multi_shapes;
-
-    double stroke_red;
-    double stroke_green;
-    double stroke_blue;
-
     int cap_style;
     int join_style;
     int dash_style;
@@ -151,22 +148,14 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "Height of the shape object ",
          NULL},
         {"fill-type", 'f', POPT_ARG_STRING, &opt->fill_type, 0,
-         "Controls the fill type of the objects draw either solid, gradient, image pattern type",
+         "Controls the fill type of the objects. e.g  'solid', 'linear-gradient', 'radial-gradient', 'image-pattern'",
          NULL},
-#if 0
-        {"red", 'R', POPT_ARG_DOUBLE, &opt->red, 0,
-         "R Color Value",
+        {"fill-color", '\0', POPT_ARG_STRING, &opt->fill_color, 0,
+         "RGBA color value for fill eg. ABCDEFFF ",
          NULL},
-        {"green", 'G', POPT_ARG_DOUBLE, &opt->green, 0,
-         "g Color Value",
+        {"stroke-color", '\0', POPT_ARG_STRING, &opt->stroke_color, 0,
+         "RGBA color value for stroke eg. ABCDEFFF",
          NULL},
-        {"blue", 'B', POPT_ARG_DOUBLE, &opt->blue, 0,
-         "B Color Value",
-         NULL},
-        {"alpha", 'A', POPT_ARG_DOUBLE, &opt->alpha, 0,
-         "Transparency value for the solid fill",
-         NULL},
-#endif
         {"animation", 'g', POPT_ARG_INT, &opt->animation, 0,
          "Controls the kinematics of the objects drawn",
          NULL},
@@ -180,17 +169,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"multi-shapes", 'm', POPT_ARG_INT, &opt->multi_shapes, 0,
          "represents stroke width of the object",
          NULL},
-#if 0
-        {"stroke-red", "SR", POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents r value for stroke color",
-         NULL},
-        {"stroke-green", "SG", POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents represents g value for stroke color",
-         NULL},
-        {"stroke-blue", "SB", POPT_ARG_INT, &opt->multi_shapes, 0,
-         "represents represents b value for stroke color",
-         NULL},
-#endif
 #if 0
         {"cap-style", 'C', POPT_ARG_INT, &opt->cap_style, 0,
          "represents r value for stroke color",
@@ -261,6 +239,21 @@ get_tick (void)
     return (double)now.tv_sec + (double)now.tv_usec / 1000000.0;
 }
 
+uint32_t
+convertToColorValue (const char* hexString)
+{
+    char *end_ptr;
+    uint32_t color_val = 0;
+    int r, g, b;
+    if ((hexString == NULL) || (strlen(hexString) != 8))
+    {
+        color_val = -1;
+        return color_val;
+    }
+    color_val = strtoul(hexString, &end_ptr, 16);
+    return color_val;
+}
+
 void
 shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
 {
@@ -274,17 +267,12 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->height = opt->height;
     shape_defaults->shape_type = convertToShapeType(opt->shape_name);
     shape_defaults->fill_type = convertToFillType(opt->fill_type);
-    shape_defaults->red = opt->red;
-    shape_defaults->green = opt->green;
-    shape_defaults->blue = opt->blue;
-    shape_defaults->alpha = opt->alpha;
+    shape_defaults->fill_color = convertToColorValue(opt->fill_color);
+    shape_defaults->stroke_color = convertToColorValue(opt->stroke_color);
     shape_defaults->stroke_width = opt->stroke_width;
     shape_defaults->multi_shapes = opt->multi_shapes;
     shape_defaults->animation = opt->animation;
     shape_defaults->stroke_width = opt->stroke_width;
-    shape_defaults->stroke_red = opt->stroke_red;
-    shape_defaults->stroke_green = opt->stroke_green;
-    shape_defaults->stroke_blue = opt->stroke_blue;
     shape_defaults->cap_style = opt->cap_style;
     shape_defaults->join_style = opt->join_style;
     shape_defaults->dash_style = opt->dash_style;

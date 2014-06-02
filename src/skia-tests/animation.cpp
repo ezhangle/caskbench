@@ -54,6 +54,8 @@ sk_test_animation(caskbench_context_t *ctx)
         shape.height = particle->height;
         shape.x = particle->x;
         shape.y = particle->y;
+        if (!shape.radius)
+             shape.radius = 40;
 
         skiaDrawRandomizedShape(ctx, &shape);
     }

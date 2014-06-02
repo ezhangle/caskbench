@@ -27,14 +27,10 @@ ca_setup_mask(caskbench_context_t *ctx)
                                       0x00, 0xFF, 0xFF, 0x00,
                                       0x00, 0xFF, 0xFF, 0x00,
                                       0xFF, 0x00, 0x00, 0xFF, };
-    static cairo_surface_t *stippled = NULL;
-    cairo_surface_t *cairo_surface;
-
-    if (stippled == NULL) {
-        stippled = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_A8, 2, 2, 4);
-    }
+    cairo_surface_t *stippled = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_A8, 2, 2, 4);
 
 #if USE_EGL
+    cairo_surface_t *cairo_surface;
     cairo_device_t *cairo_device = cairo_surface_get_device (ctx->cairo_surface);
     if (cairo_surface_get_type (ctx->cairo_surface) == CAIRO_SURFACE_TYPE_IMAGE) {
         cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_A8, 2, 2);

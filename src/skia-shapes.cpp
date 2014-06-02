@@ -218,12 +218,13 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         case CB_FILL_SOLID:
         default:
             SkColor color;
-            if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0) {
-                color = SkColorSetARGB(255.0*(shape->alpha ? shape->alpha : 1.0),
-                                       255.0*(shape->red ? shape->red : 0.0),
-                                       255.0*(shape->green ? shape->green : 0.0),
-                                       255.0*(shape->blue ? shape->blue : 0.0) );
-            } else {
+            if (shape->fill_color != -1) {
+                color = SkColorSetARGB (shape->fill_color & 255,
+                                       (shape->fill_color >> 24) & 255,
+                                       (shape->fill_color >> 16) & 255,
+                                       (shape->fill_color >> 8) & 255);
+            }
+            else {
                 color = skiaRandomColor();
             }
             ctx->skia_paint->setColor(color);
@@ -253,11 +254,12 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         }
         ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
         SkColor color;
-        if (shape->stroke_red > 0 || shape->stroke_blue > 0 || shape->stroke_green > 0) {
-            color = SkColorSetRGB(255.0*(shape->stroke_red ? shape->stroke_red : 0.0),
-                    255.0*(shape->stroke_green ? shape->stroke_green : 0.0),
-                    255.0*(shape->stroke_blue ? shape->stroke_blue : 0.0) );
-        } else {
+        if (shape->stroke_color != -1) {
+            color = SkColorSetRGB (shape->stroke_color >> 24 & 255,
+                                  (shape->stroke_color >> 16) & 255,
+                                  (shape->stroke_color >> 8) & 255);
+        }
+        else {
             color = skiaRandomColor();
         }
         ctx->skia_paint->setColor(color);

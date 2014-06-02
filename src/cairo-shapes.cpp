@@ -204,13 +204,12 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         case CB_FILL_NONE:
         case CB_FILL_SOLID:
         default:
-            if (shape->red > 0 || shape->blue > 0 || shape->green > 0 || shape->alpha > 0)
-            {
-                cairo_set_source_rgba(ctx->cairo_cr,
-                                      shape->red ? (double)shape->red : 0.0,
-                                      shape->green ? (double)shape->green : 0.0,
-                                      shape->blue ? (double)shape->blue : 0.0,
-                                      shape->alpha ? (double)shape->alpha : 1.0 );
+            if (shape->fill_color != -1) {
+                cairo_set_source_rgba (ctx->cairo_cr,
+                                       ((shape->fill_color >> 24) & 255) / 255.0,
+                                       ((shape->fill_color >> 16) & 255) / 255.0,
+                                       ((shape->fill_color >> 8) & 255) / 255.0,
+                                       ((shape->fill_color) & 255) / 255.0);
             }
             else {
                 cairoRandomizeColor(ctx);
@@ -240,12 +239,11 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         else if (shape->dash_style == 1)
             cairo_set_dash (ctx->cairo_cr, dashed2, 2, 0);
 
-        if (shape->stroke_red > 0 || shape->stroke_blue > 0 || shape->stroke_green > 0)
-        {
+        if (shape->stroke_color != -1) {
             cairo_set_source_rgb (ctx->cairo_cr,
-                                  shape->stroke_red ? (double)shape->stroke_red : 0.0,
-                                  shape->stroke_green ? (double)shape->stroke_green : 0.0,
-                                  shape->stroke_blue ? (double)shape->stroke_blue : 0.0);
+                                  ((shape->stroke_color >> 24) & 255) / 255.0,
+                                  ((shape->stroke_color >> 16) & 255) / 255.0,
+                                  ((shape->stroke_color >> 8) & 255) / 255.0);
         }
         else {
             cairoRandomizeColor (ctx);

@@ -56,6 +56,8 @@ typedef struct _caskbench_options {
     int canvas_width;
     int canvas_height;
     int list_tests;
+    int list_gles_versions;
+    int gles_version;
 
     const char **tests;
 } caskbench_options_t;
@@ -119,6 +121,17 @@ print_tests_available()
             printf("%s\n", token);
         }
     }
+}
+
+static void
+print_gles_versions_available ()
+{
+#if HAVE_GLES2_H
+    printf("2\n");
+#endif
+#if HAVE_GLES3_H
+    printf("3\n");
+#endif
 }
 
 void
@@ -217,6 +230,14 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"list-tests", '\0', POPT_ARG_NONE, &opt->list_tests, 0,
          "List the tests available for execution",
          NULL},
+#if USE_EGL
+        {"list-gles-versions", '\0', POPT_ARG_NONE, &opt->list_gles_versions, 0,
+         "Lists available GLES versions",
+         NULL},
+        {"gles-version", '\0', POPT_ARG_INT, &opt->gles_version, 0,
+         "Specify the GLES version to use",
+         NULL},
+#endif
         POPT_AUTOHELP
         {NULL}
     };
@@ -401,7 +422,33 @@ main (int argc, char *argv[])
         print_tests_available();
         exit(0);
     }
-        
+    if(opt.list_gles_versions) {
+        print_gles_versions_available();
+        exit(0);
+    }
+
+#if HAVE_GLES3_H
+    config.egl_gles_version = 3;
+#elif HAVE_GLES2_H
+    config.egl_gles_version = 2;
+#endif
+
+    if(opt.gles_version) {
+        if (opt.surface_type == NULL || (strncmp(opt.surface_type,"image",5)==0))
+            errx(0, "gles-version is not usable with image backend");
+        if (opt.gles_version < 2 || opt.gles_version > 3)
+            errx(0, "gles-version provided is invalid");
+#ifndef HAVE_GLES2_H
+        if (opt.gles_version == 2)
+            errx(0, "gles-version 2 is not supported in the hardware");
+#endif
+#ifndef HAVE_GLES3_H
+        if (opt.gles_version == 3)
+            errx(0, "gles-version 3 is not supported in the hardware");
+#endif
+        config.egl_gles_version = opt.gles_version;
+    }
+
     if (opt.output_file) {
         // start writing json to output file
         fp = fopen(opt.output_file, "w");

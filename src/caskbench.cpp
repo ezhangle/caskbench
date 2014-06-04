@@ -20,6 +20,7 @@
 #include "caskbench_result.h"
 #include "device_config.h"
 #include "tests.h"
+#include "git_info.h"
 
 typedef struct _caskbench_options {
     int dry_run;
@@ -85,9 +86,10 @@ _status_to_string(int result)
 static void
 print_version()
 {
-    printf("%s version %s\n",
+    printf("%s version %s+%.7s\n",
            PACKAGE_NAME,
-           PACKAGE_VERSION);
+           PACKAGE_VERSION,
+           git_sha);
 }
 
 static void

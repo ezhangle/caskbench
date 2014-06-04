@@ -44,13 +44,24 @@ endif (USE_SKIA)
 add_executable(generate_tests IMPORTED)
 set_property(TARGET generate_tests PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/generate_tests")
 
+add_executable(generate_git_info IMPORTED)
+set_property(TARGET generate_git_info PROPERTY IMPORTED_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/generate_git_info")
+
 set(GENERATED_TESTS ${CMAKE_CURRENT_BINARY_DIR}/tests.cpp)
+set(GIT_INFO ${CMAKE_CURRENT_BINARY_DIR}/git_info.cpp)
+
 add_custom_command(
   OUTPUT ${GENERATED_TESTS}
   COMMAND generate_tests ${CMAKE_CURRENT_SOURCE_DIR} ${GENERATED_TESTS}
   )
+
+add_custom_command(
+  OUTPUT ${GIT_INFO}
+  COMMAND generate_git_info ${CMAKE_CURRENT_SOURCE_DIR} ${GIT_INFO}
+  )
 list(APPEND caskbench_SOURCES
   ${GENERATED_TESTS}
+  ${GIT_INFO}
   )
 add_executable(caskbench ${caskbench_SOURCES})
 target_link_libraries(caskbench ${CASKBENCH_LIBS})

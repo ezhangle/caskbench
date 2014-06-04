@@ -28,30 +28,24 @@ ca_setup_mask(caskbench_context_t *ctx)
                                       0x00, 0xFF, 0xFF, 0x00,
                                       0xFF, 0x00, 0x00, 0xFF, };
     cairo_surface_t *stippled = cairo_image_surface_create_for_data(data, CAIRO_FORMAT_A8, 2, 2, 4);
-
 #if USE_EGL
-    cairo_surface_t *cairo_surface;
-    cairo_device_t *cairo_device = cairo_surface_get_device (ctx->cairo_surface);
-    if (cairo_surface_get_type (ctx->cairo_surface) == CAIRO_SURFACE_TYPE_IMAGE) {
-        cairo_surface = cairo_image_surface_create (CAIRO_FORMAT_A8, 2, 2);
-    } else if (cairo_surface_get_type (ctx->cairo_surface) == CAIRO_SURFACE_TYPE_GL) {
-        /* create a gl surface the same size as image surface */
+    if (cairo_surface_get_type (ctx->cairo_surface) == CAIRO_SURFACE_TYPE_GL) {
+        cairo_surface_t *cairo_surface;
+        cairo_device_t *cairo_device = cairo_surface_get_device (ctx->cairo_surface);
+
+        /* create a gl surface similar to image surface */
         cairo_surface = cairo_gl_surface_create (cairo_device, CAIRO_CONTENT_COLOR_ALPHA, 2, 2);
-    } else {
-        /* unrecognized surface type */
-        return 0;
+        cairo_t *gl_ctx = cairo_create (cairo_surface);
+        cairo_pattern_t *pattern = cairo_pattern_create_for_surface (stippled);
+        cairo_set_source (gl_ctx, pattern);
+
+        /* paint image surface to gl surface as a pattern */
+        cairo_paint (gl_ctx);
+        cairo_destroy (gl_ctx);
+
+        /* use gl surface as mask */
+        mask = cairo_pattern_create_for_surface (cairo_surface);
     }
-
-    cairo_t *gl_ctx = cairo_create (cairo_surface);
-    cairo_pattern_t *pattern = cairo_pattern_create_for_surface (stippled);
-    cairo_set_source (gl_ctx, pattern);
-
-    /* paint image surface to gl surface */
-    cairo_paint (gl_ctx);
-    cairo_destroy (gl_ctx);
-
-    /* use gl surface as mask */
-    mask = cairo_pattern_create_for_surface (cairo_surface);
 #else
     mask = cairo_pattern_create_for_surface (stippled);
 #endif

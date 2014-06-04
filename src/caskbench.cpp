@@ -55,6 +55,7 @@ typedef struct _caskbench_options {
     double tolerance;
     int canvas_width;
     int canvas_height;
+    int list_tests;
 
     const char **tests;
 } caskbench_options_t;
@@ -102,6 +103,22 @@ print_surfaces_available()
 #if USE_EGL
     printf("egl\n");
 #endif
+}
+
+static void
+print_tests_available()
+{
+    char *token = NULL;
+    char test_name[MAX_BUFFER];
+    for (int c = 0; c < num_perf_tests; c = c+2) {
+        memset (test_name, 0, sizeof(test_name));
+        strncpy (test_name, perf_tests[c].name, strlen(perf_tests[c].name));
+        token = strtok (test_name, "-");
+        if (token) {
+            token = strtok (NULL, "-");
+            printf("%s\n", token);
+        }
+    }
 }
 
 void
@@ -196,6 +213,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"canvas_height", 'h', POPT_ARG_INT, &opt->canvas_height, 0,
          "Height of canvas used for each test case (defaults to 400)",
+         NULL},
+        {"list-tests", '\0', POPT_ARG_NONE, &opt->list_tests, 0,
+         "List the tests available for execution",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -377,6 +397,11 @@ main (int argc, char *argv[])
         print_surfaces_available();
         exit(0);
     }
+    if (opt.list_tests) {
+        print_tests_available();
+        exit(0);
+    }
+        
     if (opt.output_file) {
         // start writing json to output file
         fp = fopen(opt.output_file, "w");

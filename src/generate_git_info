@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "x$1" = "x" ] || [ "x$2" = "x" ]; then
+    echo "Usage: $0 <source-dir> <output-file>"
+    exit -1
+fi
+
+source_dir=$1
+out_file=$2
+git_command=$(git rev-parse HEAD)
+(cat <<EOF
+#include "git_info.h"
+const char * git_sha = "$git_command";
+EOF
+) > $out_file
+
+echo "" >> $out_file
+

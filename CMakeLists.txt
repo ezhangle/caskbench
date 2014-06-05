@@ -182,6 +182,7 @@ message("OPENGLES3:               ${OPENGLES3_FOUND}")
 message("CAIROGLES:               ${ENABLE_CAIROGLES}")
 message("CAIRO:                   ${CAIRO_INCLUDE_DIRS}")
 message("SKIA:                    ${SKIA_INCLUDE_DIRS}")
+message("X11:                     ${X11_LIBRARIES}")
 message("------------------------------------------------------------------------")
 
 message("LIBS:")

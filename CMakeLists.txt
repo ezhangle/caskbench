@@ -43,6 +43,7 @@ list(APPEND CASKBENCH_LIBS ${POPT_LIBRARIES})
 add_definitions(${POPT_DEFINITIONS})
 
 find_package(X11 REQUIRED)
+list(APPEND CASKBENCH_LIBS ${X11_LIBRARIES})
 
 find_package(Cairo REQUIRED)
 message("Using cairo libraries at ${CAIRO_LIBRARIES}")

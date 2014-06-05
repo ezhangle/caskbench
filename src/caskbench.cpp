@@ -56,6 +56,8 @@ typedef struct _caskbench_options {
     int canvas_width;
     int canvas_height;
     int list_tests;
+    char *drawing_lib;
+    int list_drawing_libs;
 
     const char **tests;
 } caskbench_options_t;
@@ -119,6 +121,15 @@ print_tests_available()
             printf("%s\n", token);
         }
     }
+}
+
+static void
+print_drawing_libs_available()
+{
+    printf("cairo\n");
+#if USE_SKIA
+    printf("skia\n");
+#endif
 }
 
 void
@@ -216,6 +227,12 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"list-tests", '\0', POPT_ARG_NONE, &opt->list_tests, 0,
          "List the tests available for execution",
+         NULL},
+        {"list-drawing-libs", '\0', POPT_ARG_NONE, &opt->list_drawing_libs, 0,
+         "List the drawing libraries available for execution",
+         NULL},
+        {"drawing-lib", 'D', POPT_ARG_STRING, &opt->drawing_lib, 0,
+         "Specify the library to be used for drawing",
          NULL},
         POPT_AUTOHELP
         {NULL}
@@ -346,6 +363,49 @@ convertToTestId(const char* test_name)
     return -1;
 }
 
+void 
+process_drawing_libs (const char *libs, int &num_tests, int *test_ids)
+{
+    int test_index = 0, j = 0;
+    int index = 0, i = -1; 
+    char filter[MAX_BUFFER];
+    bool skia_cairo = false;
+    memset(filter, 0, sizeof(filter));
+
+#ifndef USE_SKIA
+    if (strstr(libs, "skia"))
+        errx (0, "skia is unavailable in this build\n");
+#endif
+    /* Caskbench runs as usual */
+    if (strcmp(libs, "cairo,skia") == 0)
+        return;
+
+    if (strncmp(libs,"cairo", strlen(libs)) == 0)
+        strncpy(filter, "cairo", 5);
+    else if (strncmp(libs, "skia", strlen(libs)) == 0)
+        strncpy(filter, "skia", 4);
+    else if (strncmp(libs, "skia,cairo", strlen(libs)) == 0)
+        skia_cairo = true;
+    else
+        errx (0, "Invalid library is specified\n");
+
+    /* Handle the case if user has already provided list of tests to run */
+    index = num_tests ? num_tests:num_perf_tests;
+    for (j = 0; j < index; j++) {
+        i = (test_ids[j]!=-1) ? test_ids[j]:j;
+        if (strstr (perf_tests[i].name, filter) && !skia_cairo) {
+            test_ids[test_index++] = i;
+        }
+        if (skia_cairo) {
+            /* Add skia test followed by cairo */
+            test_ids[test_index++] = i+1;
+            test_ids[test_index++] = i;
+            j++;
+        }
+    }
+    num_tests = test_index;
+}
+
 void populate_user_tests (const char** tests, int& num_tests, int* test_ids)
 {
     int i = 0, id = -1, test_index = 0;
@@ -401,6 +461,10 @@ main (int argc, char *argv[])
         print_tests_available();
         exit(0);
     }
+    if (opt.list_drawing_libs) {
+        print_drawing_libs_available();
+        exit(0);
+    }
         
     if (opt.output_file) {
         // start writing json to output file
@@ -413,6 +477,9 @@ main (int argc, char *argv[])
     }
     memset (user_test_ids, -1, sizeof(user_test_ids));
     populate_user_tests (opt.tests, num_user_tests, user_test_ids);
+    if(opt.drawing_lib)
+        process_drawing_libs (opt.drawing_lib, num_user_tests, user_test_ids);
+
     num_tests = num_user_tests ? num_user_tests : num_perf_tests;
     for(int s = 0; s < num_tests; s++) {
         c = num_user_tests ? user_test_ids[s] : s;

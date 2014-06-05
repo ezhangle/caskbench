@@ -57,6 +57,10 @@ createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_conf
         }
     }
 
+    if(device_config.egl_gles_version) {
+        ctx_attr[1] = device_config.egl_gles_version;
+    }
+
     state->dpy = XOpenDisplay (NULL);
     if (state->dpy == NULL) {
         warnx ("Failed to open display: %s\n", XDisplayName (0));

@@ -16,6 +16,7 @@ EOF
 ) > $out_file
 
 echo "" >> $out_file
+echo "#ifdef USE_CAIRO" >> $out_file
 echo "// Cairo Tests" >> $out_file
 for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
     test=$(basename ${source_file%.cpp})
@@ -27,6 +28,7 @@ int  ca_test_${test}(struct _caskbench_context *ctx);
 EOF
     ) >> $out_file
 done
+echo "#endif // USE_CAIRO" >> $out_file
 
 echo "" >> $out_file
 echo "#ifdef USE_SKIA" >> $out_file
@@ -54,8 +56,10 @@ for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
     fi
 
     (cat <<EOF
+#ifdef USE_CAIRO
     {"cairo-${test}", ca_setup_${test}, ca_teardown_${test}, ca_test_${test},
       write_image_file_cairo, context_setup_cairo, context_destroy_cairo, context_update_cairo },
+#endif
 #ifdef USE_SKIA
     {"skia-${test}",  sk_setup_${test}, sk_teardown_${test}, sk_test_${test},
       write_image_file_skia,  context_setup_skia,  context_destroy_skia, context_update_skia },

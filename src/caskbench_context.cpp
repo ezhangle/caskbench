@@ -9,10 +9,13 @@
 
 #include <assert.h>
 #include <err.h>
+#include <string.h>
 
+#ifdef USE_CAIRO
 #include <cairo.h>
 #ifdef HAVE_CAIRO_GL_H
 #  include <cairo-gl.h>
+#endif
 #endif
 
 #ifdef USE_SKIA
@@ -45,6 +48,7 @@ context_init(caskbench_context_t *context, int size)
     context->tolerance = 0.25;
 }
 
+#ifdef USE_CAIRO
 void
 context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
 {
@@ -90,6 +94,7 @@ context_setup_cairo(caskbench_context_t *context, const device_config_t& config)
     // Ease up Cairo's tessellation tolerance (default is 0.001)
     cairo_set_tolerance (context->cairo_cr, context->tolerance);
 }
+#endif
 
 void
 context_update_cairo(caskbench_context_t *context)
@@ -102,8 +107,10 @@ context_destroy_cairo(caskbench_context_t *context)
 {
     if (!context)
         return;
+#ifdef USE_CAIRO
     cairo_destroy(context->cairo_cr);
     cairo_surface_destroy(context->cairo_surface);
+#endif
     context->destroy_cairo();
     context->cairo_cr = NULL;
 }

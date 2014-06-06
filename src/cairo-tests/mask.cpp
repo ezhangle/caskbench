@@ -46,9 +46,9 @@ ca_setup_mask(caskbench_context_t *ctx)
         /* use gl surface as mask */
         mask = cairo_pattern_create_for_surface (cairo_surface);
     }
-#else
-    mask = cairo_pattern_create_for_surface (stippled);
+    else
 #endif
+        mask = cairo_pattern_create_for_surface (stippled);
     cairo_pattern_set_extend (mask, CAIRO_EXTEND_REPEAT);
     cairo_pattern_set_filter (mask, CAIRO_FILTER_NEAREST);
 

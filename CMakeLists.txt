@@ -27,6 +27,7 @@ list(APPEND CASKBENCH_INCS
 # Command line options
 # ----------------------------------------------------------------------
 option(ENABLE_SKIA "Build in skia tests" ON)
+option(ENABLE_CAIRO "Build in cairo tests" ON)
 option(ENABLE_GLX "Build against GLX for OpenGL" OFF)
 option(ENABLE_EGL "Build against EGL for OpenGL" ON)
 option(ENABLE_CAIROGLES "Use the cairogles fork API additions" OFF)
@@ -45,11 +46,15 @@ add_definitions(${POPT_DEFINITIONS})
 find_package(X11 REQUIRED)
 list(APPEND CASKBENCH_LIBS ${X11_LIBRARIES})
 
-find_package(Cairo REQUIRED)
-message("Using cairo libraries at ${CAIRO_LIBRARIES}")
-list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
-list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
-check_include_files(cairo/cairo-gl.h HAVE_CAIRO_GL_H)
+set(USE_CAIRO 0)
+if (ENABLE_CAIRO)
+  find_package(Cairo REQUIRED)
+  message("Using cairo libraries at ${CAIRO_LIBRARIES}")
+  list(APPEND CASKBENCH_INCS_SYS ${CAIRO_INCLUDE_DIRS})
+  list(APPEND CASKBENCH_LIBS ${CAIRO_LIBRARIES})
+  check_include_files(cairo/cairo-gl.h HAVE_CAIRO_GL_H)
+  set(USE_CAIRO 1)
+endif (ENABLE_CAIRO)
 
 set(USE_SKIA 0)
 if (ENABLE_SKIA)
@@ -169,6 +174,7 @@ message("ARCHIVE_NAME:            ${ARCHIVE_NAME}")
 
 # dependency info
 message("SKIA:                    ${ENABLE_SKIA} -> ${USE_SKIA}")
+message("CAIRO:                   ${ENABLE_CAIRO} -> ${USE_CAIRO}")
 message("GLX:                     ${ENABLE_GLX} -> ${USE_GLX}")
 message("EGL:                     ${ENABLE_EGL} -> ${USE_EGL}")
 message("OPENGLES2:               ${OPENGLES2_FOUND}")

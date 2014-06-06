@@ -393,6 +393,10 @@ process_drawing_libs (const char *libs, int &num_tests, int *test_ids)
     bool skia_cairo = false;
     memset(filter, 0, sizeof(filter));
 
+#ifndef USE_CAIRO
+    if (strstr(libs, "cairo"))
+        errx (0, "cairo is unavailable in the build\n");
+#endif
 #ifndef USE_SKIA
     if (strstr(libs, "skia"))
         errx (0, "skia is unavailable in this build\n");
@@ -430,26 +434,42 @@ process_drawing_libs (const char *libs, int &num_tests, int *test_ids)
 void populate_user_tests (const char** tests, int& num_tests, int* test_ids)
 {
     int i = 0, id = -1, test_index = 0;
+    char skia_test[MAX_BUFFER];
+    char cairo_test[MAX_BUFFER];
+    strncpy(cairo_test, "cairo-", 6);
+    strncpy(skia_test, "skia-", 5);
 
     if (tests == NULL)
         return;
     while (tests[i] != NULL) {
-        id = convertToTestId (tests[i]);
-        if (id < 0)
+        if (strlen(tests[i]) >= MAX_BUFFER)
             errx (0, "Incorrect test case, please check the test case provided as input \n");
 
+        /* We can assume no more that skia test will be next to cairo */
+        cairo_test[6] = skia_test[5] = '\0';
+        strncat(cairo_test, tests[i], strlen(tests[i]));
+        strncat(skia_test, tests[i], strlen(tests[i]));
+
+#ifdef USE_CAIRO
         /* Add cairo test index to the test list */
+        id = convertToTestId (cairo_test);
+        if (id < 0)
+            errx (0, "Incorrect test case, please check the test case provided as input \n");
         test_ids[test_index++] = id;
+        num_tests = num_tests + 1;
+#endif
 #ifdef USE_SKIA
         /* Add skia test index to the test list */
-        test_ids[test_index++] = id + 1;
-        num_tests = num_tests + 2;
-#else
+        id = convertToTestId (skia_test);
+        if (id < 0)
+            errx (0, "Incorrect test case, please check the test case provided as input \n");
+        test_ids[test_index++] = id;
         num_tests = num_tests + 1;
 #endif
         i++;
     }
 }
+
 
 int
 main (int argc, char *argv[])

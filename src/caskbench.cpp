@@ -384,11 +384,11 @@ convertToTestId(const char* test_name)
     return -1;
 }
 
-void 
+void
 process_drawing_libs (const char *libs, int &num_tests, int *test_ids)
 {
     int test_index = 0, j = 0;
-    int index = 0, i = -1; 
+    int index = 0, i = -1;
     char filter[MAX_BUFFER];
     bool skia_cairo = false;
     memset(filter, 0, sizeof(filter));

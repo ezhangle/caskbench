@@ -443,26 +443,27 @@ void populate_user_tests (const char** tests, int& num_tests, int* test_ids)
         return;
     while (tests[i] != NULL) {
         if (strlen(tests[i]) >= MAX_BUFFER)
-            errx (0, "Incorrect test case, please check the test case provided as input \n");
-
-        /* We can assume no more that skia test will be next to cairo */
-        cairo_test[6] = skia_test[5] = '\0';
-        strncat(cairo_test, tests[i], strlen(tests[i]));
-        strncat(skia_test, tests[i], strlen(tests[i]));
+            errx (0, "Invalid test case: test name is too long\n");
 
 #ifdef USE_CAIRO
+        cairo_test[6] = '\0';
+        strncat(cairo_test, tests[i], strlen(tests[i]));
+
         /* Add cairo test index to the test list */
         id = convertToTestId (cairo_test);
         if (id < 0)
-            errx (0, "Incorrect test case, please check the test case provided as input \n");
+            errx (0, "Unrecognized cairo test case '%s'\n", cairo_test);
         test_ids[test_index++] = id;
         num_tests = num_tests + 1;
 #endif
 #ifdef USE_SKIA
+        skia_test[5] = '\0';
+        strncat(skia_test, tests[i], strlen(tests[i]));
+
         /* Add skia test index to the test list */
         id = convertToTestId (skia_test);
         if (id < 0)
-            errx (0, "Incorrect test case, please check the test case provided as input \n");
+            errx (0, "Unrecognized skia test case '%s'\n", skia_test);
         test_ids[test_index++] = id;
         num_tests = num_tests + 1;
 #endif

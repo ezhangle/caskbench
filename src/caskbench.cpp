@@ -442,7 +442,7 @@ void populate_user_tests (const char** tests, int& num_tests, int* test_ids)
     if (tests == NULL)
         return;
     while (tests[i] != NULL) {
-        if (strlen(tests[i]) >= MAX_BUFFER)
+        if (strlen(tests[i])+6 >= MAX_BUFFER)
             errx (0, "Invalid test case: test name is too long\n");
 
 #ifdef USE_CAIRO

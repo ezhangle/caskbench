@@ -15,12 +15,12 @@ import json
 CASKBENCH = 'src/caskbench'
 
 perfdefs = [
-#    [ "hline",                 1000,  30 ],
-#    [ "vline",                 1000,  15 ],
-#    [ "line",                  1000,   6 ],
+    [ "hline",                 1000,  30 ],
+    [ "vline",                 1000,  15 ],
+    [ "line",                  1000,   6 ],
     [ "rect",                  1000,   5 ],
 #    [ "fill_rect",              500,   5 ],
-#    [ "lines",                 1000,   8 ],
+    [ "lines",                 1000,   8 ],
 #    [ "arc",                   1000,   4 ],
 #    [ "fill_arc",              1000,   7 ],
 #    [ "bezier",                1000,   3 ],

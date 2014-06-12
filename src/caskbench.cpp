@@ -479,6 +479,7 @@ main (int argc, char *argv[])
     caskbench_options_t opt;
     double start_time, stop_time, run_time, run_total;
     double cairo_avg_time = 0.0;
+    double skia_avg_time = 0.0;
     FILE *fp = NULL;
     char fname[256], *end_ptr;
     device_config_t config;
@@ -651,12 +652,29 @@ main (int argc, char *argv[])
                result.iterations,
                result.avg_frames_per_second);
 
-        if (result.test_case_name[0] == 'c') {
+        if (result.test_case_name[0] == 'c')
             cairo_avg_time = result.avg_run_time;
-        } else {
-            double perf_improvement = perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
-            printf("  %4.2f%%", perf_improvement * 100.0);
-            cairo_avg_time = 0.0;
+        if (result.test_case_name[0] == 's')
+            skia_avg_time = result.avg_run_time;
+
+        if (s%2 == 1) {
+            if (opt.drawing_lib != NULL) {
+                if ((strcmp(opt.drawing_lib, "cairo,skia") == 0)) {
+                    double perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
+                    printf("  %4.2f%%", perf_improvement * 100.0);
+                    cairo_avg_time = 0.0;
+                }
+                else if ((strcmp(opt.drawing_lib, "skia,cairo") == 0)) {
+                    double perf_improvement = (skia_avg_time - result.avg_run_time)/skia_avg_time;
+                    printf("  %4.2f%%", perf_improvement * 100.0);
+                    skia_avg_time = 0.0;
+                }
+            }
+            else {
+                double perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
+                printf("  %4.2f%%", perf_improvement * 100.0);
+                cairo_avg_time = 0.0;
+            }
         }
         printf("\n");
 

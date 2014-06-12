@@ -45,17 +45,24 @@ sk_test_star(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
+    int counter = 1; // TODO
 
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
-    for (int i=0; i<ctx->size; i++) {
-        shape.x = (double)rand()/RAND_MAX * w;
-        shape.y = (double)rand()/RAND_MAX * h;
-        shape.radius = (double)rand()/RAND_MAX * MIN(
-            MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
-
-        skiaRandomizePaintColor(ctx);
-        skiaDrawStar(ctx, &shape);
+    for (int j = 0; j<h; j += 40) {
+        for (int i = 0; i<w; i += 40) {
+            counter = (double)rand() * 2000.0 / RAND_MAX;
+            ctx->skia_canvas->save();
+            ctx->skia_canvas->translate(i, j);
+            //ctx->skia_canvas->rotate(counter / 2000.0);
+            ctx->skia_canvas->scale(0.2, 0.2);
+            shape.x = 0;
+            shape.y = 0;
+            shape.radius = 40;
+            skiaRandomizePaintColor(ctx);
+            skiaDrawStar(ctx, &shape);
+            ctx->skia_canvas->restore();
+        }
     }
 
     return 1;

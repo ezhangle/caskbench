@@ -28,7 +28,7 @@ perfdefs = [
     [ "quad",                  1000,   4 ], # Rename to quadratic
 #    [ "curves",                  50,   5 ],
 #    [ "fill_curves",             50,   8 ],
-#    [ "stroke_star",           1000,   7 ],
+    [ "star",           1000,   7 ], # Renamed from stroke_star
 #    [ "fill_star",             1000,  12 ],
 #    [ "transform",               10,   0.2 ],
 #    [ "image",                  100,   0.3 ],

@@ -18,7 +18,7 @@
 static SkBitmap bitmap;
 
 int
-sk_setup_image(caskbench_context_t *ctx)
+sk_setup_image_scale(caskbench_context_t *ctx)
 {
     int i, x, y;
     bitmap.setConfig(SkBitmap::kARGB_8888_Config, 160, 40);
@@ -48,25 +48,26 @@ sk_setup_image(caskbench_context_t *ctx)
 }
 
 void
-sk_teardown_image(void)
+sk_teardown_image_scale(void)
 {
 }
 
 int
-sk_test_image(caskbench_context_t *ctx)
+sk_test_image_scale(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
-    int iw = bitmap.width();
-    int ih = bitmap.height();
-    int pw = w - iw;
-    int ph = h - ih;
+    SkRect r;
 
     for (int i=0; i<ctx->size; i++) {
-        double x = (double)rand()/RAND_MAX * pw;
-        double y = (double)rand()/RAND_MAX * ph;
-
-        ctx->skia_canvas->drawBitmap(bitmap, x, y);
+        double x1 = (double)rand()/RAND_MAX * w;
+        double x2 = (double)rand()/RAND_MAX * w;
+        double y1 = (double)rand()/RAND_MAX * h;
+        double y2 = (double)rand()/RAND_MAX * h;
+        double x = MIN(x1, x2);
+        double y = MIN(y1, y2);
+        r.set(x, y, x + fabs(x2 - x1), y + fabs(y2 - y1));
+        ctx->skia_canvas->drawBitmapRect(bitmap, r, ctx->skia_paint);
     }
 
     return 1;

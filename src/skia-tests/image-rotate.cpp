@@ -18,7 +18,7 @@
 static SkBitmap bitmap;
 
 int
-sk_setup_image(caskbench_context_t *ctx)
+sk_setup_image_rotate(caskbench_context_t *ctx)
 {
     int i, x, y;
     bitmap.setConfig(SkBitmap::kARGB_8888_Config, 160, 40);
@@ -48,12 +48,12 @@ sk_setup_image(caskbench_context_t *ctx)
 }
 
 void
-sk_teardown_image(void)
+sk_teardown_image_rotate(void)
 {
 }
 
 int
-sk_test_image(caskbench_context_t *ctx)
+sk_test_image_rotate(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
@@ -66,7 +66,12 @@ sk_test_image(caskbench_context_t *ctx)
         double x = (double)rand()/RAND_MAX * pw;
         double y = (double)rand()/RAND_MAX * ph;
 
-        ctx->skia_canvas->drawBitmap(bitmap, x, y);
+        ctx->skia_canvas->save();
+        ctx->skia_canvas->translate(w/2, h/2);
+        ctx->skia_canvas->rotate(i / 50.0);  // TODO: Original rotates by counter/50
+        ctx->skia_canvas->translate(-iw/2, -ih/2);
+        ctx->skia_canvas->drawBitmap(bitmap, 0, 0);
+        ctx->skia_canvas->restore();
     }
 
     return 1;

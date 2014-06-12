@@ -25,7 +25,7 @@ perfdefs = [
 #    [ "fill_arc",              1000,   7 ],
     [ "bezier",                1000,   3 ], # Rename to cubic
 #    [ "fill_bezier",           1000,   4 ],
-#    [ "quad",                  1000,   4 ],
+    [ "quad",                  1000,   4 ], # Rename to quadratic
 #    [ "curves",                  50,   5 ],
 #    [ "fill_curves",             50,   8 ],
 #    [ "stroke_star",           1000,   7 ],

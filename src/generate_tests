@@ -20,6 +20,7 @@ echo "#ifdef USE_CAIRO" >> $out_file
 echo "// Cairo Tests" >> $out_file
 for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
     test=$(basename ${source_file%.cpp})
+    test=${test/-/_}
     (cat <<EOF
 int  ca_setup_${test}(struct _caskbench_context *ctx);
 void ca_teardown_${test}();
@@ -35,6 +36,7 @@ echo "#ifdef USE_SKIA" >> $out_file
 echo "// Skia Tests" >> $out_file
 for source_file in $(ls ${source_dir}/skia-tests/*.cpp); do
     test=$(basename ${source_file%.cpp})
+    test=${test/-/_}
     (cat <<EOF
 int  sk_setup_${test}(struct _caskbench_context *ctx);
 void sk_teardown_${test}();
@@ -51,6 +53,7 @@ echo "caskbench_perf_test_t perf_tests[] = {" >> $out_file
 
 for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
     test=$(basename ${source_file%.cpp})
+    test=${test/-/_}
     if [ ! -e ${source_dir}/skia-tests/${test}.cpp ]; then
 	continue
     fi

@@ -21,7 +21,18 @@ sk_setup_arc(caskbench_context_t *ctx)
 {
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
-    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+
+    switch (ctx->shape_defaults.fill_type) {
+        case CB_FILL_NONE:
+            ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+            break;
+        case CB_FILL_SOLID:
+            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            break;
+        default:
+            break;
+    }
+
     return 1;
 }
 

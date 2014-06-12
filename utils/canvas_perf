@@ -19,17 +19,17 @@ perfdefs = [
     [ "vline",                 1000,  15 ],
     [ "line",                  1000,   6 ],
     [ "rect",                  1000,   5 ],
-#    [ "fill_rect",              500,   5 ],
+    [ "fill_rect",              500,   5 ],
     [ "lines",                 1000,   8 ],  # Rename to multi-line
     [ "arc",                   1000,   4 ],  # Rename to circle
-#    [ "fill_arc",              1000,   7 ],
+    [ "fill_arc",              1000,   7 ],
     [ "bezier",                1000,   3 ], # Rename to cubic
 #    [ "fill_bezier",           1000,   4 ],
     [ "quad",                  1000,   4 ], # Rename to quadratic
 #    [ "curves",                  50,   5 ],
 #    [ "fill_curves",             50,   8 ],
-    [ "star",           1000,   7 ], # Renamed from stroke_star
-#    [ "fill_star",             1000,  12 ],
+    [ "star",                  1000,   7 ], # Renamed from stroke_star
+    [ "fill_star",             1000,  12 ],
 #    [ "transform",               10,   0.2 ],
 #    [ "image",                  100,   0.3 ],
 #    [ "image_scale",            100,   0.8 ],
@@ -62,8 +62,7 @@ def execute(command):
 
 results = []
 for testcase in perfdefs:
-    #print(testcase)
-    cmd = [ CASKBENCH, testcase[0],
+    cmd = [ CASKBENCH,
             '-D', 'skia',
             '-w', '480',
             '-h', '480',
@@ -71,7 +70,15 @@ for testcase in perfdefs:
             '-s', str(testcase[1]),
             '-j',
             ]
-    #print(' '.join(cmd))
+
+    test = str(testcase[0])
+    if test[:5] == "fill_":
+        test = test[5:]
+        cmd = cmd + ['-f', 'solid']
+
+    cmd.append(test)
+    print(cmd)
+    print(' '.join(cmd))
     json_output = execute(cmd)
     result = json.loads(json_output)[0]
     value = result["median run time (s)"]*1000.0

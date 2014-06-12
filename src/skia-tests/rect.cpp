@@ -16,8 +16,15 @@
 #include "caskbench_context.h"
 #include "skia-shapes.h"
 
+/* TODO:
+ * - How to specify fill?
+ * - Specify with or without alpha
+ * - With or without antialiasing?
+ * - Stroke width should be via the shape defaults
+ */
+
 int
-sk_setup_rectangles(caskbench_context_t *ctx)
+sk_setup_rect(caskbench_context_t *ctx)
 {
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
@@ -26,25 +33,31 @@ sk_setup_rectangles(caskbench_context_t *ctx)
 }
 
 void
-sk_teardown_rectangles(void)
+sk_teardown_rect(void)
 {
 }
 
 int
-sk_test_rectangles(caskbench_context_t *ctx)
+sk_test_rect(caskbench_context_t *ctx)
 {
-    int i, x, y, w, h;
-    SkRect rect;
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
 
-    for (i=0; i<ctx->size; i++) {
+    shapes_t shape;
+    shape_copy(&ctx->shape_defaults, &shape);
+    for (int i=0; i<ctx->size; i++) {
+        double x1 = (double)rand()/RAND_MAX * w;
+        double x2 = (double)rand()/RAND_MAX * w;
+        double y1 = (double)rand()/RAND_MAX * h;
+        double y2 = (double)rand()/RAND_MAX * h;
+
+        shape.x = MIN(x1, x2);
+        shape.y = MIN(x1, x2);
+        shape.width = abs(x2 - x1);
+        shape.height = abs(y2 - y1);
+
         skiaRandomizePaintColor(ctx);
-        w = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX ) + 1;
-        h = trunc( (0.5*(double)ctx->canvas_height*rand())/RAND_MAX ) + 1;
-        x = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX );
-        y = trunc( (0.5*(double)ctx->canvas_height*rand())/RAND_MAX );
-        rect.set(x, y, x+w, y+h);
-
-        ctx->skia_canvas->drawRect(rect, *(ctx->skia_paint));
+        skiaDrawRectangle(ctx, &shape);
     }
 
     return 1;

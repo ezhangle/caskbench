@@ -94,7 +94,7 @@ skiaDrawLine(caskbench_context_t *ctx, shapes_t *args)
     SkPath path;
 
     path.moveTo(args->x, args->y);
-    path.rLineTo(args->width, args->height);
+    path.rLineTo(args->x + args->width, args->y + args->height);
 
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 }

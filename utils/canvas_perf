@@ -6,47 +6,75 @@
 # ref:
 # http://flashcanvas.net/examples/dl.dropbox.com/u/1865210/mindcat/canvas_perf.html
 
-CASKBENCH = 'caskbench'
+from __future__ import absolute_import, print_function, unicode_literals
+
+from exceptions import Exception
+from subprocess import (Popen, PIPE)
+import json
+
+CASKBENCH = 'src/caskbench'
 
 perfdefs = [
-    [ "hline",                 1000,  30 ],
-    [ "vline",                 1000,  15 ],
-    [ "line",                  1000,   6 ],
+#    [ "hline",                 1000,  30 ],
+#    [ "vline",                 1000,  15 ],
+#    [ "line",                  1000,   6 ],
     [ "rect",                  1000,   5 ],
-    [ "fill_rect",              500,   5 ],
-    [ "lines",                 1000,   8 ],
-    [ "arc",                   1000,   4 ],
-    [ "fill_arc",              1000,   7 ],
-    [ "bezier",                1000,   3 ],
-    [ "fill_bezier",           1000,   4 ],
-    [ "quad",                  1000,   4 ],
-    [ "curves",                  50,   5 ],
-    [ "fill_curves",             50,   8 ],
-    [ "stroke_star",           1000,   7 ],
-    [ "fill_star",             1000,  12 ],
-    [ "transform",               10,   0.2 ],
-    [ "image",                  100,   0.3 ],
-    [ "image_scale",            100,   0.8 ],
-    [ "image_rotate",            15,   0.3 ],
-    [ "linear_gradient",        100,   2 ],
-    [ "radial_gradient",        100,   0.3 ],
-    [ "text",                   100,   0.6 ],
-    [ "clip",                   100,   0.8 ]
+#    [ "fill_rect",              500,   5 ],
+#    [ "lines",                 1000,   8 ],
+#    [ "arc",                   1000,   4 ],
+#    [ "fill_arc",              1000,   7 ],
+#    [ "bezier",                1000,   3 ],
+#    [ "fill_bezier",           1000,   4 ],
+#    [ "quad",                  1000,   4 ],
+#    [ "curves",                  50,   5 ],
+#    [ "fill_curves",             50,   8 ],
+#    [ "stroke_star",           1000,   7 ],
+#    [ "fill_star",             1000,  12 ],
+#    [ "transform",               10,   0.2 ],
+#    [ "image",                  100,   0.3 ],
+#    [ "image_scale",            100,   0.8 ],
+#    [ "image_rotate",            15,   0.3 ],
+#    [ "linear_gradient",        100,   2 ],
+#    [ "radial_gradient",        100,   0.3 ],
+#    [ "text",                   100,   0.6 ],
+#    [ "clip",                   100,   0.8 ]
     ]
+
+class ReturnCode(Exception):
+    def __init__(self, code, errors=None):
+        self.code = code
+        if type(errors) in (list, tuple):
+            self.errors = errors
+        else:
+            self.errors = [errors]
+
+    def __str__(self):
+        text = '\n'.join(self.errors)
+        return "%s returned error code %d" %(text, self.code)
+
+def execute(command):
+    p = Popen(command, shell=False, stdout=PIPE, stderr=PIPE)
+    output = p.stdout.read()
+    if p.returncode:
+        dbg("Error (%d) encountered in execution" %(p.returncode))
+        raise ReturnCode(p.returncode, p.stderr.readlines())
+    return output
 
 results = []
 for testcase in perfdefs:
+    #print(testcase)
     cmd = [ CASKBENCH, testcase[0],
             '-D', 'skia',
-            '-w', 480,
-            '-h', 480,
+            '-w', '480',
+            '-h', '480',
             '-i', '1',
-            '-s', str(testcase[1])
+            '-s', str(testcase[1]),
+            '-j',
             ]
-    print ' '.join(cmd)
-
-    # TODO: Execute cmd, retrieve JSON back with value
-    value = testcase[2] # FIXME
+    #print(' '.join(cmd))
+    json_output = execute(cmd)
+    result = json.loads(json_output)[0]
+    value = result["median run time (s)"]*1000.0
     ratio = value / testcase[2]
 
     results.append({
@@ -57,9 +85,9 @@ for testcase in perfdefs:
 # Calculate the score
 total = 0
 for result in results:
-    print "%s: %3.2f" %(result['testcase'], result['ratio'])
+    print("%s: %3.2f" %(result['testcase'], result['ratio']))
     total += 1.0 / result['ratio']
 
 if total > 0:
     score = (len(perfdefs) / total)
-    print "Total Score: %3.2f" %(score)
+    print("Total Score: %3.2f" %(score))

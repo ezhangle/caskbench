@@ -25,6 +25,7 @@
 typedef struct _caskbench_options {
     int dry_run;
     int iterations;
+    int json_output;
     int list_surfaces;
     char *output_file;
     char *surface_type;
@@ -145,6 +146,23 @@ print_drawing_libs_available()
 #endif
 }
 
+static void
+print_json_result(FILE *fp, const caskbench_result_t *result)
+{
+    fprintf(fp, "   {\n");
+    fprintf(fp, "       \"test case\": \"%s\",\n", result->test_case_name);
+    fprintf(fp, "       \"size\": \"%d\",\n", result->size);
+    fprintf(fp, "       \"status\": \"%s\",\n", _status_to_string(result->status));
+    fprintf(fp, "       \"iterations\": %d,\n", result->iterations);
+    fprintf(fp, "       \"minimum run time (s)\": %f,\n", result->min_run_time);
+    fprintf(fp, "       \"average run time (s)\": %f,\n", result->avg_run_time);
+    fprintf(fp, "       \"maximum run time (s)\": %f,\n", result->max_run_time);
+    fprintf(fp, "       \"median run time (s)\": %f,\n", result->median_run_time);
+    fprintf(fp, "       \"standard deviation of run time (s)\": %f,\n", result->standard_deviation);
+    fprintf(fp, "       \"avg frames per second (fps)\": %-4.0f\n", result->avg_frames_per_second);
+    fprintf(fp, "   }");
+}
+
 void
 process_options(caskbench_options_t *opt, int argc, char *argv[])
 {
@@ -156,6 +174,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"iterations", 'i', POPT_ARG_INT, &opt->iterations, 0,
          "The number of times each test case should be run",
+         NULL},
+        {"json", 'j', POPT_ARG_NONE, &opt->json_output, 0,
+         "Write JSON style output to stdout",
          NULL},
         {"list-surfaces", 'l', POPT_ARG_NONE, &opt->list_surfaces, 0,
          "List the available surfaces linked in this executable",
@@ -431,7 +452,8 @@ process_drawing_libs (const char *libs, int &num_tests, int *test_ids)
     num_tests = test_index;
 }
 
-void populate_user_tests (const char** tests, int& num_tests, int* test_ids)
+void
+populate_user_tests (const char** tests, int& num_tests, int* test_ids)
 {
     int i = 0, id = -1, test_index = 0;
     char skia_test[MAX_BUFFER];
@@ -541,6 +563,9 @@ main (int argc, char *argv[])
         fp = fopen(opt.output_file, "w");
         fprintf(fp, "[\n");
     }
+    if (opt.json_output) {
+        fprintf(stdout, "[\n");
+    }
     if (!opt.disable_egl_sample_buffers) {
         config.egl_samples = 4;
         config.egl_sample_buffers = 1;
@@ -646,54 +671,50 @@ main (int argc, char *argv[])
         }
 
     FINAL:
-        printf("%-20s %-4d   %s  %d  %4.0f",
-               result.test_case_name,
-               result.size,
-               _status_to_string(result.status),
-               result.iterations,
-               result.avg_frames_per_second);
+        if (! opt.json_output) {
+            printf("%-20s %-4d   %s  %d  %4.0f",
+                   result.test_case_name,
+                   result.size,
+                   _status_to_string(result.status),
+                   result.iterations,
+                   result.avg_frames_per_second);
 
-        if (result.test_case_name[0] == 'c')
-            cairo_avg_time = result.avg_run_time;
-        if (result.test_case_name[0] == 's')
-            skia_avg_time = result.avg_run_time;
+            if (result.test_case_name[0] == 'c')
+                cairo_avg_time = result.avg_run_time;
+            if (result.test_case_name[0] == 's')
+                skia_avg_time = result.avg_run_time;
 
-        if (s%2 == 1) {
-            if (opt.drawing_lib != NULL) {
-                if ((strcmp(opt.drawing_lib, "cairo,skia") == 0)) {
+            if (s%2 == 1) {
+                if (opt.drawing_lib != NULL) {
+                    if ((strcmp(opt.drawing_lib, "cairo,skia") == 0)) {
+                        double perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
+                        printf("  %4.2f%%", perf_improvement * 100.0);
+                        cairo_avg_time = 0.0;
+                    }
+                    else if ((strcmp(opt.drawing_lib, "skia,cairo") == 0)) {
+                        double perf_improvement = (skia_avg_time - result.avg_run_time)/skia_avg_time;
+                        printf("  %4.2f%%", perf_improvement * 100.0);
+                        skia_avg_time = 0.0;
+                    }
+                } else {
                     double perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
                     printf("  %4.2f%%", perf_improvement * 100.0);
                     cairo_avg_time = 0.0;
                 }
-                else if ((strcmp(opt.drawing_lib, "skia,cairo") == 0)) {
-                    double perf_improvement = (skia_avg_time - result.avg_run_time)/skia_avg_time;
-                    printf("  %4.2f%%", perf_improvement * 100.0);
-                    skia_avg_time = 0.0;
-                }
             }
-            else {
-                double perf_improvement = (cairo_avg_time - result.avg_run_time)/cairo_avg_time;
-                printf("  %4.2f%%", perf_improvement * 100.0);
-                cairo_avg_time = 0.0;
-            }
+        } else {
+            print_json_result(stdout, &result);
+
+            if (c < num_tests-1)
+                fprintf(stdout, ",");
+            fprintf(stdout, "\n");
         }
         printf("\n");
 
         if (fp != NULL) {
-            fprintf(fp, "   {\n");
-            fprintf(fp, "       \"test case\": \"%s\",\n", result.test_case_name);
-            fprintf(fp, "       \"size\": \"%d\",\n", result.size);
-            fprintf(fp, "       \"status\": \"%s\",\n", _status_to_string(result.status));
-            fprintf(fp, "       \"iterations\": %d,\n", result.iterations);
-            fprintf(fp, "       \"minimum run time (s)\": %f,\n", result.min_run_time);
-            fprintf(fp, "       \"average run time (s)\": %f,\n", result.avg_run_time);
-            fprintf(fp, "       \"maximum run time (s)\": %f,\n", result.max_run_time);
-            fprintf(fp, "       \"median run time (s)\": %f,\n", result.median_run_time);
-            fprintf(fp, "       \"standard deviation of run time (s)\": %f,\n", result.standard_deviation);
-            fprintf(fp, "       \"avg frames per second (fps)\": %-4.0f\n", result.avg_frames_per_second);
-            fprintf(fp, "   }");
+            print_json_result(fp, &result);
 
-            if (c != num_perf_tests-1)
+            if (c < num_tests-1)
                 fprintf(fp, ",");
             fprintf(fp, "\n");
         }
@@ -708,6 +729,10 @@ main (int argc, char *argv[])
         // End json
         fprintf(fp, "]\n");
         fclose(fp);
+    }
+    if (opt.json_output) {
+        // End json
+        fprintf(stdout, "]\n");
     }
 }
 

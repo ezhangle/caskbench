@@ -145,7 +145,9 @@ print_gles_versions_available ()
 static void
 print_drawing_libs_available()
 {
+#if USE_CAIRO
     printf("cairo\n");
+#endif
 #if USE_SKIA
     printf("skia\n");
 #endif

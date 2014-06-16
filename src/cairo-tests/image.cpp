@@ -49,12 +49,18 @@ ca_teardown_image(void)
 int
 ca_test_image(caskbench_context_t* ctx)
 {
-    int i, x, y;
     cairo_t *cr = ctx->cairo_cr;
 
-    for (i=0; i<ctx->size; i++) {
-        y = 50 * (int)(i/4);
-        x = 200 * (i%4);
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+    int iw = cairo_image_surface_get_width (image);
+    int ih = cairo_image_surface_get_height (image);
+    int pw = w - iw;
+    int ph = h - ih;
+
+    for (int i=0; i<ctx->size; i++) {
+        double x = (double)rand()/RAND_MAX * pw;
+        double y = (double)rand()/RAND_MAX * ph;
         cairo_set_source_surface (cr, image, x, y);
         cairo_paint (cr);
     }

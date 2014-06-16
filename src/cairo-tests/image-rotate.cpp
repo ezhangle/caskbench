@@ -49,15 +49,31 @@ ca_teardown_image_rotate(void)
 int
 ca_test_image_rotate(caskbench_context_t* ctx)
 {
-    int i, x, y;
     cairo_t *cr = ctx->cairo_cr;
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+    int iw = cairo_image_surface_get_width (image);
+    int ih = cairo_image_surface_get_height (image);
+    int pw = w - iw;
+    int ph = h - ih;
 
-    for (i=0; i<ctx->size; i++) {
-        y = 50 * (int)(i/4);
-        x = 200 * (i%4);
-        cairo_set_source_surface (cr, image, x, y);
+
+
+    for (int i=0; i<ctx->size; i++) {
+        double x = (double)rand()/RAND_MAX * pw;
+        double y = (double)rand()/RAND_MAX * ph;
+
+        cairo_new_path(cr);
+        cairo_save(cr);
+        cairo_translate(cr, w/2, h/2);
+        cairo_rotate(cr, i / 50.0);  // TODO: Original rotates by counter/50
+        cairo_translate(cr, -iw/2, -ih/2);
+        cairo_set_source_surface (cr, image, 0, 0);
         cairo_paint (cr);
+        cairo_restore(cr);
     }
+
+
     return 1;
 }
 

@@ -17,6 +17,8 @@
 int
 ca_setup_rect(caskbench_context_t *ctx)
 {
+    cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
+    cairo_set_line_width (ctx->cairo_cr, 1);
     return 1;
 }
 
@@ -28,6 +30,36 @@ ca_teardown_rect(void)
 int
 ca_test_rect(caskbench_context_t *ctx)
 {
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+
+    shapes_t shape;
+    shape_copy(&ctx->shape_defaults, &shape);
+    for (int i=0; i<ctx->size; i++) {
+        double x1 = (double)rand()/RAND_MAX * w;
+        double x2 = (double)rand()/RAND_MAX * w;
+        double y1 = (double)rand()/RAND_MAX * h;
+        double y2 = (double)rand()/RAND_MAX * h;
+
+        shape.x = MIN(x1, x2);
+        shape.y = MIN(x1, x2);
+        shape.width = abs(x2 - x1);
+        shape.height = abs(y2 - y1);
+
+        cairoRandomizeColor(ctx);
+        cairoDrawRectangle(ctx, &shape);
+        switch (ctx->shape_defaults.fill_type) {
+            case CB_FILL_NONE:
+                cairo_stroke(ctx->cairo_cr);
+                break;
+            case CB_FILL_SOLID:
+                cairo_fill(ctx->cairo_cr);
+                break;
+            default:
+                break;
+        }
+    }
+
     return 1;
 }
 

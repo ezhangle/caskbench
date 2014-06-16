@@ -17,6 +17,8 @@
 int
 ca_setup_lines(caskbench_context_t *ctx)
 {
+    cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
+    cairo_set_line_width (ctx->cairo_cr, 1);
     return 1;
 }
 
@@ -28,6 +30,23 @@ ca_teardown_lines(void)
 int
 ca_test_lines(caskbench_context_t *ctx)
 {
+
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+    double x = (double)rand()/RAND_MAX * w;
+    double y = (double)rand()/RAND_MAX * h;
+
+    cairo_move_to (ctx->cairo_cr,x, y);
+    for (int i=0; i<ctx->size; i++) {
+        x = (double)rand()/RAND_MAX * w;
+        y = (double)rand()/RAND_MAX * h;
+
+        cairo_line_to (ctx->cairo_cr,x, y);
+    }
+    cairoRandomizeColor(ctx);
+    cairo_close_path(ctx->cairo_cr);
+    cairo_stroke(ctx->cairo_cr);
+
     return 1;
 }
 

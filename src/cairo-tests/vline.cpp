@@ -17,6 +17,8 @@
 int
 ca_setup_vline(caskbench_context_t *ctx)
 {
+    cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
+    cairo_set_line_width (ctx->cairo_cr, 1);
     return 1;
 }
 
@@ -28,6 +30,27 @@ ca_teardown_vline(void)
 int
 ca_test_vline(caskbench_context_t *ctx)
 {
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+
+    shapes_t shape;
+    shape_copy(&ctx->shape_defaults, &shape);
+    for (int i=0; i<ctx->size; i++) {
+
+        double x = (double)rand()/RAND_MAX * w;
+        double y1 = (double)rand()/RAND_MAX * h;
+        double y2 = (double)rand()/RAND_MAX * h;
+
+        shape.x = x;
+        shape.y = y1;
+        shape.width = 0;
+        shape.height = y1 - y2;
+
+        cairoRandomizeColor(ctx);
+        cairoDrawLine(ctx, &shape);
+        cairo_stroke(ctx->cairo_cr);
+    }
+
     return 1;
 }
 

@@ -76,7 +76,7 @@ void
 cairoDrawLine(caskbench_context_t *ctx, shapes_t *args)
 {
     cairo_move_to (ctx->cairo_cr, args->x, args->y);
-    cairo_rel_line_to (ctx->cairo_cr, args->width, args->height);
+    cairo_line_to (ctx->cairo_cr, args->x + args->width, args->y + args->height);
 }
 
 void
@@ -89,10 +89,17 @@ cairoDrawQuadraticCurve(caskbench_context_t *ctx, shapes_t *args)
     double qy2 = args->height - args->dy1 * 2.0 / 3.0;
 
     cairo_move_to (ctx->cairo_cr, args->x, args->y);
+#if 0
     cairo_rel_curve_to (ctx->cairo_cr,
                         qx1, qy1,
                         qx2, qy2,
                         args->width, args->height);
+#else
+    cairo_rel_curve_to (ctx->cairo_cr,
+                        args->dx1, args->dy1,
+                        args->width, args->height,
+                        args->width, args->height);
+#endif
 }
 
 void

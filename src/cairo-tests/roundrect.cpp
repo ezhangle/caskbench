@@ -63,7 +63,7 @@ ca_test_roundrect(caskbench_context_t *ctx)
         shape.height = 40;
 
         /* line_width cannot be more than twice of radius due to skia limitation - Issue #4 in skia https://github.com/Samsung/skia/issues/4 */
-        shape.stroke_width = (double)rand()/RAND_MAX * (2*radius);
+        shape.stroke_width = (double)rand()/RAND_MAX * (2*shape.radius);
 
         cairoDrawRoundedRectangle(ctx, &shape);
 

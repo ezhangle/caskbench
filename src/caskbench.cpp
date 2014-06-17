@@ -61,6 +61,11 @@ typedef struct _caskbench_options {
     int gles_version;
     char *drawing_lib;
     int list_drawing_libs;
+    int depth_size;
+    int luminance_size;
+    int min_swap_interval;
+    int max_swap_interval;
+    int match_native_pixmap;
 
     const char **tests;
 } caskbench_options_t;
@@ -268,6 +273,21 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"gles-version", '\0', POPT_ARG_INT, &opt->gles_version, 0,
          "Specify the GLES version to use",
+         NULL},
+        {"depth-size", '\0', POPT_ARG_INT, &opt->depth_size, 0,
+         "Specify the EGL depth size to use",
+         NULL},
+        {"luminance-size", '\0', POPT_ARG_INT, &opt->luminance_size, 0,
+         "Specify the EGL luminance size to use",
+         NULL},
+        {"min-swap-interval", '\0', POPT_ARG_INT, &opt->min_swap_interval, 0,
+         "Specify the EGL minimum swap interval to use",
+         NULL},
+        {"max-swap-interval", '\0', POPT_ARG_INT, &opt->max_swap_interval, 0,
+         "Specify the EGL maximum swap interval to use",
+         NULL},
+        {"match-native-pixmap", '\0', POPT_ARG_INT, &opt->match_native_pixmap, 0,
+         "Specify the EGL pixmap handle to use",
          NULL},
 #endif
         {"list-drawing-libs", '\0', POPT_ARG_NONE, &opt->list_drawing_libs, 0,
@@ -513,6 +533,8 @@ main (int argc, char *argv[])
     double run_time_values[opt.iterations];
 
     memset (&config, 0, sizeof(device_config_t));
+    config.egl_min_swap_interval = -1;
+    config.egl_max_swap_interval = -1;
 
     if (opt.version) {
         print_version();
@@ -570,6 +592,18 @@ main (int argc, char *argv[])
         config.egl_samples = 4;
         config.egl_sample_buffers = 1;
     }
+
+    if (opt.depth_size)
+        config.egl_depth_size = opt.depth_size;
+    if (opt.luminance_size)
+        config.egl_luminance_size = opt.luminance_size;
+    if (opt.min_swap_interval)
+        config.egl_min_swap_interval = opt.min_swap_interval;
+    if (opt.max_swap_interval)
+        config.egl_max_swap_interval = opt.max_swap_interval;
+    if (opt.match_native_pixmap)
+        config.egl_match_native_pixmap = opt.match_native_pixmap;
+
     memset (user_test_ids, -1, sizeof(user_test_ids));
     populate_user_tests (opt.tests, num_user_tests, user_test_ids);
     if(opt.drawing_lib)

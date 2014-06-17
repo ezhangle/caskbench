@@ -19,6 +19,11 @@ typedef struct _device_config {
     int egl_sample_buffers;
     int egl_msaa_sample_count;
     int egl_gles_version;
+    int egl_depth_size;
+    int egl_luminance_size;
+    int egl_min_swap_interval;
+    int egl_max_swap_interval;
+    int egl_match_native_pixmap;
 
 } device_config_t;
 

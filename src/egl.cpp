@@ -20,7 +20,6 @@
 
 #include "egl.h"
 #include "device_config.h"
-
 bool
 createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_config)
 {
@@ -34,6 +33,11 @@ createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_conf
         EGL_STENCIL_SIZE, 1,
         EGL_SAMPLES, 0,
         EGL_SAMPLE_BUFFERS, 0,
+        EGL_DEPTH_SIZE, 0,
+        EGL_LUMINANCE_SIZE, 0,
+        EGL_MIN_SWAP_INTERVAL, EGL_DONT_CARE,
+        EGL_MAX_SWAP_INTERVAL, EGL_DONT_CARE,
+        EGL_MATCH_NATIVE_PIXMAP, EGL_NONE,
         EGL_NONE
     };
     EGLint ctx_attr[] = {
@@ -46,13 +50,28 @@ createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_conf
 
     // TODO: Hack
     // User configuration settings
-    for (int i=0; i<18; i+=2) {
+    for (int i=0; i<28; i+=2) {
         switch (attr[i]) {
         case EGL_SAMPLES:
             attr[i+1] = device_config.egl_samples;
             break;
         case EGL_SAMPLE_BUFFERS:
             attr[i+1] = device_config.egl_sample_buffers;
+            break;
+        case EGL_DEPTH_SIZE:
+            attr[i+1] = device_config.egl_depth_size;
+            break;
+        case EGL_LUMINANCE_SIZE:
+            attr[i+1] = device_config.egl_luminance_size;
+            break;
+        case EGL_MIN_SWAP_INTERVAL:
+            attr[i+1] = device_config.egl_min_swap_interval;
+            break;
+        case EGL_MAX_SWAP_INTERVAL:
+            attr[i+1] = device_config.egl_max_swap_interval;
+            break;
+        case EGL_MATCH_NATIVE_PIXMAP:
+            attr[i+1] = device_config.egl_match_native_pixmap;
             break;
         }
     }

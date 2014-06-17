@@ -27,7 +27,7 @@ ca_setup_animation(caskbench_context_t *ctx)
     // Animation setup
     particles = (kinetics_t *) malloc (sizeof (kinetics_t) * ctx->size);
     for (int i = 0; i < ctx->size; i++)
-        kinetics_init(&particles[i]);
+        kinetics_init(&particles[i], ctx);
 
     return 1;
 }

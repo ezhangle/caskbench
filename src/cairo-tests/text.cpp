@@ -59,7 +59,7 @@ ca_test_text(caskbench_context_t *ctx)
         cairo_rectangle (cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
         cairo_fill (cr);
 
-        for(font_size = 18; font_size <= 36; font_size++)
+        while (ypos <= ctx->canvas_height/2)
         {
             cairo_set_font_size (cr, font_size);
             cairoRandomizeColor(ctx);
@@ -88,10 +88,12 @@ ca_test_text(caskbench_context_t *ctx)
                                         glyphs, num_glyphs,
                                         clusters, num_clusters, cluster_flags);
             }
+            font_size = font_size+0.5;
+            if(font_size>=36)
+                font_size=36;
             ypos += (font_size/2);
         }
-
-        for(font_size = 36; font_size >= 18; font_size--)
+        while (ypos <= ctx->canvas_height)
         {
             cairo_set_font_size (cr, font_size);
             cairoRandomizeColor(ctx);
@@ -120,10 +122,12 @@ ca_test_text(caskbench_context_t *ctx)
                                     glyphs, num_glyphs,
                                     clusters, num_clusters, cluster_flags);
             }
+            font_size = font_size-0.5;
+            if(font_size<=18)
+                font_size=18;
             ypos += (font_size/2);
         }
     }
-
     return 1;
 }
 

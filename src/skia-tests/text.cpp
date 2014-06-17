@@ -16,7 +16,7 @@
 #include <SkTemplates.h>
 #include <SkTypeface.h>
 #include <effects/SkGradientShader.h>
-#include <SkUnitMappers.h>
+//#include <SkUnitMappers.h>
 #include <SkDraw.h>
 #include <effects/SkGradientShader.h>
 #include <SkGraphics.h>
@@ -76,7 +76,7 @@ sk_test_text(caskbench_context_t *ctx)
         int ypos = 0, xpos = 0;
         ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
-        for(font_size = 18; font_size <= 36; font_size++)
+        while (ypos <= ctx->canvas_height/2)
         {
             ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
             skiaRandomizePaintColor(ctx);
@@ -92,10 +92,14 @@ sk_test_text(caskbench_context_t *ctx)
 
             int glyphCount = ctx->skia_paint->textToGlyphs (text, font_size, glyphs);
             ctx->skia_canvas->drawText (glyphs, glyphCount * sizeof(uint16_t), xpos,ypos, newpaint);
+            font_size = font_size+0.5;
+            if(font_size>=36)
+                font_size=36;
             ypos += (font_size/2);
+
         }
 
-        for(font_size = 36; font_size >= 18; font_size--)
+        while (ypos <= ctx->canvas_height)
         {
             ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
             skiaRandomizePaintColor(ctx);
@@ -110,6 +114,9 @@ sk_test_text(caskbench_context_t *ctx)
 
             int glyphCount = ctx->skia_paint->textToGlyphs (text, font_size, glyphs);
             ctx->skia_canvas->drawText (glyphs, glyphCount * sizeof(uint16_t), xpos,ypos, localPaint);
+            font_size = font_size-0.5;
+            if(font_size<=18)
+                font_size=18;
             ypos += (font_size/2);
         }
 

@@ -91,7 +91,7 @@ ca_test_clip(caskbench_context_t *ctx)
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
         int i,j ;
         for (i = 0; i < num_particles; i++)
-            kinetics_init (&particles[i]);
+            kinetics_init (&particles[i], ctx);
 
         for (j=0;j<num_particles;j++){
             cairo_set_source_rgb (cr, 1, 1, 1);

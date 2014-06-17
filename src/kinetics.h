@@ -6,7 +6,7 @@
  */
 #ifndef __KINETICS_H__
 #define __KINETICS_H__
-
+#include <caskbench_context.h>
 typedef struct _kinetics
 {
     double angle;
@@ -21,10 +21,12 @@ typedef struct _kinetics
     double y_radius;
     double width;
     double height;
+    double canvas_width;
+    double canvas_height;
     double line_width;
 } kinetics_t;
 
-void kinetics_init (kinetics_t *kinetics);
+void kinetics_init (kinetics_t *kinetics, const caskbench_context_t *ctx);
 void kinetics_update (kinetics_t *kinetics, double delta);
 void kinetics_destroy(kinetics_t *kinetics);
 

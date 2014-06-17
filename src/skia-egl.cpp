@@ -21,7 +21,6 @@
 #include <GLES2/gl2.h>
 #endif
 
-
 #include "egl.h"
 #include "device_config.h"
 
@@ -52,18 +51,17 @@ create_skia_device_egl (const device_config_t& config)
     desc.fHeight = config.height;
     desc.fConfig = kSkia8888_GrPixelConfig;
     desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-
+    desc.fStencilBits = 1;
+    desc.fRenderTargetHandle = 0;
     if (config.egl_sample_buffers > 0)
         desc.fSampleCnt = config.egl_samples;
     else
         desc.fSampleCnt = 0;
-    desc.fStencilBits = 1;
-    desc.fRenderTargetHandle = 0;
+
     ctx = GrContext::Create(kOpenGL_GrBackend, 0);
-    if (ctx == NULL) {
-        warnx("Could not establish a graphics context for Skia EGL\n");
+    if (!ctx) {
         cleanup_state_egl(state);
-        return NULL;
+        errx(-1, "Could not establish a graphics context for Skia EGL\n");
     }
 
     target = ctx->wrapBackendRenderTarget(desc);

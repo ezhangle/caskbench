@@ -8,6 +8,7 @@
 
 #include <err.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include <EGL/egl.h>
 #if HAVE_GLES3_H
@@ -16,10 +17,9 @@
 #include <GLES2/gl2.h>
 #endif
 
-#include <unistd.h>
-
 #include "egl.h"
 #include "device_config.h"
+
 bool
 createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_config)
 {
@@ -81,7 +81,7 @@ createEGLContextAndWindow(egl_state_t *state, const device_config_t& device_conf
     }
 
     state->dpy = XOpenDisplay (NULL);
-    if (state->dpy == NULL) {
+    if (!state->dpy) {
         warnx ("Failed to open display: %s\n", XDisplayName (0));
         return false;
     }

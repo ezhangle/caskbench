@@ -8,6 +8,7 @@
 
 #include <err.h>
 #include <stdlib.h>
+
 #include <cairo.h>
 #include <cairo-gl.h>
 
@@ -36,7 +37,7 @@ create_cairo_surface_egl (const device_config_t& config)
 
     if (!createEGLContextAndWindow(state, config)) {
         cleanup_state_egl(state);
-        return NULL;
+        errx (-1, "Could not create EGL context and window\n");
     }
 
     eglMakeCurrent(state->egl_display, state->egl_surface, state->egl_surface, state->egl_context);

@@ -11,12 +11,14 @@
 
 #include <SkBitmapDevice.h>
 
+#include "forward.h"
 #include "image.h"
 
 static image_state_t *state;
 SkBitmap skia_bitmap;
 
-static bool convertBitmapToXImage(const SkBitmap& bitmap) {
+static bool
+convert_skbitmap_to_ximage(const SkBitmap& bitmap) {
     sk_bzero(&state->image, sizeof(state->image));
 
     int bitsPerPixel = bitmap.bytesPerPixel() * 8;
@@ -75,7 +77,7 @@ destroy_skia_image(void)
 void
 update_skia_image(void)
 {
-    if (convertBitmapToXImage (skia_bitmap)) {
+    if (convert_skbitmap_to_ximage (skia_bitmap)) {
         updateImageWindow(state);
     }
 }

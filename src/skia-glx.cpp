@@ -20,13 +20,6 @@
 static glx_state_t *state;
 GrContext* ctx;
 
-static bool ctxErrorOccurred = false;
-static int ctxErrorHandler(Display *dpy, XErrorEvent *ev)
-{
-    ctxErrorOccurred = true;
-    return 0;
-}
-
 SkBaseDevice *
 create_skia_device_glx (const device_config_t& config)
 {
@@ -40,52 +33,36 @@ create_skia_device_glx (const device_config_t& config)
         return NULL;
     }
 
-    // Install an X error handler so we won't exit if context allocation fails
-    ctxErrorOccurred = false;
-    int (*oldHandler)(Display*, XErrorEvent*) =
-        XSetErrorHandler(&ctxErrorHandler);
-
-    warnx("Creating GLX context\n");
     if (!createGLXContextAndWindow(state, config.width, config.height)) {
-        warnx("Could not create GLX context and window\n");
         cleanup_state_glx(state);
-        return NULL;
-    }
-
-    // Sync to ensure errors get processed
-    XSync(state->dpy, False);
-    XSetErrorHandler(oldHandler);
-
-    if (ctxErrorOccurred || !state->glx_context) {
-        warnx("Failed to create an OpenGL context\n");
-        cleanup_state_glx(state);
-        return NULL;
-    }
-
-    glXMakeCurrent(state->dpy, state->window, state->glx_context);
-    glClearColor(0, 0, 0, 0);
-    glClearStencil(0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-
-    ctx = GrContext::Create(kOpenGL_GrBackend, 0);
-    if (ctx == NULL) {
-        warnx("Could not create Gr context for kOpenGL_GrBackend\n");
-        return NULL;
+        errx("Could not create GLX context and window\n");
     }
 
     // TODO: See SkOSWindow_Unix.cpp
+
+    glXMakeCurrent(state->dpy, state->window, state->glx_context);
 
     desc.fWidth = config.width;
     desc.fHeight = config.height;
     desc.fConfig = kSkia8888_GrPixelConfig;
     desc.fOrigin = kBottomLeft_GrSurfaceOrigin;
-    //desc.fOrigin = kTopLeft_GrSurfaceOrigin;
-    desc.fSampleCnt = 4;
     desc.fStencilBits = 1;
     desc.fRenderTargetHandle = 0;
-    target = ctx->wrapBackendRenderTarget(desc);
+    desc.fSampleCnt = 0;
 
+    ctx = GrContext::Create(kOpenGL_GrBackend, 0);
+    if (!ctx) {
+        cleanup_state_glx(state);
+        errx("Could not create Gr context for kOpenGL_GrBackend\n");
+    }
+
+    target = ctx->wrapBackendRenderTarget(desc);
     device = new SkGpuDevice(ctx, target);
+
+    //glClearStencil(0);
+    glClearColor(1, 1, 1, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     return device;
 }
 
@@ -100,6 +77,7 @@ void
 update_skia_glx(void)
 {
     ctx->flush();
+    //glxSwapBuffers(state->glx_display, state->glx_surface); // TODO: ?
 }
 
 /*

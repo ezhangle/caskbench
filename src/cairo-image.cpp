@@ -8,6 +8,7 @@
 
 #include <err.h>
 #include <stdlib.h>
+
 #include <cairo.h>
 
 #include "forward.h"
@@ -16,7 +17,7 @@
 static image_state_t *state;
 cairo_surface_t *cairo_surface;
 
-static int
+static bool
 convert_cairo_surface_to_ximage (cairo_surface_t *surface)
 {
     unsigned char *data = cairo_image_surface_get_data (surface);
@@ -31,8 +32,7 @@ convert_cairo_surface_to_ximage (cairo_surface_t *surface)
     state->image.depth = 32;
     state->image.bytes_per_line = state->image.width * 4;
     state->image.bits_per_pixel = 4 * 8;
-    Status status =  XInitImage (&state->image);
-    return status;
+    return XInitImage (&state->image);
 }
 
 cairo_surface_t *

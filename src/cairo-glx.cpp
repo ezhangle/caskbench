@@ -8,6 +8,7 @@
 
 #include <err.h>
 #include <stdlib.h>
+
 #include <cairo.h>
 #include <cairo-gl.h>
 
@@ -29,18 +30,23 @@ create_cairo_surface_glx (const device_config_t& config)
     }
 
     if (!createGLXContextAndWindow(state, config.width, config.height)) {
-        warnx ("Could not create GLX context and window\n");
         cleanup_state_glx(state);
-        return NULL;
+        errx (-1, "Could not create GLX context and window\n");
     }
 
     cairo_device = cairo_glx_device_create (state->dpy, state->glx_context);
+    cairo_status_t status = cairo_device_status (cairo_device);
+    if (status != CAIRO_STATUS_SUCCESS)
+        errx (-1, "Could not create GLX device: (%d) %s\n", status, cairo_status_to_string (status) );
+
     cairo_gl_device_set_thread_aware (cairo_device, 0);
     cairo_surface = cairo_gl_surface_create_for_window (cairo_device,
                                                         state->window,
-                                                        config.width,
-                                                        config.height);
+                                                        config.width, config.height);
     cairo_device_destroy (cairo_device);
+
+    glClearColor(1, 1, 1, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     return cairo_surface;
 }
@@ -54,6 +60,7 @@ destroy_cairo_glx(void)
 void
 update_cairo_glx(void)
 {
+    cairo_gl_surface_swapbuffers (cairo_surface);
 }
 
 /*

@@ -9,8 +9,8 @@
 #include <err.h>
 #include <stdlib.h>
 
-#include "device_config.h"
 #include "image.h"
+#include "device_config.h"
 
 void
 cleanup_state_image (void *data)
@@ -55,7 +55,7 @@ createImageWindow(image_state_t *state, const device_config_t& device_config)
 }
 
 void
-updateImageWindow(image_state_t* state)
+updateImageWindow (image_state_t* state)
 {
     XPutImage (state->dpy, state->window, state->gc, &state->image,
                0, 0,
@@ -63,12 +63,15 @@ updateImageWindow(image_state_t* state)
                state->width, state->height);
     XSync (state->dpy, False);
 }
+
 void
-destroyImageWindow(image_state_t* state)
+destroyImageWindow (image_state_t* state)
 {
-    XFreeGC (state->dpy, state->gc);
-    XDestroyWindow (state->dpy, state->window);
-    XCloseDisplay (state->dpy);
+    if (state->dpy) {
+        XFreeGC (state->dpy, state->gc);
+        XDestroyWindow (state->dpy, state->window);
+        XCloseDisplay (state->dpy);
+    }
 }
 
 /*

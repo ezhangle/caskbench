@@ -52,9 +52,9 @@ echo "" >> $out_file
 echo "caskbench_perf_test_t perf_tests[] = {" >> $out_file
 
 for source_file in $(ls ${source_dir}/cairo-tests/*.cpp); do
-    test=$(basename ${source_file%.cpp})
-    test=${test/-/_}
-    if [ ! -e ${source_dir}/skia-tests/${test}.cpp ]; then
+    original_test=$(basename ${source_file%.cpp})
+    test=${original_test/-/_}
+    if [ ! -e ${source_dir}/skia-tests/${original_test}.cpp ]; then
 	continue
     fi
 

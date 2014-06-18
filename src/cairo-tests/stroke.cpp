@@ -87,7 +87,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
     }
 }
 
-void drawStroke(caskbench_context_t *ctx,kinetics_t *particles)
+void draw_stroke(caskbench_context_t *ctx, kinetics_t *particles)
 {
     int i, r,j;
     int  w, h;
@@ -127,13 +127,12 @@ ca_test_stroke(caskbench_context_t *ctx)
 
             for (i = 0; i < num_particles; i++) {
                 kinetics_update(&particles[i], 0.1);
-                drawStroke(ctx,&particles[i]);
+                draw_stroke(ctx, &particles[i]);
             }
         }
+    } else {
+        draw_stroke(ctx, NULL);
     }
-    else
-        //drawStroke(ctx,NULL);
-        ctx->shape_defaults.multi_shapes?drawStroke(ctx,NULL):drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100.0,ctx->shape_defaults.y?ctx->shape_defaults.y:100.0);
 
     return 1;
 }

@@ -72,8 +72,10 @@ static void drawShape(caskbench_context_t *ctx,double x,double y,kinetics_t *par
     ctx->skia_canvas->flush();
 }
 
-static void draw_stroke(caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles) {
-    int i,j,x,y;
+static void draw_stroke(caskbench_context_t *ctx, kinetics_t* particles) {
+    int i, j, x, y;
+    SkCanvas* canvas = ctx->skia_canvas;
+
     for (j=0; j<num_y_elements; j++) {
         y = particles?particles->y : j * element_spacing;
         ctx->skia_paint->setStrokeJoin((SkPaint::Join)(j % 5));
@@ -81,7 +83,7 @@ static void draw_stroke(caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* pa
             x = particles?particles->x : i * element_spacing;
             ctx->skia_paint->setStrokeCap((SkPaint::Cap)(i % 5));
             skiaRandomizePaintColor(ctx);
-            drawShape(ctx, x,y);
+            drawShape(ctx, x, y);
         }
     }
 }
@@ -114,7 +116,7 @@ int
 sk_test_stroke(caskbench_context_t *ctx)
 {
     /* Animation */
-    if(ctx->shape_defaults.animation)
+    if (ctx->shape_defaults.animation)
     {
         int num_particles = ctx->shape_defaults.animation;
         particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
@@ -131,10 +133,10 @@ sk_test_stroke(caskbench_context_t *ctx)
                 drawShape(ctx,particles[i].x,particles[i].y,&particles[i]);
             }
         }
+    } else {
+        draw_stroke(ctx, NULL);
     }
-    /* Static clip */
-    else
-        ctx->shape_defaults.multi_shapes?draw_stroke(ctx,ctx->skia_canvas,NULL):drawShape(ctx,ctx->shape_defaults.x?ctx->shape_defaults.x:100,ctx->shape_defaults.y?ctx->shape_defaults.y:100);
+
     return 1;
 }
 

@@ -47,7 +47,6 @@ typedef struct _caskbench_options {
     int animation;
     char *stock_image_path;
     int stroke_width;
-    int multi_shapes;
     int cap_style;
     int join_style;
     int dash_style;
@@ -236,10 +235,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"stroke-width", '\0', POPT_ARG_INT, &opt->stroke_width, 0,
          "Line width for stroked test objects",
          NULL},
-        // TODO: Crashes
-        {"multi-shapes", 'm', POPT_ARG_INT, &opt->multi_shapes, 0,
-         "Enable multiple shapes in supporting tests",
-         NULL},
 #if 0
         {"cap-style", 'C', POPT_ARG_INT, &opt->cap_style, 0,
          "Line ending style for stroked test objects",
@@ -373,7 +368,6 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->fill_color = convertToColorValue(opt->fill_color);
     shape_defaults->stroke_color = convertToColorValue(opt->stroke_color);
     shape_defaults->stroke_width = opt->stroke_width;
-    shape_defaults->multi_shapes = opt->multi_shapes;
     shape_defaults->animation = opt->animation;
     shape_defaults->stroke_width = opt->stroke_width;
     shape_defaults->cap_style = opt->cap_style;

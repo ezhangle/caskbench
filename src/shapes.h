@@ -52,7 +52,6 @@ typedef struct shapes
     uint32_t stroke_color;
     int animation;
     int stroke_width;
-    int multi_shapes;
 
     int dash_style;
     int cap_style;

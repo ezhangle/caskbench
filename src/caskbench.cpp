@@ -414,7 +414,7 @@ convertToTestId(const char* test_name)
 
     /* Checks whether the user provided test case is valid */
     for(j = 0; j < num_perf_tests; j++) {
-        if (strstr (perf_tests[j].name, test_name))
+        if (strcmp (perf_tests[j].name, test_name) == 0)
             return j;
     }
 

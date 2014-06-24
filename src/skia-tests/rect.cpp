@@ -17,7 +17,6 @@
 #include "skia-shapes.h"
 
 /* TODO:
- * - How to specify fill?
  * - Specify with or without alpha
  * - With or without antialiasing?
  * - Stroke width should be via the shape defaults
@@ -29,15 +28,8 @@ sk_setup_rect(caskbench_context_t *ctx)
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
 
-    switch (ctx->shape_defaults.fill_type) {
-        case CB_FILL_NONE:
-            ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-            break;
-        case CB_FILL_SOLID:
-            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
-            break;
-        default:
-            break;
+    if (ctx->shape_defaults.fill_type != CB_FILL_RANDOM) {
+        sk_set_fill_style(ctx, ctx->shape_defaults.fill_type);
     }
 
     return 1;
@@ -66,6 +58,10 @@ sk_test_rect(caskbench_context_t *ctx)
         shape.y = MIN(x1, x2);
         shape.width = abs(x2 - x1);
         shape.height = abs(y2 - y1);
+
+        if (shape.fill_type == CB_FILL_RANDOM) {
+            sk_set_fill_style(ctx, generate_random_fill_type());
+        }
 
         skiaRandomizePaintColor(ctx);
         skiaDrawRectangle(ctx, &shape);

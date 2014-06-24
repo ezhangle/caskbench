@@ -194,7 +194,7 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
     static const double dashed2[] = {14.0, 6.0};
 
     // Shape Type
-    if (shape->shape_type == CB_SHAPE_NONE)
+    if (shape->shape_type == CB_SHAPE_RANDOM)
         shape->shape_type = generate_random_shape();
 
     // Options for fill, gradient, and transparency

@@ -4,6 +4,7 @@
  * Use of this source code is governed by the 3-Clause BSD license
  * specified in the COPYING file included with this source code.
  */
+#include <err.h>
 #include <string.h>
 
 #include "shapes.h"
@@ -29,9 +30,8 @@ convertToFillType(const char *fill_name)
             return (fill_type_t) i ;
         i++;
     }
-    return (fill_type_t) 0;
+    errx(1, "Unknown fill type '%s' specified", fill_name);
 }
-
 
 const char *gShapes[] = {
     "circle",
@@ -53,7 +53,7 @@ convertToShapeType(const char* shape_name)
             return (shape_type_t)(i + 1);
         i++;
     }
-    return (shape_type_t) 0;
+    errx(1, "Unknown shape type '%s' specified", shape_name);
 }
 
 
@@ -93,6 +93,18 @@ shape_type_t
 generate_random_shape()
 {
     return (shape_type_t) ((((double)(CB_SHAPE_END-1) * rand())/RAND_MAX) + 1);
+}
+
+fill_type_t
+generate_random_fill_type()
+{
+#if 0
+    // TODO: Not all fill styles are implemented yet
+    return (fill_type_t) ((((double)(CB_FILL_END-1) * rand())/RAND_MAX) + 1);
+#else
+    // TODO: So for now only go up to solid fills
+    return (fill_type_t) ((((double)(CB_FILL_SOLID) * rand())/RAND_MAX) + 1);
+#endif
 }
 
 /*

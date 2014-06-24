@@ -48,7 +48,7 @@ static void drawShape(caskbench_context_t *ctx,double x,double y)
     int i, r, p;
     shape_type_t shape;
     r = 0.9 * element_spacing /2;
-    if(ctx->shape_defaults.shape_type == CB_SHAPE_NONE)
+    if(ctx->shape_defaults.shape_type == CB_SHAPE_RANDOM)
         shape = generate_random_shape();
     else
         shape = ctx->shape_defaults.shape_type;

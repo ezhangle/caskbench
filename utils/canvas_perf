@@ -60,6 +60,7 @@ def execute(command):
         raise ReturnCode(p.returncode, p.stderr.readlines())
     return output
 
+
 results = []
 for testcase in perfdefs:
     cmd = [ CASKBENCH,
@@ -75,6 +76,8 @@ for testcase in perfdefs:
     if test[:5] == "fill_":
         test = test[5:]
         cmd = cmd + ['-f', 'solid']
+    else:
+        cmd = cmd + ['-f', 'none']
 
     cmd.append(test)
     #print(cmd)

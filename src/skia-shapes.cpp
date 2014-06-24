@@ -25,7 +25,6 @@ int32_t SkToS32(intmax_t x) { return (int32_t)x; }
 
 bool gPrintInstCount = false;
 
-
 SkColor
 skiaRandomColor()
 {
@@ -42,6 +41,26 @@ skiaRandomizePaintColor(caskbench_context_t *ctx)
 {
     ctx->skia_paint->setColor(skiaRandomColor());
 }
+
+void
+sk_set_fill_style(caskbench_context_t *ctx, fill_type_t fill_type)
+{
+    switch (fill_type) {
+        case CB_FILL_NONE:
+            ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+            break;
+        case CB_FILL_SOLID:
+        case CB_FILL_LINEAR_GRADIENT:      /* TODO */
+        case CB_FILL_RADIAL_GRADIENT:      /* TODO */
+        case CB_FILL_IMAGE_PATTERN:        /* TODO */
+        case CB_FILL_HERRINGBONE_PATTERN:  /* TODO */
+            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            break;
+        default:
+            break;
+    }
+}
+
 
 SkShader*
 skiaCreateLinearGradientShader(int y1, int y2)
@@ -199,7 +218,7 @@ void
 skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
 {
     // Shape Type
-    if (shape->shape_type == CB_SHAPE_NONE)
+    if (shape->shape_type == CB_SHAPE_RANDOM)
         shape->shape_type = generate_random_shape();
 
     // Options for fill, gradient and transparency

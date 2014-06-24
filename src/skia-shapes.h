@@ -16,6 +16,8 @@ SkColor skiaRandomColor();
 
 void skiaRandomizePaintColor(caskbench_context_t *ctx);
 
+void sk_set_fill_style(caskbench_context_t *ctx, fill_type_t fill_type);
+
 SkShader *skiaCreateLinearGradientShader(int y1, int y2);
 
 SkShader *skiaCreateRadialGradientShader(int x, int y, int r);

@@ -10,19 +10,21 @@
 #include <stdint.h>
 
 typedef enum {
+    CB_FILL_RANDOM,
     CB_FILL_NONE,
     CB_FILL_SOLID,
     CB_FILL_LINEAR_GRADIENT,
     CB_FILL_RADIAL_GRADIENT,
     CB_FILL_IMAGE_PATTERN,
-    CB_FILL_HERRINGBONE_PATTERN
+    CB_FILL_HERRINGBONE_PATTERN,
+    CB_FILL_END
 } fill_type_t;
 
 fill_type_t
 convertToFillType(const char *fill_name);
 
 typedef enum {
-    CB_SHAPE_NONE,
+    CB_SHAPE_RANDOM,
     CB_SHAPE_CIRCLE,
     CB_SHAPE_RECTANGLE,
     CB_SHAPE_TRIANGLE,
@@ -71,6 +73,9 @@ shape_randomize(shapes_t *shape);
 
 shape_type_t
 generate_random_shape();
+
+fill_type_t
+generate_random_fill_type();
 
 #endif
 /*

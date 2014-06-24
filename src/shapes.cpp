@@ -10,6 +10,7 @@
 #include "shapes.h"
 
 const char *gFillTypes[] = {
+    "random",
     "none",
     "solid",
     "linear-gradient",
@@ -34,6 +35,7 @@ convertToFillType(const char *fill_name)
 }
 
 const char *gShapes[] = {
+    "random",
     "circle",
     "rectangle",
     "triangle",
@@ -98,13 +100,7 @@ generate_random_shape()
 fill_type_t
 generate_random_fill_type()
 {
-#if 0
-    // TODO: Not all fill styles are implemented yet
     return (fill_type_t) ((((double)(CB_FILL_END-1) * rand())/RAND_MAX) + 1);
-#else
-    // TODO: So for now only go up to solid fills
-    return (fill_type_t) ((((double)(CB_FILL_SOLID) * rand())/RAND_MAX) + 1);
-#endif
 }
 
 /*

@@ -43,22 +43,44 @@ skiaRandomizePaintColor(caskbench_context_t *ctx)
 }
 
 void
-sk_set_fill_style(caskbench_context_t *ctx, fill_type_t fill_type)
+sk_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape)
 {
-    switch (fill_type) {
+    SkShader* shader = NULL;
+    switch (shape->fill_type) {
         case CB_FILL_NONE:
             ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
             break;
         case CB_FILL_SOLID:
-        case CB_FILL_LINEAR_GRADIENT:      /* TODO */
-        case CB_FILL_RADIAL_GRADIENT:      /* TODO */
-        case CB_FILL_IMAGE_PATTERN:        /* TODO */
-        case CB_FILL_HERRINGBONE_PATTERN:  /* TODO */
-            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            if (shape->stroke_width <= 0)
+                ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            else
+                ctx->skia_paint->setStyle(SkPaint::kStrokeAndFill_Style);
             break;
+        case CB_FILL_LINEAR_GRADIENT:
+            shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
+            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            ctx->skia_paint->setShader(shader);
+            break;
+        case CB_FILL_RADIAL_GRADIENT:
+            shader = skiaCreateRadialGradientShader(shape);
+            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            ctx->skia_paint->setShader(shader);
+            break;
+        case CB_FILL_IMAGE_PATTERN:
+            shader = skiaCreateBitmapShader(ctx->stock_image_path);
+            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            ctx->skia_paint->setShader(shader);
+            break;
+#if 0
+        case CB_FILL_HERRINGBONE_PATTERN:  /* TODO */
+            break;
+#endif
         default:
             break;
     }
+
+    if (shader)
+        shader->unref();
 }
 
 
@@ -69,31 +91,45 @@ skiaCreateLinearGradientShader(int y1, int y2)
     SkPoint linearPoints[2];
 
     linearColors[0] = skiaRandomColor();
-    linearColors[1] = SkColorSetARGB (200,200,200,200);
+    linearColors[1] = skiaRandomColor();
     linearPoints[0].fX = SkIntToScalar(0);
     linearPoints[0].fY = SkIntToScalar(y1);
     linearPoints[1].fX = SkIntToScalar(0);
     linearPoints[1].fY = SkIntToScalar(y2);
 
     return SkGradientShader::CreateLinear(
-        linearPoints, linearColors, NULL, 2,
+        linearPoints, linearColors, NULL, NUM_ELEM(linearColors),
         SkShader::kClamp_TileMode, NULL);
 }
 
 SkShader*
-skiaCreateRadialGradientShader(int x, int y, int r)
+skiaCreateRadialGradientShader(const shapes_t *shape)
 {
+    double radius = shape->radius;
     SkPoint center;
-    SkColor linearColors[2];
-    SkScalar radialPoints[4];
+    SkColor colors[2];
 
-    linearColors[0] = SkColorSetARGB (200,200,200,200);
-    linearColors[1] = skiaRandomColor();
-    center.set(x+r, y+r);
+    colors[0] = skiaRandomColor();
+    colors[1] = skiaRandomColor();
+    if (shape->radius > 0) {
+        center.set(shape->x + shape->radius, shape->y + shape->radius);
+    } else if (shape->width > shape->height) {
+        radius = shape->height/2;
+        center.set(
+            shape->x + radius + ((double)rand()*shape->width)/RAND_MAX,
+            shape->y + radius
+            );
+    } else {
+        radius = shape->width/2;
+        center.set(
+            shape->x + radius,
+            shape->y + radius + ((double)rand()*shape->height)/RAND_MAX
+            );
+    }
 
     return SkGradientShader::CreateRadial(
-        center, r,
-        linearColors, NULL, 2,
+        center, radius,
+        colors, NULL, NUM_ELEM(colors),
         SkShader::kClamp_TileMode, NULL);
 }
 
@@ -222,38 +258,23 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         shape->shape_type = generate_random_shape();
 
     // Options for fill, gradient and transparency
-    SkShader* shader = NULL;
-    switch (shape->fill_type) {
-        case CB_FILL_IMAGE_PATTERN:
-            shader = skiaCreateBitmapShader(ctx->stock_image_path);
-            break;
-        case CB_FILL_RADIAL_GRADIENT:
-            shader = skiaCreateRadialGradientShader(shape->x, shape->y, shape->radius);
-            break;
-        case CB_FILL_LINEAR_GRADIENT:
-            shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
-            break;
-        case CB_FILL_NONE:
-        case CB_FILL_SOLID:
-        default:
-            SkColor color;
-            if (shape->fill_color != -1) {
-                color = SkColorSetARGB (shape->fill_color & 255,
-                                       (shape->fill_color >> 24) & 255,
-                                       (shape->fill_color >> 16) & 255,
-                                       (shape->fill_color >> 8) & 255);
-            }
-            else {
-                color = skiaRandomColor();
-            }
-            ctx->skia_paint->setColor(color);
-            break;
+    if (shape->fill_type == CB_FILL_RANDOM)
+        shape->fill_type = generate_random_fill_type();
+    sk_set_fill_style(ctx, shape);
+
+    SkColor color;
+    if (shape->fill_color != -1) {
+        color = SkColorSetARGB (shape->fill_color & 255,
+                                (shape->fill_color >> 24) & 255,
+                                (shape->fill_color >> 16) & 255,
+                                (shape->fill_color >> 8) & 255);
     }
-    if (shader)
-        ctx->skia_paint->setShader (shader);
+    else {
+        color = skiaRandomColor();
+    }
+    ctx->skia_paint->setColor(color);
 
     // Draw
-    ctx->skia_paint->setStyle(SkPaint::kFill_Style);
     skiaShapes[shape->shape_type-1] (ctx, shape);
 
     // Stroke styles
@@ -288,10 +309,6 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
     // Cleanup
     ctx->skia_canvas->flush();
     ctx->skia_paint->setPathEffect(NULL);
-    if (shader != NULL) {
-        ctx->skia_paint->setShader (NULL);
-        delete shader;
-    }
 }
 
 

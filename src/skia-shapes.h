@@ -16,11 +16,11 @@ SkColor skiaRandomColor();
 
 void skiaRandomizePaintColor(caskbench_context_t *ctx);
 
-void sk_set_fill_style(caskbench_context_t *ctx, fill_type_t fill_type);
+void sk_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape);
 
 SkShader *skiaCreateLinearGradientShader(int y1, int y2);
 
-SkShader *skiaCreateRadialGradientShader(int x, int y, int r);
+SkShader *skiaCreateRadialGradientShader(const shapes_t *shape);
 
 SkShader *skiaCreateBitmapShader(const char *image_path);
 void skiaDrawLine(caskbench_context_t *ctx, shapes_t *args);

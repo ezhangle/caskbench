@@ -28,10 +28,6 @@ sk_setup_rect(caskbench_context_t *ctx)
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
 
-    if (ctx->shape_defaults.fill_type != CB_FILL_RANDOM) {
-        sk_set_fill_style(ctx, ctx->shape_defaults.fill_type);
-    }
-
     return 1;
 }
 
@@ -59,9 +55,10 @@ sk_test_rect(caskbench_context_t *ctx)
         shape.width = abs(x2 - x1);
         shape.height = abs(y2 - y1);
 
-        if (shape.fill_type == CB_FILL_RANDOM) {
-            sk_set_fill_style(ctx, generate_random_fill_type());
+        if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {
+            shape.fill_type = generate_random_fill_type();
         }
+        sk_set_fill_style(ctx, &shape);
 
         skiaRandomizePaintColor(ctx);
         skiaDrawRectangle(ctx, &shape);

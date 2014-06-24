@@ -16,7 +16,9 @@ typedef enum {
     CB_FILL_LINEAR_GRADIENT,
     CB_FILL_RADIAL_GRADIENT,
     CB_FILL_IMAGE_PATTERN,
+#if 0
     CB_FILL_HERRINGBONE_PATTERN,
+#endif
     CB_FILL_END
 } fill_type_t;
 

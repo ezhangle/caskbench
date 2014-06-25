@@ -15,7 +15,7 @@
 #include "cairo-shapes.h"
 
 int
-ca_setup_arc(caskbench_context_t *ctx)
+ca_setup_quadratic(caskbench_context_t *ctx)
 {
     cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (ctx->cairo_cr, 1);
@@ -23,12 +23,12 @@ ca_setup_arc(caskbench_context_t *ctx)
 }
 
 void
-ca_teardown_arc(void)
+ca_teardown_quadratic(void)
 {
 }
 
 int
-ca_test_arc(caskbench_context_t *ctx)
+ca_test_quadratic(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
@@ -36,23 +36,16 @@ ca_test_arc(caskbench_context_t *ctx)
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
     for (int i=0; i<ctx->size; i++) {
-        shape.x = (double)rand()/RAND_MAX * w;
-        shape.y = (double)rand()/RAND_MAX * h;
-        shape.radius = (double)rand()/RAND_MAX * MIN(
-            MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
+        shape.x  = (double)rand()/RAND_MAX * w;
+        shape.dx1 = (double)rand()/RAND_MAX * w;
+        shape.width = (double)rand()/RAND_MAX * w - shape.x;
+        shape.y  = (double)rand()/RAND_MAX * h;
+        shape.dy1 = (double)rand()/RAND_MAX * h;
+        shape.height = (double)rand()/RAND_MAX * h - shape.y;
 
         cairoRandomizeColor(ctx);
-        cairoDrawCircle(ctx, &shape);
-        switch (ctx->shape_defaults.fill_type) {
-            case CB_FILL_NONE:
-                cairo_stroke(ctx->cairo_cr);
-                break;
-            case CB_FILL_SOLID:
-                cairo_fill(ctx->cairo_cr);
-                break;
-            default:
-                break;
-        }
+        cairoDrawQuadraticCurve(ctx, &shape);
+        cairo_stroke(ctx->cairo_cr);
     }
 
     return 1;

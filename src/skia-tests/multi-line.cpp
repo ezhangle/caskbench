@@ -17,7 +17,7 @@
 #include "skia-shapes.h"
 
 int
-sk_setup_quad(caskbench_context_t *ctx)
+sk_setup_multi_line(caskbench_context_t *ctx)
 {
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
@@ -26,29 +26,29 @@ sk_setup_quad(caskbench_context_t *ctx)
 }
 
 void
-sk_teardown_quad(void)
+sk_teardown_multi_line(void)
 {
 }
 
 int
-sk_test_quad(caskbench_context_t *ctx)
+sk_test_multi_line(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
+    double x = (double)rand()/RAND_MAX * w;
+    double y = (double)rand()/RAND_MAX * h;
+    SkPath path;
 
-    shapes_t shape;
-    shape_copy(&ctx->shape_defaults, &shape);
+    path.moveTo(x, y);
     for (int i=0; i<ctx->size; i++) {
-        shape.x  = (double)rand()/RAND_MAX * w;
-        shape.dx1 = (double)rand()/RAND_MAX * w;
-        shape.width = (double)rand()/RAND_MAX * w - shape.x;
-        shape.y  = (double)rand()/RAND_MAX * h;
-        shape.dy1 = (double)rand()/RAND_MAX * h;
-        shape.height = (double)rand()/RAND_MAX * h - shape.y;
+        x = (double)rand()/RAND_MAX * w;
+        y = (double)rand()/RAND_MAX * h;
 
-        skiaRandomizePaintColor(ctx);
-        skiaDrawQuadraticCurve(ctx, &shape);
+        path.lineTo(x, y);
     }
+
+    skiaRandomizePaintColor(ctx);
+    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 
     return 1;
 }

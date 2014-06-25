@@ -6,32 +6,29 @@
  */
 #include <config.h>
 
-#include <math.h>
-
-#include <SkCanvas.h>
-#include <SkPaint.h>
-#include <SkRect.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <cairo.h>
 
 #include "caskbench.h"
 #include "caskbench_context.h"
-#include "skia-shapes.h"
+#include "cairo-shapes.h"
 
 int
-sk_setup_bezier(caskbench_context_t *ctx)
+ca_setup_cubic(caskbench_context_t *ctx)
 {
-    ctx->skia_paint->setAntiAlias(false);
-    ctx->skia_paint->setStrokeWidth(1);
-    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+    cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
+    cairo_set_line_width (ctx->cairo_cr, 1);
     return 1;
 }
 
 void
-sk_teardown_bezier(void)
+ca_teardown_cubic(void)
 {
 }
 
 int
-sk_test_bezier(caskbench_context_t *ctx)
+ca_test_cubic(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
@@ -48,10 +45,11 @@ sk_test_bezier(caskbench_context_t *ctx)
         shape.dy2 = (double)rand()/RAND_MAX * h;
         shape.height = (double)rand()/RAND_MAX * h - shape.y;
 
-        skiaRandomizePaintColor(ctx);
-        skiaDrawCubicCurve(ctx, &shape);
+        cairoRandomizeColor(ctx);
+        cairoDrawCubicCurve(ctx, &shape);
     }
 
+    cairo_stroke(ctx->cairo_cr);
     return 1;
 }
 

@@ -20,7 +20,7 @@ static int num_x_elements;
 static int num_y_elements;
 
 int
-ca_setup_multishape(caskbench_context_t *ctx)
+ca_setup_multi_shape(caskbench_context_t *ctx)
 {
     if (ctx->size < 0)
         return 0;
@@ -34,12 +34,12 @@ ca_setup_multishape(caskbench_context_t *ctx)
 }
 
 void
-ca_teardown_multishape(void)
+ca_teardown_multi_shape(void)
 {
 }
 
 int
-ca_test_multishape(caskbench_context_t *ctx)
+ca_test_multi_shape(caskbench_context_t *ctx)
 {
     ctx->shape_defaults.radius = 0.9 * element_spacing / 2;
     ctx->shape_defaults.width = 2*ctx->shape_defaults.radius;

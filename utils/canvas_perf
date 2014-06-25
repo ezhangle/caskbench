@@ -20,24 +20,24 @@ perfdefs = [
     [ "line",              1000,   6, ["line"] ],
     [ "rect",              1000,   5, ["rect", "-f", "none"] ],
     [ "fill_rect",          500,   5, ["rect", "-f", "solid"] ],
-    [ "lines",             1000,   8, ["lines"] ],  # Rename to multi-line
-    [ "arc",               1000,   4, ["arc", "-f", "none"] ],  # Rename to circle
-    [ "fill_arc",          1000,   7, ["arc", "-f", "solid"] ],
-    [ "bezier",            1000,   3, ["bezier"] ], # Rename to cubic
-#   [ "fill_bezier",       1000,   4, ["bezier", "-f", "solid"] ],
-    [ "quad",              1000,   4, ["quad"] ], # Rename to quadratic
+    [ "lines",             1000,   8, ["multi-line"] ],
+    [ "arc",               1000,   4, ["circle", "-f", "none"] ],
+    [ "fill_arc",          1000,   7, ["circle", "-f", "solid"] ],
+    [ "bezier",            1000,   3, ["cubic"] ],
+#   [ "fill_bezier",       1000,   4, ["cubic", "-f", "solid"] ],
+    [ "quad",              1000,   4, ["quadratic"] ],
 #   [ "curves",              50,   5, ["curves", "-f", "none"] ],
 #   [ "fill_curves",         50,   8, ["curves", "-f", "solid"] ],
-    [ "star",              1000,   7, ["star", "-f", "none"] ], # Renamed from stroke_star
+    [ "stroke_star",       1000,   7, ["star", "-f", "none"] ],
     [ "fill_star",         1000,  12, ["star", "-f", "solid"] ],
 #   [ "transform",           10, 0.2, ["transform"] ],
-    [ "image",              100, 0.3, ["image"], ],
-    [ "image_scale",        100, 0.8, ["image_scale"], ],
-    [ "image_rotate",        15, 0.3, ["image_rotate"], ],
-#   [ "linear_gradient",    100, 2, ],
-#   [ "radial_gradient",    100, 0.3, ],
-#   [ "text",               100, 0.6, ],
-#   [ "clip",               100, 0.8, ]
+    [ "image",              100, 0.3, ["image"] ],
+    [ "image_scale",        100, 0.8, ["image_scale"] ],
+    [ "image_rotate",        15, 0.3, ["image_rotate"] ],
+#   [ "linear_gradient",    100,   2, ["fill", "-f", "linear-gradient"] ],
+#   [ "radial_gradient",    100, 0.3, ["fill", "-f", "radial-gradient"] ],
+#   [ "text",               100, 0.6, ["text"] ],
+#   [ "clip",               100, 0.8, ["clip"] ]
     ]
 
 class ReturnCode(Exception):

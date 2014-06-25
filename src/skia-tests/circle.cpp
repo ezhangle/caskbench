@@ -17,38 +17,47 @@
 #include "skia-shapes.h"
 
 int
-sk_setup_lines(caskbench_context_t *ctx)
+sk_setup_circle(caskbench_context_t *ctx)
 {
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
-    ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+
+    switch (ctx->shape_defaults.fill_type) {
+        case CB_FILL_NONE:
+            ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+            break;
+        case CB_FILL_SOLID:
+            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+            break;
+        default:
+            break;
+    }
+
     return 1;
 }
 
 void
-sk_teardown_lines(void)
+sk_teardown_circle(void)
 {
 }
 
 int
-sk_test_lines(caskbench_context_t *ctx)
+sk_test_circle(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
-    double x = (double)rand()/RAND_MAX * w;
-    double y = (double)rand()/RAND_MAX * h;
-    SkPath path;
 
-    path.moveTo(x, y);
+    shapes_t shape;
+    shape_copy(&ctx->shape_defaults, &shape);
     for (int i=0; i<ctx->size; i++) {
-        x = (double)rand()/RAND_MAX * w;
-        y = (double)rand()/RAND_MAX * h;
+        shape.x = (double)rand()/RAND_MAX * w;
+        shape.y = (double)rand()/RAND_MAX * h;
+        shape.radius = (double)rand()/RAND_MAX * MIN(
+            MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
 
-        path.lineTo(x, y);
+        skiaRandomizePaintColor(ctx);
+        skiaDrawCircle(ctx, &shape);
     }
-
-    skiaRandomizePaintColor(ctx);
-    ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
 
     return 1;
 }

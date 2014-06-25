@@ -6,43 +6,29 @@
  */
 #include <config.h>
 
-#include <math.h>
-
-#include <SkCanvas.h>
-#include <SkPaint.h>
-#include <SkRect.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <cairo.h>
 
 #include "caskbench.h"
 #include "caskbench_context.h"
-#include "skia-shapes.h"
+#include "cairo-shapes.h"
 
 int
-sk_setup_arc(caskbench_context_t *ctx)
+ca_setup_circle(caskbench_context_t *ctx)
 {
-    ctx->skia_paint->setAntiAlias(false);
-    ctx->skia_paint->setStrokeWidth(1);
-
-    switch (ctx->shape_defaults.fill_type) {
-        case CB_FILL_NONE:
-            ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-            break;
-        case CB_FILL_SOLID:
-            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
-            break;
-        default:
-            break;
-    }
-
+    cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
+    cairo_set_line_width (ctx->cairo_cr, 1);
     return 1;
 }
 
 void
-sk_teardown_arc(void)
+ca_teardown_circle(void)
 {
 }
 
 int
-sk_test_arc(caskbench_context_t *ctx)
+ca_test_circle(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
@@ -55,8 +41,18 @@ sk_test_arc(caskbench_context_t *ctx)
         shape.radius = (double)rand()/RAND_MAX * MIN(
             MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
 
-        skiaRandomizePaintColor(ctx);
-        skiaDrawCircle(ctx, &shape);
+        cairoRandomizeColor(ctx);
+        cairoDrawCircle(ctx, &shape);
+        switch (ctx->shape_defaults.fill_type) {
+            case CB_FILL_NONE:
+                cairo_stroke(ctx->cairo_cr);
+                break;
+            case CB_FILL_SOLID:
+                cairo_fill(ctx->cairo_cr);
+                break;
+            default:
+                break;
+        }
     }
 
     return 1;

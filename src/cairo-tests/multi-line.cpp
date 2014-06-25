@@ -15,7 +15,7 @@
 #include "cairo-shapes.h"
 
 int
-ca_setup_lines(caskbench_context_t *ctx)
+ca_setup_multi_line(caskbench_context_t *ctx)
 {
     cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (ctx->cairo_cr, 1);
@@ -23,12 +23,12 @@ ca_setup_lines(caskbench_context_t *ctx)
 }
 
 void
-ca_teardown_lines(void)
+ca_teardown_multi_line(void)
 {
 }
 
 int
-ca_test_lines(caskbench_context_t *ctx)
+ca_test_multi_line(caskbench_context_t *ctx)
 {
 
     int w = ctx->canvas_width;

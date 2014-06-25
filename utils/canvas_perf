@@ -15,29 +15,29 @@ import json
 CASKBENCH = 'src/caskbench'
 
 perfdefs = [
-    [ "hline",                 1000,  30 ],
-    [ "vline",                 1000,  15 ],
-    [ "line",                  1000,   6 ],
-    [ "rect",                  1000,   5 ],
-    [ "fill_rect",              500,   5 ],
-    [ "lines",                 1000,   8 ],  # Rename to multi-line
-    [ "arc",                   1000,   4 ],  # Rename to circle
-    [ "fill_arc",              1000,   7 ],
-    [ "bezier",                1000,   3 ], # Rename to cubic
-#    [ "fill_bezier",           1000,   4 ],
-    [ "quad",                  1000,   4 ], # Rename to quadratic
-#    [ "curves",                  50,   5 ],
-#    [ "fill_curves",             50,   8 ],
-    [ "star",                  1000,   7 ], # Renamed from stroke_star
-    [ "fill_star",             1000,  12 ],
-#    [ "transform",               10,   0.2 ],
-    [ "image",                  100,   0.3 ],
-    [ "image_scale",            100,   0.8 ],
-    [ "image_rotate",            15,   0.3 ],
-#    [ "linear_gradient",        100,   2 ],
-#    [ "radial_gradient",        100,   0.3 ],
-#    [ "text",                   100,   0.6 ],
-#    [ "clip",                   100,   0.8 ]
+    [ "hline",             1000,  30, ["hline"] ],
+    [ "vline",             1000,  15, ["vline"] ],
+    [ "line",              1000,   6, ["line"] ],
+    [ "rect",              1000,   5, ["rect", "-f", "none"] ],
+    [ "fill_rect",          500,   5, ["rect", "-f", "solid"] ],
+    [ "lines",             1000,   8, ["lines"] ],  # Rename to multi-line
+    [ "arc",               1000,   4, ["arc", "-f", "none"] ],  # Rename to circle
+    [ "fill_arc",          1000,   7, ["arc", "-f", "solid"] ],
+    [ "bezier",            1000,   3, ["bezier"] ], # Rename to cubic
+#   [ "fill_bezier",       1000,   4, ["bezier", "-f", "solid"] ],
+    [ "quad",              1000,   4, ["quad"] ], # Rename to quadratic
+#   [ "curves",              50,   5, ["curves", "-f", "none"] ],
+#   [ "fill_curves",         50,   8, ["curves", "-f", "solid"] ],
+    [ "star",              1000,   7, ["star", "-f", "none"] ], # Renamed from stroke_star
+    [ "fill_star",         1000,  12, ["star", "-f", "solid"] ],
+#   [ "transform",           10, 0.2, ["transform"] ],
+    [ "image",              100, 0.3, ["image"], ],
+    [ "image_scale",        100, 0.8, ["image_scale"], ],
+    [ "image_rotate",        15, 0.3, ["image_rotate"], ],
+#   [ "linear_gradient",    100, 2, ],
+#   [ "radial_gradient",    100, 0.3, ],
+#   [ "text",               100, 0.6, ],
+#   [ "clip",               100, 0.8, ]
     ]
 
 class ReturnCode(Exception):
@@ -72,15 +72,8 @@ for testcase in perfdefs:
             '-j',
             ]
 
-    test = str(testcase[0])
-    if test[:5] == "fill_":
-        test = test[5:]
-        cmd = cmd + ['-f', 'solid']
-    else:
-        cmd = cmd + ['-f', 'none']
+    cmd += testcase[3]
 
-    cmd.append(test)
-    #print(cmd)
     print(' '.join(cmd))
     json_output = execute(cmd)
     print(json_output)

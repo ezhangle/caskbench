@@ -11,3 +11,12 @@
 
 * The text test case can consume excessive amounts of memory on
   large sized runs, triggering the oom killer.  Use it only on lower
+
+* Memory corruption errors can occur when using a Debug version of skia
+  with a Release version of caskbench, on some platforms.  Stick with
+  Debug/Debug for both to be safe.  (Issue #14)
+
+* On some (older?) versions of Skia, building a Debug caskbench against
+  a Release build of skia can lead to crashes in SkBitmap::getTexture()
+  Stick with Debug/Debug or Release/Release, or update to newer Skia.
+  (Issue #14)

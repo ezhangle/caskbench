@@ -369,7 +369,6 @@ shape_defaults_init(shapes *shape_defaults, caskbench_options_t *opt)
     shape_defaults->stroke_color = convertToColorValue(opt->stroke_color);
     shape_defaults->stroke_width = opt->stroke_width;
     shape_defaults->animation = opt->animation;
-    shape_defaults->stroke_width = opt->stroke_width;
     shape_defaults->cap_style = opt->cap_style;
     shape_defaults->join_style = opt->join_style;
     shape_defaults->dash_style = opt->dash_style;
@@ -631,6 +630,8 @@ main (int argc, char *argv[])
             context.canvas_width = opt.canvas_width;
         if(opt.canvas_height)
             context.canvas_height = opt.canvas_height;
+        if (opt.stock_image_path)
+            context.stock_image_path = opt.stock_image_path;
 
         shape_defaults_init(&context.shape_defaults, &opt);
         result_init(&result, perf_tests[c].name);

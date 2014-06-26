@@ -46,6 +46,7 @@ ca_test_animation(caskbench_context_t *ctx)
     cairo_rectangle (ctx->cairo_cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
     cairo_fill (ctx->cairo_cr);
 
+    static int counter = 0;
     for (int i = 0; i < ctx->size; i++) {
         shapes_t shape;
         kinetics_t *particle = &particles[i];
@@ -60,7 +61,13 @@ ca_test_animation(caskbench_context_t *ctx)
         if (!shape.radius)
             shape.radius = 40;
 
+        cairo_save(ctx->cairo_cr);
+        cairo_rotate(ctx->cairo_cr, counter/50.0);
+
         cairoDrawRandomizedShape(ctx, &shape);
+        cairo_restore(ctx->cairo_cr);
+
+        counter++;
     }
 
     return 1;

@@ -40,6 +40,7 @@ sk_teardown_animation(void)
 int
 sk_test_animation(caskbench_context_t *ctx)
 {
+    static int counter = 0;
     // Animation / Kinematics of single or multi shape
     ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
@@ -57,7 +58,12 @@ sk_test_animation(caskbench_context_t *ctx)
         if (!shape.radius)
              shape.radius = 40;
 
+        /* canvas save and restore creates different outputs */
+        //ctx->skia_canvas->save();
+        ctx->skia_canvas->rotate(counter/50.0);
         skiaDrawRandomizedShape(ctx, &shape);
+        //ctx->skia_canvas->restore();
+        counter++;
     }
 
     return 1;

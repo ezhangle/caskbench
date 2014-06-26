@@ -70,9 +70,11 @@ sk_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape)
             ctx->skia_paint->setShader(shader);
             break;
         case CB_FILL_IMAGE_PATTERN:
+            if (ctx->stock_image_path) {
             shader = skiaCreateBitmapShader(ctx->stock_image_path);
             ctx->skia_paint->setStyle(SkPaint::kFill_Style);
             ctx->skia_paint->setShader(shader);
+            }
             break;
 #if 0
         case CB_FILL_HERRINGBONE_PATTERN:  /* TODO */

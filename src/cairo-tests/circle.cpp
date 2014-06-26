@@ -41,18 +41,13 @@ ca_test_circle(caskbench_context_t *ctx)
         shape.radius = (double)rand()/RAND_MAX * MIN(
             MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
 
-        cairoRandomizeColor(ctx);
-        cairoDrawCircle(ctx, &shape);
-        switch (ctx->shape_defaults.fill_type) {
-            case CB_FILL_NONE:
-                cairo_stroke(ctx->cairo_cr);
-                break;
-            case CB_FILL_SOLID:
-                cairo_fill(ctx->cairo_cr);
-                break;
-            default:
-                break;
+        if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {
+            shape.fill_type = generate_random_fill_type();
         }
+        ca_set_fill_style(ctx, &shape);
+
+        shape.shape_type = CB_SHAPE_CIRCLE;
+        cairoDrawRandomizedShape(ctx,&shape);
     }
 
     return 1;

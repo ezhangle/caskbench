@@ -47,18 +47,13 @@ ca_test_star(caskbench_context_t *ctx)
             shape.x = 0;
             shape.y = 0;
             shape.radius = 40;
-            cairoRandomizeColor(ctx);
-            cairoDrawStar(ctx, &shape);
-            switch (ctx->shape_defaults.fill_type) {
-                case CB_FILL_NONE:
-                    cairo_stroke(ctx->cairo_cr);
-                    break;
-                case CB_FILL_SOLID:
-                    cairo_fill(ctx->cairo_cr);
-                    break;
-                default:
-                    break;
+            if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {
+                shape.fill_type = generate_random_fill_type();
             }
+            ca_set_fill_style(ctx, &shape);
+
+            shape.shape_type = CB_SHAPE_STAR;
+            cairoDrawRandomizedShape(ctx,&shape);
             cairo_restore(ctx->cairo_cr);
         }
     }

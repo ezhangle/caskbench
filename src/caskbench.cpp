@@ -736,7 +736,7 @@ main (int argc, char *argv[])
         } else {
             print_json_result(stdout, &result);
 
-            if (c < num_tests-1)
+            if (s < num_tests-1)
                 fprintf(stdout, ",");
             fprintf(stdout, "\n");
         }
@@ -745,7 +745,7 @@ main (int argc, char *argv[])
         if (fp != NULL) {
             print_json_result(fp, &result);
 
-            if (c < num_tests-1)
+            if (s < num_tests-1)
                 fprintf(fp, ",");
             fprintf(fp, "\n");
         }

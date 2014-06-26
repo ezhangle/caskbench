@@ -57,7 +57,10 @@ sk_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape)
                 ctx->skia_paint->setStyle(SkPaint::kStrokeAndFill_Style);
             break;
         case CB_FILL_LINEAR_GRADIENT:
-            shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
+            if(shape->shape_type == CB_SHAPE_STAR || shape->shape_type == CB_SHAPE_CIRCLE)
+                shader = skiaCreateLinearGradientShader(shape->y-shape->radius, shape->y + shape->radius);
+            else
+                shader = skiaCreateLinearGradientShader(shape->y, shape->y + shape->height);
             ctx->skia_paint->setStyle(SkPaint::kFill_Style);
             ctx->skia_paint->setShader(shader);
             break;

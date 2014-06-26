@@ -13,6 +13,8 @@
 
 void cairoRandomizeColor(caskbench_context_t *cr);
 
+void ca_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape);
+
 void cairoDrawCircle(caskbench_context_t *ctx, shapes_t *args);
 
 void cairoDrawRectangle(caskbench_context_t *ctx, shapes_t *args);

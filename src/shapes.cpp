@@ -91,6 +91,15 @@ shape_randomize(shapes_t *shape)
     // TODO
 }
 
+void
+generate_random_color(double &red, double &green, double &blue, double &alpha)
+{
+    red = (double)rand()/RAND_MAX;
+    green = (double)rand()/RAND_MAX;
+    blue = (double)rand()/RAND_MAX;
+    alpha = (double)rand()/RAND_MAX;
+}
+
 shape_type_t
 generate_random_shape()
 {

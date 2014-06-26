@@ -46,6 +46,7 @@ context_init(caskbench_context_t *context, int size)
     context->update_cairo = NULL;
     context->update_skia = NULL;
     context->tolerance = 0.25;
+    context->stock_image_path = NULL;
 }
 
 #ifdef USE_CAIRO

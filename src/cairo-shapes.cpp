@@ -15,19 +15,34 @@
 #include "caskbench.h"
 #include "caskbench_context.h"
 #include "cairo-shapes.h"
+bool do_stroke = false; bool do_fill = false;
 
 cairo_pattern_t*
-cairoCreateRadialGradientPattern (int x, int y, int r)
+cairoCreateRadialGradientPattern (const shapes_t *shape)
 {
+    double radius = shape->radius;
+    double center_x, center_y;
+
+    if (shape->radius > 0) {
+        center_x = shape->x + shape->radius;
+        center_y = shape->y + shape->radius;
+    } else if (shape->width > shape->height) {
+        radius = shape->height/2;
+        center_x = shape->x + radius + ((double)rand()*shape->width)/RAND_MAX;
+        center_y = shape->y + radius;
+    } else {
+        radius = shape->width/2;
+        center_x = shape->x + radius;
+        center_y = shape->y + radius + ((double)rand()*shape->width)/RAND_MAX;
+    }
+
     double red, green, blue, alpha;
-    red = (double)rand()/RAND_MAX;
-    green = (double)rand()/RAND_MAX;
-    blue = (double)rand()/RAND_MAX;
-    alpha = (double)rand()/RAND_MAX;
+    generate_random_color(red,green,blue,alpha);
     cairo_pattern_t *pattern;
-    pattern = cairo_pattern_create_radial (x+r, y+r, r, x+r, y+r, 0);
+    pattern = cairo_pattern_create_radial (center_x, center_y, radius, center_x, center_y, 0);
     cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
-    cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
+    generate_random_color(red,green,blue,alpha);
+    cairo_pattern_add_color_stop_rgba (pattern, 1, red, green, blue, alpha);
     return pattern;
 }
 
@@ -36,15 +51,13 @@ cairoCreateLinearGradientPattern (int y1, int y2)
 {
     double red, green, blue, alpha;
 
-    red = (double)rand()/RAND_MAX;
-    green = (double)rand()/RAND_MAX;
-    blue = (double)rand()/RAND_MAX;
-    alpha = (double)rand()/RAND_MAX;
     cairo_pattern_t *pattern;
+    /* cairo_pattern_set_extend() has been removed as it causes incorrect outputs */
     pattern = cairo_pattern_create_linear (0, y1, 0, y2);
-    cairo_pattern_set_extend (pattern, CAIRO_EXTEND_REPEAT);
+    generate_random_color(red,green,blue,alpha);
     cairo_pattern_add_color_stop_rgba (pattern, 0, red, green, blue, alpha);
-    cairo_pattern_add_color_stop_rgba (pattern, 1, 0.78, 0.78, 0.78, 0.78);
+    generate_random_color(red,green,blue,alpha);
+    cairo_pattern_add_color_stop_rgba (pattern, 1, red, green, blue, alpha);
     return pattern;
 }
 
@@ -63,13 +76,56 @@ void
 cairoRandomizeColor(caskbench_context_t *ctx)
 {
     double red, green, blue, alpha;
-
-    red = (double)rand()/RAND_MAX;
-    green = (double)rand()/RAND_MAX;
-    blue = (double)rand()/RAND_MAX;
-    alpha = (double)rand()/RAND_MAX;
-
+    generate_random_color(red,green,blue,alpha);
     cairo_set_source_rgba (ctx->cairo_cr, red, green, blue, alpha);
+}
+
+void
+ca_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape)
+{
+    cairo_pattern_t* pattern = NULL;
+    switch (shape->fill_type) {
+        case CB_FILL_NONE:
+            do_stroke = true;
+            break;
+        case CB_FILL_SOLID:
+            if (shape->stroke_width <= 0)
+                do_fill = true;
+            else {
+                do_fill = true;
+                do_stroke = true;
+            }
+            break;
+        case CB_FILL_LINEAR_GRADIENT:
+            if(shape->shape_type == CB_SHAPE_STAR || shape->shape_type == CB_SHAPE_CIRCLE)
+                pattern = cairoCreateLinearGradientPattern(shape->y-shape->radius, shape->y+shape->radius);
+            else
+                pattern = cairoCreateLinearGradientPattern(shape->y, shape->y + shape->height);
+            cairo_set_source (ctx->cairo_cr, pattern);
+            do_fill = true;
+            break;
+        case CB_FILL_RADIAL_GRADIENT:
+            pattern = cairoCreateRadialGradientPattern(shape);
+            cairo_set_source (ctx->cairo_cr, pattern);
+            do_fill = true;
+            break;
+        case CB_FILL_IMAGE_PATTERN:
+            if(ctx->stock_image_path) {
+               pattern = cairoCreateBitmapPattern(ctx->stock_image_path);
+                cairo_set_source (ctx->cairo_cr, pattern);
+            }
+            do_fill = true;
+            break;
+#if 0
+        case CB_FILL_HERRINGBONE_PATTERN:  /* TODO */
+            break;
+#endif
+        default:
+            break;
+    }
+
+    if (pattern)
+        cairo_pattern_destroy (pattern);
 }
 
 void
@@ -186,52 +242,47 @@ void (*cairoShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args) =
 void
 cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
 {
-    cairo_pattern_t *pattern = NULL;
-    cairo_surface_t *image = NULL;
-    cairo_path_t *new_path = NULL;
-
     static const double dashed3[] = {1.0};
     static const double dashed2[] = {14.0, 6.0};
+
+    cairo_path_t *new_path;
 
     // Shape Type
     if (shape->shape_type == CB_SHAPE_RANDOM)
         shape->shape_type = generate_random_shape();
 
-    // Options for fill, gradient, and transparency
-    switch (shape->fill_type) {
-        case CB_FILL_IMAGE_PATTERN:
-            pattern = cairoCreateBitmapPattern (ctx->stock_image_path);
-            break;
-        case CB_FILL_RADIAL_GRADIENT:
-            pattern = cairoCreateRadialGradientPattern (shape->x, shape->y, shape->radius);
-            break;
-        case CB_FILL_LINEAR_GRADIENT:
-            pattern = cairoCreateLinearGradientPattern (shape->y, shape->y + shape->height);
-            break;
-        case CB_FILL_NONE:
-        case CB_FILL_SOLID:
-        default:
-            if (shape->fill_color != -1) {
-                cairo_set_source_rgba (ctx->cairo_cr,
-                                       ((shape->fill_color >> 24) & 255) / 255.0,
-                                       ((shape->fill_color >> 16) & 255) / 255.0,
-                                       ((shape->fill_color >> 8) & 255) / 255.0,
-                                       ((shape->fill_color) & 255) / 255.0);
-            }
-            else {
-                cairoRandomizeColor(ctx);
-            }
-            break;
+    // Options for fill, gradient and transparency
+    if (shape->fill_type == CB_FILL_RANDOM) {
+        shape->fill_type = generate_random_fill_type();
     }
 
-    if (pattern)
-        cairo_set_source (ctx->cairo_cr, pattern);
+    ca_set_fill_style(ctx, shape);
+
+    if ((shape->fill_type == CB_FILL_NONE) || (shape->fill_type == CB_FILL_SOLID)) {
+        if (shape->fill_color != -1) {
+            cairo_set_source_rgba (ctx->cairo_cr,
+                    ((shape->fill_color >> 24) & 255) / 255.0,
+                    ((shape->fill_color >> 16) & 255) / 255.0,
+                    ((shape->fill_color >> 8) & 255) / 255.0,
+                    ((shape->fill_color) & 255) / 255.0);
+        }
+        else {
+            cairoRandomizeColor(ctx);
+        }
+    }
 
      // Draw
     cairoShapes[shape->shape_type-1] (ctx, shape);
     new_path = cairo_copy_path(ctx->cairo_cr);
-    cairo_fill (ctx->cairo_cr);
-
+    if (do_fill) {
+        cairo_fill (ctx->cairo_cr);
+    }
+    if (do_stroke && !shape->stroke_width) {
+        cairo_new_path (ctx->cairo_cr);
+        cairo_append_path (ctx->cairo_cr, new_path);
+        cairo_stroke (ctx->cairo_cr);
+    }
+    do_stroke = do_fill = false;
     // Stroke styles
     if (shape->stroke_width)
     {
@@ -259,11 +310,6 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         cairo_stroke (ctx->cairo_cr);
     }
 
-    // Cleanup
-    if (pattern != NULL)
-        cairo_pattern_destroy(pattern);
-    if (image != NULL)
-        cairo_surface_destroy (image);
 }
 
 /*

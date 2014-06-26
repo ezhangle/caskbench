@@ -60,8 +60,8 @@ sk_test_rect(caskbench_context_t *ctx)
         }
         sk_set_fill_style(ctx, &shape);
 
-        skiaRandomizePaintColor(ctx);
-        skiaDrawRectangle(ctx, &shape);
+        shape.shape_type = CB_SHAPE_RECTANGLE;
+        skiaDrawRandomizedShape(ctx,&shape);
     }
 
     return 1;

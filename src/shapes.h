@@ -76,6 +76,9 @@ shape_randomize(shapes_t *shape);
 shape_type_t
 generate_random_shape();
 
+void
+generate_random_color(double &red, double &green, double &blue, double &alpha);
+
 fill_type_t
 generate_random_fill_type();
 

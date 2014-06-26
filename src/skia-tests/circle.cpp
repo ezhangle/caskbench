@@ -22,17 +22,6 @@ sk_setup_circle(caskbench_context_t *ctx)
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
 
-    switch (ctx->shape_defaults.fill_type) {
-        case CB_FILL_NONE:
-            ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
-            break;
-        case CB_FILL_SOLID:
-            ctx->skia_paint->setStyle(SkPaint::kFill_Style);
-            break;
-        default:
-            break;
-    }
-
     return 1;
 }
 
@@ -55,8 +44,14 @@ sk_test_circle(caskbench_context_t *ctx)
         shape.radius = (double)rand()/RAND_MAX * MIN(
             MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
 
-        skiaRandomizePaintColor(ctx);
-        skiaDrawCircle(ctx, &shape);
+
+       if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {
+            shape.fill_type = generate_random_fill_type();
+        }
+        sk_set_fill_style(ctx, &shape);
+
+        shape.shape_type = CB_SHAPE_CIRCLE;
+        skiaDrawRandomizedShape(ctx,&shape);
     }
 
     return 1;

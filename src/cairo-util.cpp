@@ -15,6 +15,13 @@
 #include "caskbench_context.h"
 
 void
+context_clear_cairo(caskbench_context_t *context)
+{
+    cairo_set_source_rgb (context->cairo_cr, 0, 0, 0);
+    cairo_paint (context->cairo_cr);
+}
+
+void
 write_image_file_cairo (const char *fname, caskbench_context_t *context)
 {
     assert (context->cairo_surface);

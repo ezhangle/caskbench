@@ -18,6 +18,7 @@ typedef struct _caskbench_perf_test {
   void (*context_setup)(struct _caskbench_context*, const device_config_t& config);
   void (*context_destroy)(struct _caskbench_context*);
   void (*context_update)(struct _caskbench_context*);
+  void (*context_clear)(struct _caskbench_context*);
 } caskbench_perf_test_t;
 
 extern caskbench_perf_test_t perf_tests[];
@@ -35,6 +36,8 @@ void   context_destroy_skia(struct _caskbench_context *context);
 void   context_update_cairo(struct _caskbench_context *context);
 void   context_update_skia(struct _caskbench_context *context);
 
+void   context_clear_cairo(struct _caskbench_context *context);
+void   context_clear_skia(struct _caskbench_context *context);
 #endif // __TESTS_H__
 /*
   Local Variables:

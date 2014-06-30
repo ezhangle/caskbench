@@ -663,6 +663,9 @@ main (int argc, char *argv[])
         for (i=opt.iterations; i>0; --i) {
             try {
                 assert(perf_tests[c].test_case);
+                // Clearing the canvas between iterations
+                perf_tests[c].context_clear(&context);
+
                 start_time = get_tick();
 
                 // Execute test_case

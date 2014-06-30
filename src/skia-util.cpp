@@ -17,6 +17,12 @@
 #include "caskbench_context.h"
 
 void
+context_clear_skia (caskbench_context_t *context)
+{
+    context->skia_canvas->drawColor(SK_ColorBLACK);
+}
+
+void
 write_image_file_skia (const char *fname, caskbench_context_t *context)
 {
     SkBitmap bitmap;

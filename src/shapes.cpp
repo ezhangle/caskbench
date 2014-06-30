@@ -52,7 +52,7 @@ convertToShapeType(const char* shape_name)
         return (shape_type_t) 0;
     while (gShapes[i] != NULL) {
         if (strcmp(gShapes[i], shape_name) == 0)
-            return (shape_type_t)(i + 1);
+            return (shape_type_t) (i);
         i++;
     }
     errx(1, "Unknown shape type '%s' specified", shape_name);

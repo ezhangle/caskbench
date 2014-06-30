@@ -615,11 +615,6 @@ main (int argc, char *argv[])
             !strncmp(perf_tests[c].name, "skia-stroke", 11))
             continue;
 
-        /* Disable clip:  Test fails */
-        if (!strncmp(perf_tests[c].name, "cairo-clip", 10) ||
-            !strncmp(perf_tests[c].name, "skia-clip", 9))
-            continue;
-
         if(opt.seed_value == NULL)
             srand (0xdeadbeef);
         else

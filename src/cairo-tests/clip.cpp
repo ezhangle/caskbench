@@ -6,29 +6,18 @@
  */
 #include <config.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <cairo.h>
 #include <math.h>
+#include <cairo.h>
 
 #include "caskbench.h"
 #include "caskbench_context.h"
-#include "kinetics.h"
 #include "cairo-shapes.h"
 
-static int element_spacing;
-static int num_x_elements;
-static int num_y_elements;
-static kinetics_t *cairo_particles;
-
-static kinetics_t *particles;
-    cairo_surface_t *image;
+static cairo_surface_t *image;
 int
 ca_setup_clip(caskbench_context_t *ctx)
 {
-    element_spacing = sqrt( ((double)ctx->canvas_width * ctx->canvas_height) / ctx->size);
-    num_x_elements = ctx->canvas_width / element_spacing;
-    num_y_elements = ctx->canvas_height / element_spacing;
+    image = cairoCreateSampleImage (ctx);
     return 1;
 }
 
@@ -37,79 +26,102 @@ ca_teardown_clip(void)
 {
 }
 
-void drawShape(caskbench_context_t *ctx,double x,double y,double clipr=0,bool isClip=false)
-{
-
-    int i, r, p;
-    shape_type_t shape;
-    r = 0.9 * element_spacing /2;
-    if(!ctx->shape_defaults.shape_type)
-        shape = generate_random_shape();
-    else
-        shape = ctx->shape_defaults.shape_type;
-    ctx->shape_defaults.x = x;
-    ctx->shape_defaults.y = y;
-    ctx->shape_defaults.radius = isClip?clipr:r;
-    ctx->shape_defaults.width = (ctx->shape_defaults.width)?ctx->shape_defaults.width:2*(isClip?clipr:r);
-    ctx->shape_defaults.height = (ctx->shape_defaults.height)?ctx->shape_defaults.height:2*(isClip?clipr:r);
-    cairoShapes[(shape-1)%4](ctx,&ctx->shape_defaults);
-}
-void drawClip(caskbench_context_t *ctx,kinetics_t *particles)
-{
-    int i, r,j;
-    int  w, h;
-    double x,y;
-    cairo_t *cr = ctx->cairo_cr;
-    image = cairo_image_surface_create_from_png (ctx->stock_image_path);
-    for (j=0; j<num_y_elements; j++) {
-        y = particles?particles->y : j * element_spacing;
-        for (i=0; i<num_x_elements; i++) {
-            x = particles?particles->x : i * element_spacing;
-            cairoRandomizeColor(ctx);
-            drawShape(ctx,x,y,30,true);
-            cairo_clip (cr);
-            drawShape(ctx,x,y,false);
-            cairo_fill (cr);
-
-            cairo_new_path (cr); /* path not consumed by clip()*/
-            cairo_set_source_surface (cr, image, 0, 0);
-            cairo_paint (cr);
-            cairo_reset_clip(cr);
-        }
-    }
-    cairo_surface_destroy (image);
-}
-
+#if 1
+// Single static star and random clip
 int
 ca_test_clip(caskbench_context_t *ctx)
 {
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+    double ratio;
+    ratio = (double) w/h;
+    shapes_t shape;
+    double scale_param_x = w/80;
+    double scale_param_y;
     cairo_t *cr = ctx->cairo_cr;
-    if(ctx->shape_defaults.animation)
-    {
-        int num_particles = ctx->shape_defaults.animation;
-        double start_frame, stop_frame, delta;
-        particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
-        int i,j ;
-        for (i = 0; i < num_particles; i++)
-            kinetics_init (&particles[i], ctx);
 
-        for (j=0;j<num_particles;j++){
-            cairo_set_source_rgb (cr, 1, 1, 1);
-            cairo_rectangle (cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
-            cairo_fill (cr);
+    shape_copy(&ctx->shape_defaults, &shape);
+    cairo_new_path(cr);
+    cairo_save (cr);
 
-            for (i = 0; i < num_particles; i++) {
-                kinetics_update(&particles[i], 0.1);
-                drawClip(ctx,&particles[i]);
-            }
-        }
-
-    }
+    /* Draw star for the full screen size */
+    if (ratio > 1.0)
+        scale_param_y = scale_param_x * (1/ratio);
+    else if (ratio < 1.0)
+        scale_param_y = scale_param_x + (ratio);
     else
-        drawClip(ctx,NULL);
+        scale_param_y = scale_param_x;
+
+    cairo_scale (cr, scale_param_x,scale_param_y);
+    shape.x = 0;
+    shape.y = 0;
+    shape.radius = 40;
+    shape.shape_type = CB_SHAPE_STAR;
+    shape.fill_type = CB_FILL_SOLID;
+
+    ca_set_fill_style(ctx, &shape);
+    cairoDrawRandomizedShape(ctx,&shape);
+
+    for (int i=0; i<ctx->size; i++) {
+        cairoDrawStar(ctx,&shape);
+        cairo_clip (cr);
+        double x1 = (double)rand()/RAND_MAX * w;
+        double x2 = (double)rand()/RAND_MAX * w;
+        double y1 = (double)rand()/RAND_MAX * h;
+        double y2 = (double)rand()/RAND_MAX * h;
+        cairo_set_source_surface (cr, image, x1, y1);
+        cairo_paint (cr);
+        cairo_reset_clip(cr);
+    }
+
+    cairo_restore (cr);
+
     return 1;
 }
+#else
+// Random stars and random clip
+int
+ca_test_clip(caskbench_context_t *ctx)
+{
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
 
+    shapes_t shape;
+    shape_copy(&ctx->shape_defaults, &shape);
+    cairo_set_source_rgb (ctx->cairo_cr, 0, 0, 0);
+    cairo_paint (ctx->cairo_cr);
+
+    cairo_t *cr = ctx->cairo_cr;
+    for (int i=0; i<ctx->size; i++) {
+        double i = (double)rand()/RAND_MAX * w;
+        double j = (double)rand()/RAND_MAX * h;
+        double x1 = (double)rand()/RAND_MAX * 80;
+        double y1 = (double)rand()/RAND_MAX * 80;
+
+        cairo_new_path(cr);
+        cairo_save (cr);
+        cairo_translate (cr,i,j);
+        cairo_scale(cr,0.5,0.5);
+
+        shape.x = 0;
+        shape.y = 0;
+        shape.radius = 40;
+        shape.shape_type = CB_SHAPE_STAR;
+        shape.fill_type = CB_FILL_SOLID;
+        ca_set_fill_style(ctx, &shape);
+        cairoDrawRandomizedShape(ctx,&shape);
+
+        cairoDrawStar(ctx,&shape);
+        cairo_clip(cr);
+        cairo_set_source_surface (cr, image, x1, y1);
+        cairo_paint (cr);
+        cairo_reset_clip(cr);
+        cairo_restore(cr);
+    }
+
+    return 1;
+}
+#endif
 /*
   Local Variables:
   mode:c++

@@ -33,10 +33,6 @@ int
 ca_setup_text(caskbench_context_t *ctx)
 {
     max_dim = MIN (ctx->canvas_width, ctx->canvas_height)/2;
-    for(int i = 0;i<19;i++)
-    {
-        gen_random (rand_text_array[i],i+18);
-    }
     return 1;
 }
 
@@ -49,84 +45,53 @@ int
 ca_test_text(caskbench_context_t *ctx)
 {
     cairo_t *cr = ctx->cairo_cr;
+    double font_size = 18;
+    int ypos = 15, xpos = 0;
+    int num_glyphs = 0, num_clusters = 0;
 
+    double font_factor = 0.5;
+
+    cairo_set_source_rgb (cr, 0, 0, 0);
+    cairo_rectangle (cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
+    cairo_fill (cr);
     for (int i = 0; i < ctx->size; i++)
     {
-        double font_size = 18;
-        int ypos = 0, xpos = 0;
+        num_glyphs = 0;
+        num_clusters = 0;
+        cairo_set_font_size (cr, font_size);
+        cairoRandomizeColor (ctx);
 
-        cairo_set_source_rgb (cr, 0, 0, 0);
-        cairo_rectangle (cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
-        cairo_fill (cr);
+        cairo_status_t status;
+        cairo_scaled_font_t *font;
+        font = cairo_get_scaled_font (cr);
+        cairo_glyph_t *glyphs = NULL;
+        cairo_text_cluster_t *clusters = NULL;
+        cairo_text_cluster_flags_t cluster_flags;
 
-        while (ypos <= ctx->canvas_height/2)
-        {
-            cairo_set_font_size (cr, font_size);
-            cairoRandomizeColor(ctx);
+        char text[(int)font_size];
+        gen_random (text,font_size);
 
-            cairo_status_t status;
-            cairo_scaled_font_t *font;
-            font = cairo_get_scaled_font (cr);
-            cairo_glyph_t *glyphs = NULL;
-            int num_glyphs;
-            cairo_text_cluster_t *clusters = NULL;
-            int num_clusters;
-            cairo_text_cluster_flags_t cluster_flags;
+        status = cairo_scaled_font_text_to_glyphs (font,
+                                                   xpos, ypos,
+                                                   text, font_size,
+                                                   &glyphs, &num_glyphs,
+                                                   &clusters, &num_clusters, &cluster_flags);
 
-            char text[(int)font_size];
-            gen_random (text,font_size);
-
-            status = cairo_scaled_font_text_to_glyphs (font,
-                                                       xpos, ypos,
-                                                       text, font_size,
-                                                       &glyphs, &num_glyphs,
-                                                       &clusters, &num_clusters, &cluster_flags);
-
-            if (status == CAIRO_STATUS_SUCCESS) {
-                cairo_show_text_glyphs (cr,
-                                        rand_text_array[(int)font_size-18],font_size,
-                                        glyphs, num_glyphs,
-                                        clusters, num_clusters, cluster_flags);
-            }
-            font_size = font_size+0.5;
-            if(font_size>=36)
-                font_size=36;
-            ypos += (font_size/2);
-        }
-        while (ypos <= ctx->canvas_height)
-        {
-            cairo_set_font_size (cr, font_size);
-            cairoRandomizeColor(ctx);
-
-            cairo_status_t status;
-            cairo_scaled_font_t *font;
-            font = cairo_get_scaled_font (cr);
-            cairo_glyph_t *glyphs = NULL;
-            int num_glyphs;
-            cairo_text_cluster_t *clusters = NULL;
-            int num_clusters;
-            cairo_text_cluster_flags_t cluster_flags;
-
-            char text[(int)font_size];
-            gen_random (text,font_size);
-
-            status = cairo_scaled_font_text_to_glyphs (font,
-                                                       xpos, ypos,
-                                                       text, font_size,
-                                                       &glyphs, &num_glyphs,
-                                                       &clusters, &num_clusters, &cluster_flags);
-
-            if (status == CAIRO_STATUS_SUCCESS) {
+        if (status == CAIRO_STATUS_SUCCESS) {
             cairo_show_text_glyphs (cr,
-                                    rand_text_array[(int)font_size-18],font_size,
+                                    text,font_size,
                                     glyphs, num_glyphs,
                                     clusters, num_clusters, cluster_flags);
-            }
-            font_size = font_size-0.5;
-            if(font_size<=18)
-                font_size=18;
-            ypos += (font_size/2);
         }
+
+        font_size = font_size+font_factor;
+        ypos += (font_size/2);
+        if (font_size >= 36)
+            font_size = 36;
+        if (ypos > ctx->canvas_height/2)
+            font_factor = -0.5;
+        if (font_size < 18)
+            font_size = 18;
     }
     return 1;
 }

@@ -16,7 +16,6 @@
 #include <SkTemplates.h>
 #include <SkTypeface.h>
 #include <effects/SkGradientShader.h>
-//#include <SkUnitMappers.h>
 #include <SkDraw.h>
 #include <effects/SkGradientShader.h>
 #include <SkGraphics.h>
@@ -41,10 +40,7 @@ int
 sk_setup_text(caskbench_context_t *ctx)
 {
     max_dim = MIN(ctx->canvas_width, ctx->canvas_height)/2;
-    for(int i = 0;i<19;i++)
-    {
-        gen_skia_random(rand_text_array[i],i+18);
-    }
+    ctx->skia_paint->setTextEncoding (SkPaint::kGlyphID_TextEncoding);
     return 1;
 }
 
@@ -70,56 +66,34 @@ static void getGlyphPositions(const SkPaint& paint, const uint16_t glyphs[],
 int
 sk_test_text(caskbench_context_t *ctx)
 {
+    double font_size = 18;
+    int ypos = 15, xpos = 0;
+    double font_factor = 0.5;
+    SkPaint dummy_paint;
+    ctx->skia_canvas->drawColor(SK_ColorBLACK);
     for (int i = 0; i < ctx->size; i++)
     {
-        double font_size = 18;
-        int ypos = 0, xpos = 0;
-        ctx->skia_canvas->drawColor(SK_ColorBLACK);
+        ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
+        skiaRandomizePaintColor(ctx);
 
-        while (ypos <= ctx->canvas_height/2)
-        {
-            ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
-            skiaRandomizePaintColor(ctx);
+        SkAutoSTMalloc<128, uint16_t> glyphStorage (font_size);
+        uint16_t* glyphs = glyphStorage.get();
 
-            SkPaint newpaint (*ctx->skia_paint);;
-            newpaint.setTextEncoding (SkPaint::kGlyphID_TextEncoding);
+        char text[(int)font_size];
+        gen_skia_random (text,font_size);
 
-            SkAutoSTMalloc<128, uint16_t> glyphStorage (font_size);
-            uint16_t* glyphs = glyphStorage.get();
+        // ctx->skia_paint gives wrong glyphCount and draws nothing, as text encoding is enabled. Using a dummy paint variable as of now.
+        int glyphCount = dummy_paint.textToGlyphs (text, font_size, glyphs);
+        ctx->skia_canvas->drawText (glyphs, glyphCount * sizeof(uint16_t), xpos,ypos, *(ctx->skia_paint));
 
-            char text[(int)font_size];
-            gen_skia_random (text,font_size);
-
-            int glyphCount = ctx->skia_paint->textToGlyphs (text, font_size, glyphs);
-            ctx->skia_canvas->drawText (glyphs, glyphCount * sizeof(uint16_t), xpos,ypos, newpaint);
-            font_size = font_size+0.5;
-            if(font_size>=36)
-                font_size=36;
-            ypos += (font_size/2);
-
-        }
-
-        while (ypos <= ctx->canvas_height)
-        {
-            ctx->skia_paint->setTextSize (SkIntToScalar (font_size));
-            skiaRandomizePaintColor(ctx);
-
-            SkPaint localPaint (*ctx->skia_paint);;
-            localPaint.setTextEncoding (SkPaint::kGlyphID_TextEncoding);
-
-            SkAutoSTMalloc<128, uint16_t> glyphStorage (font_size);
-            uint16_t* glyphs = glyphStorage.get();
-            char text[(int)font_size];
-            gen_skia_random (text,font_size);
-
-            int glyphCount = ctx->skia_paint->textToGlyphs (text, font_size, glyphs);
-            ctx->skia_canvas->drawText (glyphs, glyphCount * sizeof(uint16_t), xpos,ypos, localPaint);
-            font_size = font_size-0.5;
-            if(font_size<=18)
-                font_size=18;
-            ypos += (font_size/2);
-        }
-
+        font_size = font_size+font_factor;
+        ypos += (font_size/2);
+        if (font_size >= 36)
+            font_size = 36;
+        if (ypos > ctx->canvas_height/2)
+            font_factor = -0.5;
+        if (font_size < 18)
+            font_size = 18;
     }
     return 1;
 }

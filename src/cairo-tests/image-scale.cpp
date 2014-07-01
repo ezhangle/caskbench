@@ -66,14 +66,22 @@ ca_test_image_scale(caskbench_context_t *ctx)
         double y = MIN(y1, y2);
         double width_ratio = float(fabs(x2 - x1)) / float(iw);
         double height_ratio = float(fabs(y2 - y1)) / float(ih);
-        double scale_xy = MIN(height_ratio, width_ratio);
 
         cairo_save(cr);
         cairo_translate(cr,x,y);
-        cairo_scale(cr,scale_xy, scale_xy);
+        cairo_scale(cr, width_ratio, height_ratio);
 
         cairo_set_source_surface (cr, image, 0, 0);
+        // Scale without blur
+        cairo_pattern_set_filter (cairo_get_source(cr), CAIRO_FILTER_FAST);
+#if 1
+        // Paint method
         cairo_paint (cr);
+#else
+        // Fill Method
+        cairo_rectangle(cr, 0, 0, iw, ih);
+        cairo_fill(cr);
+#endif
         cairo_restore(cr);
     }
     return 1;

@@ -62,7 +62,14 @@ ca_test_image(caskbench_context_t* ctx)
         double x = (double)rand()/RAND_MAX * pw;
         double y = (double)rand()/RAND_MAX * ph;
         cairo_set_source_surface (cr, image, x, y);
+#if 1
         cairo_paint (cr);
+#else
+        // Fill Method
+        cairo_rectangle(cr, x, y, iw, ih);
+        cairo_fill(cr);
+#endif
+
     }
     return 1;
 }

@@ -70,6 +70,8 @@ ca_test_clip(caskbench_context_t *ctx)
         double y1 = (double)rand()/RAND_MAX * h;
         double y2 = (double)rand()/RAND_MAX * h;
         cairo_set_source_surface (cr, image, x1, y1);
+        // To scale without blur
+        cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_FAST);
         cairo_paint (cr);
         cairo_reset_clip(cr);
     }

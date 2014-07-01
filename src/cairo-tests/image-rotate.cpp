@@ -69,7 +69,13 @@ ca_test_image_rotate(caskbench_context_t* ctx)
         cairo_rotate(cr, i / 50.0);  // TODO: Original rotates by counter/50
         cairo_translate(cr, -iw/2, -ih/2);
         cairo_set_source_surface (cr, image, 0, 0);
+#if 1
         cairo_paint (cr);
+#else
+        cairo_rectangle(cr, 0, 0, iw, ih);
+        cairo_fill(cr);
+#endif
+
         cairo_restore(cr);
     }
 

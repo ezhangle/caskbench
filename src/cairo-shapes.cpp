@@ -111,7 +111,7 @@ ca_set_fill_style(caskbench_context_t *ctx, const shapes_t *shape)
             break;
         case CB_FILL_IMAGE_PATTERN:
             if(ctx->stock_image_path) {
-               pattern = cairoCreateBitmapPattern(ctx->stock_image_path);
+                pattern = cairoCreateBitmapPattern(ctx->stock_image_path);
                 cairo_set_source (ctx->cairo_cr, pattern);
             }
             do_fill = true;
@@ -230,6 +230,28 @@ cairoDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 #endif
 }
 
+cairo_surface_t *cairoCreateSampleImage (caskbench_context_t *ctx)
+{
+    cairo_surface_t *image;
+    cairo_t *cr_image;
+    int i, x, y;
+    image = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, 160, 40);
+    cr_image = cairo_create (image);
+    cairo_set_source_surface (cr_image, image, 0, 0);
+
+    x = 5;
+    for (i=0; i<16; i++) {
+        x += 10;
+        y = (i%2)*10;
+
+        cairo_set_source_rgba (cr_image, 1.0/(i+1), 1.0, 16.0*i/255.0, 1.0);
+        cairo_rectangle (cr_image, x, y, 10, 10);
+        cairo_fill (cr_image);
+    }
+
+    cairo_destroy (cr_image);
+    return image;
+}
 
 void (*cairoShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args) = {
     cairoDrawCircle,

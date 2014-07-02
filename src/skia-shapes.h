@@ -8,6 +8,7 @@
 #define __SKIA_SHAPES_H_
 
 #include <SkColor.h>
+#include <SkBitmapDevice.h>
 
 #include "forward.h"
 #include "shapes.h"
@@ -38,6 +39,10 @@ void skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args);
 void skiaDrawStar(caskbench_context_t *ctx, shapes_t *args);
 
 void skiaDrawRoundedRectangle(caskbench_context_t *ctx, shapes_t *args);
+
+SkBitmap skiaCreateSampleImage(caskbench_context_t *ctx);
+
+SkPath getCurrentSkiaPath();
 
 extern void (*skiaShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args);
 

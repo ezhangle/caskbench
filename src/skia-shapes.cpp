@@ -18,6 +18,7 @@
 #include "skia-shapes.h"
 
 SkAutoTUnref<SkPathEffect> pE;
+SkPath path;
 
 #ifndef SkToS32
 int32_t SkToS32(intmax_t x) { return (int32_t)x; }
@@ -151,7 +152,7 @@ skiaCreateBitmapShader(const char *image_path)
 void
 skiaDrawLine(caskbench_context_t *ctx, shapes_t *args)
 {
-    SkPath path;
+    path.reset();
 
     path.moveTo(args->x, args->y);
     path.lineTo(args->x + args->width, args->y + args->height);
@@ -162,7 +163,7 @@ skiaDrawLine(caskbench_context_t *ctx, shapes_t *args)
 void
 skiaDrawQuadraticCurve(caskbench_context_t *ctx, shapes_t *args)
 {
-    SkPath path;
+    path.reset();
 
     path.moveTo(args->x, args->y);
     path.rQuadTo(args->dx1, args->dy1,
@@ -174,7 +175,7 @@ skiaDrawQuadraticCurve(caskbench_context_t *ctx, shapes_t *args)
 void
 skiaDrawCubicCurve(caskbench_context_t *ctx, shapes_t *args)
 {
-    SkPath path;
+    path.reset();
 
     path.moveTo(args->x, args->y);
     path.rCubicTo(args->dx1, args->dy1,
@@ -205,18 +206,16 @@ skiaDrawRectangle(caskbench_context_t *ctx, shapes_t *args)
 void
 skiaDrawTriangle(caskbench_context_t *ctx, shapes_t *args)
 {
-    SkPath path;
-
     // Temporarily disable anti-aliasing to work around crash in GlShader
     ctx->skia_paint->setAntiAlias(false);
 
+    path.reset();
     path.moveTo(args->x, args->y + 2*args->radius);
     path.rLineTo(2*args->radius, 0);
     path.rLineTo(-args->radius, -2*args->radius);
     path.close();
 
     ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
-
     ctx->skia_paint->setAntiAlias(true);
 }
 
@@ -225,7 +224,7 @@ skiaDrawStar(caskbench_context_t *ctx, shapes_t *args)
 {
     int px = args->x + 2*args->radius * star_points[0][0]/200.0;
     int py = args->y + 2*args->radius * star_points[0][1]/200.0;
-    SkPath path;
+    path.reset();
     path.moveTo(px, py);
 
     for (int p = 1; p < 10; p++ ) {
@@ -244,6 +243,42 @@ skiaDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
     SkRect rect;
     rect.set(args->x, args->y, args->x + args->width, args->y + args->height);
     ctx->skia_canvas->drawRoundRect(rect, 4.0, 4.0, *(ctx->skia_paint));
+}
+
+SkBitmap
+skiaCreateSampleImage(caskbench_context_t *ctx)
+{
+    int i, x, y;
+    SkBitmap bitmap;
+    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 160, 40);
+    SkImageInfo info = SkImageInfo::Make(160, 40,
+                                         kBGRA_8888_SkColorType,
+                                         kPremul_SkAlphaType);
+    bitmap.allocPixels(info);
+    SkBitmapDevice device(bitmap);
+    SkCanvas canvas(&device);
+    SkPaint paint;
+    SkRect r;
+
+    canvas.clear(0);
+
+    x = 5;
+    for (i=0; i<16; i++) {
+        paint.setARGB(255, 255/(i+1), 255, 16*i);
+        x += 10;
+        y = (i%2)*10;
+        r.set(x, y, x+10, y+10);
+
+        canvas.drawRect(r, paint);
+    }
+    canvas.flush();
+    return bitmap;
+}
+
+SkPath
+getCurrentSkiaPath()
+{
+    return path;
 }
 
 void (*skiaShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args) = {

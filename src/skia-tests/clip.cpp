@@ -4,50 +4,24 @@
  * Use of this source code is governed by the 3-Clause BSD license
  * specified in the COPYING file included with this source code.
  */
-// From http://www.atoker.com/blog/2008/09/06/skia-graphics-library-in-chrome-first-impressions/
 #include <config.h>
+
+#include <math.h>
 
 #include <SkCanvas.h>
 #include <SkPaint.h>
-#include <SkOSFile.h>
-#include <SkImageDecoder.h>
 
-#include "kinetics.h"
 #include "caskbench.h"
 #include "caskbench_context.h"
 #include "skia-shapes.h"
 
-static kinetics_t *particles;
-static int element_spacing;
-static int num_x_elements;
-static int num_y_elements;
-
-
-static bool
-draw_clip_tests (caskbench_context_t *ctx,SkCanvas* canvas,kinetics_t* particles) {
-    int i,j,x,y;
-
-    for (j=0; j<num_y_elements; j++) {
-        y = particles?particles->y : j * element_spacing;
-        for (i=0; i<num_x_elements; i++) {
-            x = particles?particles->x : i * element_spacing;
-            skiaRandomizePaintColor(ctx);
-            /*
-            if (!draw_square(ctx,canvas, x,y))
-                return false;
-            */
-        }
-    }
-    return true;
-}
+static SkBitmap bitmap;
 
 int
 sk_setup_clip(caskbench_context_t *ctx)
 {
-    element_spacing = sqrt( ((double)ctx->canvas_width * ctx->canvas_height) / ctx->size);
-    num_x_elements = ctx->canvas_width / element_spacing;
-    num_y_elements = ctx->canvas_height / element_spacing;
-
+    ctx->skia_paint->setAntiAlias(false);
+    bitmap = skiaCreateSampleImage (ctx);
     return 1;
 }
 
@@ -56,37 +30,92 @@ sk_teardown_clip(void)
 {
 }
 
+#if 1
+// Single static star and random clip
 int
 sk_test_clip(caskbench_context_t *ctx)
 {
-    /* Animation */
-    if(ctx->shape_defaults.animation)
-    {
-        int num_particles = ctx->shape_defaults.animation;
-        double start_frame, stop_frame;
-        particles = (kinetics_t *) malloc (sizeof (kinetics_t) * num_particles);
-        int i,j ;
-        for (i = 0; i < num_particles; i++)
-            kinetics_init (&particles[i], ctx);
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
 
-        for (j=0;j<num_particles;j++){
-            ctx->skia_canvas->drawColor(SK_ColorBLACK);
-            for (i = 0; i < num_particles; i++) {
-                kinetics_update(&particles[i], 0.1);
-                if (!draw_clip_tests(ctx,ctx->skia_canvas,&particles[i]))
-                    return 0;
-            }
-        }
+    double ratio;
+    ratio = (double) w/h;
+    shapes_t shape;
+    double scale_param_x = w/80;
+    double scale_param_y;
+
+    shape_copy(&ctx->shape_defaults, &shape);
+    ctx->skia_canvas->save();
+
+    /* Draw star for the full screen size */
+    if (ratio > 1.0)
+        scale_param_y = scale_param_x * (1/ratio);
+    else if (ratio < 1.0)
+        scale_param_y = scale_param_x + (ratio);
+    else
+        scale_param_y = scale_param_x;
+    ctx->skia_canvas->scale(scale_param_x,scale_param_y);
+
+    shape.x = 0;
+    shape.y = 0;
+    shape.radius = 40;
+    shape.shape_type = CB_SHAPE_STAR;
+    shape.fill_type = CB_FILL_SOLID;
+
+    sk_set_fill_style(ctx, &shape);
+    skiaDrawRandomizedShape(ctx, &shape);
+
+    for (int i=0; i<ctx->size; i++) {
+        ctx->skia_canvas->clipPath(getCurrentSkiaPath(), SkRegion::kReplace_Op, true);
+        double x1 = (double)rand()/RAND_MAX * w;
+        double x2 = (double)rand()/RAND_MAX * w;
+        double y1 = (double)rand()/RAND_MAX * h;
+        double y2 = (double)rand()/RAND_MAX * h;
+        ctx->skia_canvas->drawBitmap(bitmap, x1, y1);
     }
-    /* Static clip */
-    else {
-        if (!draw_clip_tests(ctx,ctx->skia_canvas,NULL))
-            return 0;
-    }
+    ctx->skia_canvas->restore();
 
     return 1;
 }
 
+#else
+// Random stars and random clip
+int
+sk_test_clip(caskbench_context_t *ctx)
+{
+    int w = ctx->canvas_width;
+    int h = ctx->canvas_height;
+
+    shapes_t shape;
+    shape_copy(&ctx->shape_defaults, &shape);
+    ctx->skia_canvas->drawColor(SK_ColorBLACK);
+
+    for (int i=0; i<ctx->size; i++) {
+        double i = (double)rand()/RAND_MAX * w;
+        double j = (double)rand()/RAND_MAX * h;
+        ctx->skia_canvas->save();
+        ctx->skia_canvas->translate(i, j);
+        ctx->skia_canvas->scale(0.5,0.5);
+
+        shape.x = 0;
+        shape.y = 0;
+        shape.radius = 40;
+        shape.shape_type = CB_SHAPE_STAR;
+        shape.fill_type = CB_FILL_SOLID;
+
+        sk_set_fill_style(ctx, &shape);
+        skiaDrawRandomizedShape(ctx, &shape);
+
+        ctx->skia_canvas->clipPath(getCurrentSkiaPath(), SkRegion::kReplace_Op, true);
+        double x1 = (double)rand()/RAND_MAX * 80;
+        double y1 = (double)rand()/RAND_MAX * 80;
+        ctx->skia_canvas->drawBitmap(bitmap, x1, y1);
+        ctx->skia_canvas->restore();
+    }
+
+    return 1;
+}
+#endif
 /*
   Local Variables:
   mode:c++

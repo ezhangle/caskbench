@@ -20,30 +20,7 @@ static SkBitmap bitmap;
 int
 sk_setup_image(caskbench_context_t *ctx)
 {
-    int i, x, y;
-    bitmap.setConfig(SkBitmap::kARGB_8888_Config, 160, 40);
-    SkImageInfo info = SkImageInfo::Make(160, 40,
-                                         kBGRA_8888_SkColorType,
-                                         kPremul_SkAlphaType);
-    bitmap.allocPixels(info);
-    SkBitmapDevice device(bitmap);
-    SkCanvas canvas(&device);
-    SkPaint paint;
-    SkRect r;
-
-    canvas.clear(0);
-
-    x = 5;
-    for (i=0; i<16; i++) {
-        paint.setARGB(255, 255/(i+1), 255, 16*i);
-        x += 10;
-        y = (i%2)*10;
-        r.set(x, y, x+10, y+10);
-
-        canvas.drawRect(r, paint);
-    }
-    canvas.flush();
-
+    bitmap = skiaCreateSampleImage (ctx);
     return 1;
 }
 

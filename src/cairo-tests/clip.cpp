@@ -14,16 +14,20 @@
 #include "cairo-shapes.h"
 
 static cairo_surface_t *image;
+static cairo_surface_t *cached_image;
 int
 ca_setup_clip(caskbench_context_t *ctx)
 {
     image = cairoCreateSampleImage (ctx);
+    cached_image = cairoCacheImageSurface (ctx, image);
     return 1;
 }
 
 void
 ca_teardown_clip(void)
 {
+    cairo_surface_destroy (image);
+    cairo_surface_destroy (cached_image);
 }
 
 #if 1
@@ -69,7 +73,7 @@ ca_test_clip(caskbench_context_t *ctx)
         double x2 = (double)rand()/RAND_MAX * w;
         double y1 = (double)rand()/RAND_MAX * h;
         double y2 = (double)rand()/RAND_MAX * h;
-        cairo_set_source_surface (cr, image, x1, y1);
+        cairo_set_source_surface (cr, cached_image, x1, y1);
         // To scale without blur
         cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_FAST);
         cairo_paint (cr);

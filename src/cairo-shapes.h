@@ -33,6 +33,8 @@ void cairoDrawQuadraticCurve(caskbench_context_t *ctx, shapes_t *args);
 
 cairo_surface_t *cairoCreateSampleImage (caskbench_context_t *ctx);
 
+cairo_surface_t *cairoCacheImageSurface(caskbench_context_t *ctx, cairo_surface_t *image);
+
 extern void (*cairoShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args);
 
 void cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape);

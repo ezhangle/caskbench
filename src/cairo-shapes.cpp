@@ -230,7 +230,20 @@ cairoDrawRoundedRectangle (caskbench_context_t *ctx, shapes_t *args)
 #endif
 }
 
-cairo_surface_t *cairoCreateSampleImage (caskbench_context_t *ctx)
+cairo_surface_t *
+cairoCacheImageSurface(caskbench_context_t *ctx, cairo_surface_t *image)
+{
+    cairo_surface_t *cached_image;
+    cached_image = cairo_surface_create_similar (cairo_get_target(ctx->cairo_cr), CAIRO_CONTENT_COLOR_ALPHA, 160, 40);
+    cairo_t *cached_cr = cairo_create (cached_image);
+    cairo_set_source_surface (cached_cr, image, 0, 0);
+    cairo_paint (cached_cr);
+    cairo_destroy (cached_cr);
+    return cached_image;
+}
+
+cairo_surface_t *
+cairoCreateSampleImage (caskbench_context_t *ctx)
 {
     cairo_surface_t *image;
     cairo_t *cr_image;

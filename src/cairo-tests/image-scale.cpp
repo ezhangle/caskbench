@@ -16,11 +16,13 @@
 #include <math.h>
 
 static cairo_surface_t *image;
+static cairo_surface_t *cached_image;
 
 int
 ca_setup_image_scale(caskbench_context_t *ctx)
 {
     image = cairoCreateSampleImage (ctx);
+    cached_image = cairoCacheImageSurface (ctx, image);
     return 1;
 }
 
@@ -28,6 +30,7 @@ void
 ca_teardown_image_scale(void)
 {
     cairo_surface_destroy (image);
+    cairo_surface_destroy (cached_image);
 }
 
 int
@@ -53,7 +56,7 @@ ca_test_image_scale(caskbench_context_t *ctx)
         cairo_translate(cr,x,y);
         cairo_scale(cr, width_ratio, height_ratio);
 
-        cairo_set_source_surface (cr, image, 0, 0);
+        cairo_set_source_surface (cr, cached_image, 0, 0);
         // Scale without blur
         cairo_pattern_set_filter (cairo_get_source(cr), CAIRO_FILTER_FAST);
 #if 1

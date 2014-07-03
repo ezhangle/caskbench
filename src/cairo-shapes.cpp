@@ -277,8 +277,7 @@ void (*cairoShapes[CB_SHAPE_END-1])(caskbench_context_t *ctx , shapes_t *args) =
 void
 cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
 {
-    static const double dashed3[] = {1.0};
-    static const double dashed2[] = {14.0, 6.0};
+    static double dashed[] = {14.0, 6.0};
 
     cairo_path_t *new_path;
 
@@ -325,12 +324,11 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         cairo_append_path (ctx->cairo_cr, new_path);
 
         cairo_set_line_width (ctx->cairo_cr, shape->stroke_width);
-        cairo_set_line_join (ctx->cairo_cr,  (cairo_line_join_t)shape->join_style);
-        cairo_set_line_cap (ctx->cairo_cr, (cairo_line_cap_t)shape->cap_style);
-        if (shape->dash_style == 0)
-            cairo_set_dash (ctx->cairo_cr, dashed3, 1, 0);
-        else if (shape->dash_style == 1)
-            cairo_set_dash (ctx->cairo_cr, dashed2, 2, 0);
+        cairo_set_line_join (ctx->cairo_cr,  (cairo_line_join_t) (int)(drand48()*2));
+        cairo_set_line_cap (ctx->cairo_cr, (cairo_line_cap_t)(int)(drand48()*2));
+        dashed[0] = (drand48()*20);
+        dashed[1] = (drand48()*20);
+        cairo_set_dash (ctx->cairo_cr, dashed, 2, 0);
 
         if (shape->stroke_color != -1) {
             cairo_set_source_rgb (ctx->cairo_cr,

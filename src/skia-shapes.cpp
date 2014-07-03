@@ -17,9 +17,7 @@
 #include "caskbench_context.h"
 #include "skia-shapes.h"
 
-SkAutoTUnref<SkPathEffect> pE;
 SkPath path;
-
 #ifndef SkToS32
 int32_t SkToS32(intmax_t x) { return (int32_t)x; }
 #endif
@@ -323,16 +321,11 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         ctx->skia_paint->setShader (NULL);
         ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
         ctx->skia_paint->setStrokeWidth(shape->stroke_width);
-        ctx->skia_paint->setStrokeJoin((SkPaint::Join)shape->join_style);
-        ctx->skia_paint->setStrokeCap((SkPaint::Cap)shape->cap_style);
-        if (shape->dash_style == 0)
-        {
-            SkScalar vals[] = { SkIntToScalar(1), SkIntToScalar(1)  };
-            ctx->skia_paint->setPathEffect(NULL);
-            pE.reset(SkDashPathEffect::Create(vals, 2, 0));
-            ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0))->unref();
-        }
-        ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+        ctx->skia_paint->setStrokeJoin((SkPaint::Join)(int)(drand48()*2));
+        ctx->skia_paint->setStrokeCap((SkPaint::Cap)(int)(drand48()*2));
+        SkScalar vals[] = { SkIntToScalar((drand48()*20)), SkIntToScalar((drand48()*20))  };
+        ctx->skia_paint->setPathEffect(NULL);
+        ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0))->unref();
         SkColor color;
         if (shape->stroke_color != -1) {
             color = SkColorSetRGB (shape->stroke_color >> 24 & 255,
@@ -344,6 +337,7 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         }
         ctx->skia_paint->setColor(color);
         skiaShapes[shape->shape_type-1] (ctx, shape);
+        ctx->skia_paint->setStrokeWidth(1);
     }
 
     // Cleanup

@@ -15,11 +15,13 @@
 #include "cairo-shapes.h"
 
 static cairo_surface_t *image;
+static cairo_surface_t *cached_image;
 
 int
 ca_setup_image_rotate(caskbench_context_t *ctx)
 {
     image = cairoCreateSampleImage (ctx);
+    cached_image = cairoCacheImageSurface (ctx, image);
     return 1;
 }
 
@@ -27,6 +29,7 @@ void
 ca_teardown_image_rotate(void)
 {
     cairo_surface_destroy (image);
+    cairo_surface_destroy (cached_image);
 }
 
 int
@@ -51,7 +54,7 @@ ca_test_image_rotate(caskbench_context_t* ctx)
         cairo_translate(cr, w/2, h/2);
         cairo_rotate(cr, i / 50.0);  // TODO: Original rotates by counter/50
         cairo_translate(cr, -iw/2, -ih/2);
-        cairo_set_source_surface (cr, image, 0, 0);
+        cairo_set_source_surface (cr, cached_image, 0, 0);
 #if 1
         cairo_paint (cr);
 #else

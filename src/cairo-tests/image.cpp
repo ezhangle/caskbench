@@ -15,11 +15,13 @@
 #include <cairo-shapes.h>
 
 static cairo_surface_t *image;
+static cairo_surface_t *cached_image;
 
 int
 ca_setup_image(caskbench_context_t *ctx)
 {
     image = cairoCreateSampleImage (ctx);
+    cached_image = cairoCacheImageSurface (ctx, image);
     return 1;
 }
 
@@ -27,6 +29,7 @@ void
 ca_teardown_image(void)
 {
     cairo_surface_destroy (image);
+    cairo_surface_destroy (cached_image);
 }
 
 int
@@ -44,7 +47,7 @@ ca_test_image(caskbench_context_t* ctx)
     for (int i=0; i<ctx->size; i++) {
         double x = (double)rand()/RAND_MAX * pw;
         double y = (double)rand()/RAND_MAX * ph;
-        cairo_set_source_surface (cr, image, x, y);
+        cairo_set_source_surface (cr, cached_image, x, y);
 #if 1
         cairo_paint (cr);
 #else

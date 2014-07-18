@@ -19,8 +19,11 @@ typedef struct _caskbench_context {
     cairo_surface_t *cairo_surface;
 
     SkPaint         *skia_paint;
-    SkCanvas        *skia_canvas;
+    SkCanvas        *skia_canvas; // Acts as SkDeferredCanvas only when deferred-rendering is enabled.
+    SkCanvas        *skia_canvas_immediate; // Backup for Immediate/Regular Skia canvas.
     SkBaseDevice    *skia_device;
+    SkSurface       *dSurface;
+    SkImage         *snapshot;
 
     cairo_surface_t *(*setup_cairo)(const device_config_t& config);
     SkBaseDevice    *(*setup_skia)(const device_config_t& config);
@@ -32,6 +35,7 @@ typedef struct _caskbench_context {
     const char      *stock_image_path;
     shapes_t         shape_defaults;
     double tolerance;
+    int is_egl_deferred;
 
 } caskbench_context_t;
 

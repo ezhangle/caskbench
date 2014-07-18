@@ -47,9 +47,13 @@ ca_test_cubic(caskbench_context_t *ctx)
 
         cairoRandomizeColor(ctx);
         cairoDrawCubicCurve(ctx, &shape);
+        if (ctx->shape_defaults.fill_type == CB_FILL_SOLID)
+            cairo_fill(ctx->cairo_cr);
+        else
+            cairo_stroke(ctx->cairo_cr);
     }
 
-    cairo_stroke(ctx->cairo_cr);
+
     return 1;
 }
 

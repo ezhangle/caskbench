@@ -65,6 +65,7 @@ typedef struct _caskbench_options {
     int min_swap_interval;
     int max_swap_interval;
     int match_native_pixmap;
+    int deferred_canvas;
 
     const char **tests;
 } caskbench_options_t;
@@ -285,6 +286,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          NULL},
         {"match-native-pixmap", '\0', POPT_ARG_INT, &opt->match_native_pixmap, 0,
          "EGL pixmap handle to use",
+         NULL},
+        {"deferred-rendering", '\0', POPT_ARG_NONE, &opt->deferred_canvas, 0,
+         "Creates Deferred Canvas for skia rendering for EGL backend. Deferred rendering records graphics commands and stores the intermediate result. It can be played back by the application appropriately.",
          NULL},
 #endif
         {"list-drawing-libs", '\0', POPT_ARG_NONE, &opt->list_drawing_libs, 0,
@@ -627,6 +631,10 @@ main (int argc, char *argv[])
             context.canvas_height = opt.canvas_height;
         if (opt.stock_image_path)
             context.stock_image_path = opt.stock_image_path;
+        if (opt.surface_type && opt.deferred_canvas)
+            context.is_egl_deferred = !strncmp(opt.surface_type, "egl", 3);
+        else if (opt.deferred_canvas)
+            errx (0, "Deferred rendering is not available with the current configuration");
 
         shape_defaults_init(&context.shape_defaults, &opt);
         result_init(&result, perf_tests[c].name);

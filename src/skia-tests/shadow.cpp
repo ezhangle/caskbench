@@ -15,6 +15,7 @@
 #include "skia-shapes.h"
 #include "kinetics.h"
 #include "SkBlurMaskFilter.h"
+#include "SkBlurMask.h"
 
 static double line_width;
 
@@ -61,9 +62,9 @@ static void particle_init ()
     drop_line_width = line_width;
 
     SkBlurMaskFilter::BlurFlags flags = SkBlurMaskFilter::kNone_BlurFlag;
-    mf = SkBlurMaskFilter::Create(SkBlurMaskFilter::kInner_BlurStyle, (SkDoubleToScalar(drop_line_width)), flags);
+    mf = SkBlurMaskFilter::Create(kInner_SkBlurStyle, (SkDoubleToScalar(drop_line_width)), flags);
     flags = SkBlurMaskFilter::kNone_BlurFlag;
-    mf_spread = SkBlurMaskFilter::Create(SkBlurMaskFilter::kInner_BlurStyle, (SkDoubleToScalar(spread_line_width)), flags);
+    mf_spread = SkBlurMaskFilter::Create(kInner_SkBlurStyle, (SkDoubleToScalar(spread_line_width)), flags);
 }
 
 static void fill_particle (caskbench_context_t *ctx, shapes_t *shape)

@@ -10,6 +10,7 @@
 #include <assert.h>
 #include <err.h>
 #include <string.h>
+#include <forward.h>
 
 #ifdef USE_CAIRO
 #include <cairo.h>
@@ -23,6 +24,10 @@
 #  include <SkBitmapDevice.h>
 #  include <SkPaint.h>
 #  include <SkCanvas.h>
+#  include <SkDeferredCanvas.h>
+#  include <SkImage.h>
+#  include <SkSurface.h>
+#  include <GrRenderTarget.h>
 #endif
 
 #include "caskbench_context.h"
@@ -33,20 +38,11 @@ context_init(caskbench_context_t *context, int size)
 {
     assert(context);
     assert(size > 0);
-
+    memset(context, 0, sizeof(caskbench_context_t));
     context->size = size;
     context->canvas_width = 800;
     context->canvas_height = 400;
-    context->skia_device = NULL;
-    context->skia_paint = NULL;
-    context->setup_cairo = NULL;
-    context->setup_skia = NULL;
-    context->destroy_cairo = NULL;
-    context->destroy_skia = NULL;
-    context->update_cairo = NULL;
-    context->update_skia = NULL;
     context->tolerance = 0.25;
-    context->stock_image_path = NULL;
 }
 
 #ifdef USE_CAIRO
@@ -154,6 +150,22 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
     context->skia_paint = new SkPaint;
     context->skia_canvas = new SkCanvas(context->skia_device);
 
+
+    // egl and deferred_rendering
+    if (context->is_egl_deferred) {
+        SkDeferredCanvas *dCanvas;
+        SkImageInfo dImageInfo;
+
+        // create deferred canvas
+        dImageInfo.fWidth = context->canvas_width;
+        dImageInfo.fHeight = context->canvas_height;
+        dImageInfo.fColorType = kRGBA_8888_SkColorType;
+        dImageInfo.fAlphaType = kPremul_SkAlphaType;
+        context->dSurface = SkSurface::NewRenderTarget(context->skia_device->accessRenderTarget()->getContext(), dImageInfo, 0);
+        dCanvas = SkDeferredCanvas::Create(context->dSurface);
+        context->skia_canvas_immediate = context->skia_canvas;
+        context->skia_canvas = dCanvas;
+    }
     // Clear background to black
     context->skia_canvas->clear(0);
     context->skia_paint->setARGB(255, 0, 0, 0);
@@ -166,6 +178,21 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 void
 context_update_skia(caskbench_context_t *context)
 {
+    // egl and deferred_rendering
+    if (context->is_egl_deferred) {
+        SkPaint p;
+        if (context->snapshot)
+            context->snapshot->unref();
+
+        context->snapshot = static_cast <SkDeferredCanvas*> (context->skia_canvas)->newImageSnapshot();
+        SkRect src_rect, dst_rect;
+        src_rect = SkRect::MakeXYWH(0, 0, context->canvas_width, context->canvas_height);
+        dst_rect = src_rect;
+
+        p.setXfermodeMode(SkXfermode::kSrc_Mode);
+        context->snapshot->draw(context->skia_canvas_immediate, &src_rect, dst_rect, &p);
+
+    }
     context->update_skia();
 }
 
@@ -175,8 +202,11 @@ context_destroy_skia(caskbench_context_t *context)
     if (!context)
         return;
     delete context->skia_paint;
+    delete context->skia_canvas_immediate;
     delete context->skia_canvas;
     delete context->skia_device;
+    delete context->dSurface;
+    delete context->snapshot;
     context->destroy_skia();
     context->skia_device = NULL;
 }

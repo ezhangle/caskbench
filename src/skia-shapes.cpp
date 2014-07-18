@@ -103,7 +103,7 @@ skiaCreateLinearGradientShader(int y1, int y2)
 
     return SkGradientShader::CreateLinear(
         linearPoints, linearColors, NULL, NUM_ELEM(linearColors),
-        SkShader::kClamp_TileMode, NULL);
+        SkShader::kClamp_TileMode);
 }
 
 SkShader*
@@ -134,7 +134,7 @@ skiaCreateRadialGradientShader(const shapes_t *shape)
     return SkGradientShader::CreateRadial(
         center, radius,
         colors, NULL, NUM_ELEM(colors),
-        SkShader::kClamp_TileMode, NULL);
+        SkShader::kClamp_TileMode);
 }
 
 SkShader*

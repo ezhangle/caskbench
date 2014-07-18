@@ -70,6 +70,9 @@ for testcase in perfdefs:
             '-i', '1',
             '-s', str(testcase[1]),
             '-j',
+            '-o', 'output.json',
+            '-t', 'egl',
+            '--deferred-rendering',
             ]
 
     cmd += testcase[3]

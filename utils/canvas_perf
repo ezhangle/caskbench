@@ -80,7 +80,10 @@ for testcase in perfdefs:
     print(' '.join(cmd))
     json_output = execute(cmd)
     print(json_output)
-    result = json.loads(json_output)[0]
+
+    with open('output.json') as file:
+        result = json.load(file)[0]
+
     value = result["median run time (s)"]*1000.0
     ratio = value / testcase[2]
 

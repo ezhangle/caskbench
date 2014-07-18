@@ -22,6 +22,10 @@ sk_setup_cubic(caskbench_context_t *ctx)
     ctx->skia_paint->setAntiAlias(false);
     ctx->skia_paint->setStrokeWidth(1);
     ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
+    if (ctx->shape_defaults.fill_type == CB_FILL_SOLID) {
+        ctx->skia_paint->setStyle(SkPaint::kFill_Style);
+    }
+
     return 1;
 }
 

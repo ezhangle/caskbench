@@ -20,6 +20,8 @@ class SkPaint;
 class SkCanvas;
 class SkShader;
 class SkBaseDevice;
+class SkImage;
+class SkSurface;
 
 
 // Caskbench forward declarations

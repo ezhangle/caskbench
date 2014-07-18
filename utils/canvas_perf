@@ -20,11 +20,11 @@ perfdefs = [
     [ "line",              1000,   6, ["line"] ],
     [ "rect",              1000,   5, ["rect", "-f", "none"] ],
     [ "fill_rect",          500,   5, ["rect", "-f", "solid"] ],
-    [ "lines",             1000,   8, ["multi-line"] ],
+    [ "lines",             1000,   8, ["multi_line"] ],
     [ "arc",               1000,   4, ["circle", "-f", "none"] ],
     [ "fill_arc",          1000,   7, ["circle", "-f", "solid"] ],
     [ "bezier",            1000,   3, ["cubic"] ],
-#   [ "fill_bezier",       1000,   4, ["cubic", "-f", "solid"] ],
+    [ "fill_bezier",       1000,   4, ["cubic", "-f", "solid"] ],
     [ "quad",              1000,   4, ["quadratic"] ],
 #   [ "curves",              50,   5, ["curves", "-f", "none"] ],
 #   [ "fill_curves",         50,   8, ["curves", "-f", "solid"] ],
@@ -37,7 +37,7 @@ perfdefs = [
 #   [ "linear_gradient",    100,   2, ["fill", "-f", "linear-gradient"] ],
 #   [ "radial_gradient",    100, 0.3, ["fill", "-f", "radial-gradient"] ],
 #   [ "text",               100, 0.6, ["text"] ],
-#   [ "clip",               100, 0.8, ["clip"] ]
+    [ "clip",               100, 0.8, ["clip"] ]
     ]
 
 class ReturnCode(Exception):

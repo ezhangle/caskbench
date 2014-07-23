@@ -28,10 +28,16 @@
 #  include <SkImage.h>
 #  include <SkSurface.h>
 #  include <GrRenderTarget.h>
+#include <SkPictureRecorder.h>
 #endif
 
 #include "caskbench_context.h"
 #include "device_config.h"
+#include <stdio.h>
+#include <sys/time.h>
+
+SkPictureRecorder recorder;
+SkPicture* snapshot = NULL;
 
 void
 context_init(caskbench_context_t *context, int size)
@@ -153,6 +159,9 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
 
     // egl and deferred_rendering
     if (context->is_egl_deferred) {
+
+#if USE_SKDEFERRED_CANVAS
+
         SkDeferredCanvas *dCanvas;
         SkImageInfo dImageInfo;
 
@@ -165,6 +174,14 @@ context_setup_skia(caskbench_context_t *context, const device_config_t& config)
         dCanvas = SkDeferredCanvas::Create(context->dSurface);
         context->skia_canvas_immediate = context->skia_canvas;
         context->skia_canvas = dCanvas;
+#endif
+#if USE_SKPICTURE
+        SkCanvas* pCanvas = recorder.beginRecording(context->canvas_width,context->canvas_height, NULL, 0);
+        context->skia_canvas_immediate = context->skia_canvas;
+        context->skia_canvas = pCanvas;
+#endif
+
+
     }
     // Clear background to black
     context->skia_canvas->clear(0);
@@ -180,6 +197,7 @@ context_update_skia(caskbench_context_t *context)
 {
     // egl and deferred_rendering
     if (context->is_egl_deferred) {
+#if USE_SKDEFERRED_CANVAS
         SkPaint p;
         if (context->snapshot)
             context->snapshot->unref();
@@ -191,9 +209,24 @@ context_update_skia(caskbench_context_t *context)
 
         p.setXfermodeMode(SkXfermode::kSrc_Mode);
         context->snapshot->draw(context->skia_canvas_immediate, &src_rect, dst_rect, &p);
+#endif
+#if USE_SKPICTURE
+        SkPaint p;
+
+        if (snapshot)
+            snapshot->unref();
+
+        snapshot = recorder.endRecording();
+        snapshot->draw(context->skia_canvas_immediate);
+#endif
 
     }
     context->update_skia();
+    if (context->is_egl_deferred) {
+#if USE_SKPICTURE
+        context->skia_canvas = recorder.beginRecording(context->canvas_width,context->canvas_height, NULL, 0);
+#endif
+    }
 }
 
 void

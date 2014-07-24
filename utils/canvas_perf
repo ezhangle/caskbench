@@ -62,12 +62,13 @@ def execute(command):
 
 
 results = []
+iterations = 100
 for testcase in perfdefs:
     cmd = [ CASKBENCH,
             '-D', 'skia',
             '-w', '480',
             '-h', '480',
-            '-i', '1',
+            '-i', str(iterations),
             '-s', str(testcase[1]),
             '-j',
             '-o', 'output.json',
@@ -84,7 +85,7 @@ for testcase in perfdefs:
     with open('output.json') as file:
         result = json.load(file)[0]
 
-    value = result["median run time (s)"]*1000.0
+    value = testcase[1] / (result["average run time (s)"]*1000)
     ratio = value / testcase[2]
 
     results.append({

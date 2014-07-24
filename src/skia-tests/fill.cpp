@@ -20,6 +20,12 @@ static int element_spacing;
 static int num_x_elements;
 static int num_y_elements;
 
+/* TODO:
+ * - Specify with or without alpha
+ * - With or without antialiasing?
+ * - Stroke width should be via the shape defaults
+ */
+
 int
 sk_setup_fill(caskbench_context_t *ctx)
 {

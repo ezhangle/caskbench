@@ -17,42 +17,41 @@
 #include "caskbench_context.h"
 #include "skia-shapes.h"
 
-/* TODO:
- * - Specify with or without alpha
- * - With or without antialiasing?
- * - Stroke width should be via the shape defaults
- */
-
 int
-sk_setup_linear_gradient(caskbench_context_t *ctx)
+sk_setup_radial_gradient(caskbench_context_t *ctx)
 {
     return 1;
 }
 
 void
-sk_teardown_linear_gradient(void)
+sk_teardown_radial_gradient(void)
 {
 }
 
 int
-sk_test_linear_gradient(caskbench_context_t *ctx)
+sk_test_radial_gradient(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
-    SkShader *shader = NULL;
     SkColor colors[10];
-    SkPoint points[2];
+    SkPoint center;
+
+    center.fX = SkIntToScalar(20);
+    center.fY = SkIntToScalar(20);
 
     for (int i=0; i<NUM_ELEM(colors); i++)
         colors[i] = skiaRandomColor();
-    points[0].fX = SkIntToScalar(0);
-    points[0].fY = SkIntToScalar(0);
-    points[1].fX = SkIntToScalar(100);
-    points[1].fY = SkIntToScalar(100);
 
-    shader = SkGradientShader::CreateLinear(
-        points, colors, NULL, NUM_ELEM(colors),
+    SkShader* shader = NULL;
+    shader = SkGradientShader::CreateRadial(
+        center, 20,
+        colors, NULL, NUM_ELEM(colors),
         SkShader::kClamp_TileMode);
+
+    // TODO: the HTML5 createRadialGradiet() routine
+    // actually creates a conical gradient:  A gradient
+    // is made between two circles C1 and C2.
+    // x0=20, y0=20, r0=20, x1=50, y1=50, r1=70
 
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
@@ -72,12 +71,13 @@ sk_test_linear_gradient(caskbench_context_t *ctx)
         shape.y = 0;
         shape.width = 100;
         shape.height = 100;
-        shape.fill_type = CB_FILL_LINEAR_GRADIENT;
+        shape.fill_type = CB_FILL_RADIAL_GRADIENT;
+
+        skiaRandomizePaintColor(ctx);
 
         ctx->skia_paint->setStyle(SkPaint::kFill_Style);
         ctx->skia_paint->setShader(shader);
 
-        skiaRandomizePaintColor(ctx);
         skiaDrawRectangle(ctx, &shape);
 
         if (shader)

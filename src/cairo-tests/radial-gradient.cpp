@@ -15,7 +15,7 @@
 #include "cairo-shapes.h"
 
 int
-ca_setup_linear_gradient(caskbench_context_t *ctx)
+ca_setup_radial_gradient(caskbench_context_t *ctx)
 {
     cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
     cairo_set_line_width (ctx->cairo_cr, 1);
@@ -23,17 +23,17 @@ ca_setup_linear_gradient(caskbench_context_t *ctx)
 }
 
 void
-ca_teardown_linear_gradient(void)
+ca_teardown_radial_gradient(void)
 {
 }
 
 int
-ca_test_linear_gradient(caskbench_context_t *ctx)
+ca_test_radial_gradient(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
 
-    // TODO: Implement linear gradient
+    // TODO: Implement radial gradient
 
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);

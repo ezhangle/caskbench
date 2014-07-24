@@ -34,8 +34,8 @@ perfdefs = [
     [ "image",              100, 0.3, ["image"] ],
     [ "image_scale",        100, 0.8, ["image_scale"] ],
     [ "image_rotate",        15, 0.3, ["image_rotate"] ],
-#   [ "linear_gradient",    100,   2, ["fill", "-f", "linear-gradient"] ],
-#   [ "radial_gradient",    100, 0.3, ["fill", "-f", "radial-gradient"] ],
+    [ "linear_gradient",    100,   2, ["linear_gradient"] ],
+    [ "radial_gradient",    100, 0.3, ["radial_gradient"] ],
 #   [ "text",               100, 0.6, ["text"] ],
     [ "clip",               100, 0.8, ["clip"] ]
     ]

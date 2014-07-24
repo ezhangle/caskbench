@@ -7,15 +7,15 @@
 #include <config.h>
 
 #include <SkCanvas.h>
-#include <effects/SkGradientShader.h>
+#include <SkGradientShader.h>
+#include <SkBlurMaskFilter.h>
+#include <SkBlurMask.h>
 
 #include "forward.h"
 #include "caskbench.h"
 #include "caskbench_context.h"
 #include "skia-shapes.h"
 #include "kinetics.h"
-#include "SkBlurMaskFilter.h"
-#include "SkBlurMask.h"
 
 static double line_width;
 

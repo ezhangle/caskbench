@@ -9,7 +9,7 @@
 #include <SkCanvas.h>
 #include <SkShader.h>
 #include <SkImageDecoder.h>
-#include <effects/SkGradientShader.h>
+#include <SkGradientShader.h>
 #include <SkDashPathEffect.h>
 
 #include "forward.h"

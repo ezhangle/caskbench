@@ -49,9 +49,9 @@ Caskbench builds to a single executable which you can run directly
 The testing will alternate between cairo and skia versions of each test.
 The second column indicates the test size, the fourth column is the
 number of iterations.  If the third column shows anything other than a
-pass, something's seriously wrong.  The fifth column is the minimum run
-time, and sixth is an average.  The last column calculates the percent
-difference that skia is faster than cairo on average.
+pass, something's seriously wrong.  The fifth column is the fps value.
+The last column calculates the percent difference that skia is faster
+than cairo on average.
 
 For hardware acceleration, specify the surface type to use (e.g. glx or
 egl) via the -t parameter.
@@ -72,3 +72,10 @@ intensity of the testing.
 
 Run it with the '-?' flag to see usage directions with explanations of
 all available options.
+
+Caskbench is tested with the following skia branches:
+ 1. https://github.com/Samsung/skia/tree/dev/m34_1847
+ 2. https://github.com/Samsung/skia/tree/dev/m36_1985
+ 3. https://github.com/Samsung/skia/tree/upstream/m34_1847
+ 4. https://github.com/Samsung/skia/tree/upstream/m36_1985
+ 5. https://github.com/Samsung/skia/tree/henry

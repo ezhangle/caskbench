@@ -44,8 +44,7 @@ sk_test_circle(caskbench_context_t *ctx)
         shape.radius = (double)rand()/RAND_MAX * MIN(
             MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
 
-
-       if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {
+        if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {
             shape.fill_type = generate_random_fill_type();
         }
         sk_set_fill_style(ctx, &shape);

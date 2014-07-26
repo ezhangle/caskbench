@@ -13,7 +13,7 @@
 
 # - Try to find OpenGLES and EGL
 # Once done this will define
-#  
+#
 #  OPENGLES3_FOUND        - system has OpenGLES
 #  OPENGLES3_INCLUDE_DIR  - the GL include directory
 #  OPENGLES3_LIBRARIES    - Link these to use OpenGLES
@@ -38,16 +38,16 @@ IF (WIN32)
 		FIND_PATH(OPENGLES3_INCLUDE_DIR GLES3/gl3.h
 			${POWERVR_SDK_PATH}/Include
 		)
-		
+
 	    FIND_PATH(EGL_INCLUDE_DIR EGL/egl.h
 			${POWERVR_SDK_PATH}/Include
 		)
-		
+
 		FIND_LIBRARY(OPENGLES3_gl_LIBRARY
 			NAMES libGLESv2
 			PATHS ${POWERVR_SDK_PATH}/Windows_x86_32/Lib
 		)
-		    
+
 		FIND_LIBRARY(EGL_egl_LIBRARY
 			NAMES libEGL
 			PATHS ${POWERVR_SDK_PATH}/Windows_x86_32/Lib
@@ -75,9 +75,9 @@ ELSE (WIN32)
     FIND_LIBRARY(OPENGLES3_gl_LIBRARY
       NAMES GLESv2
       PATHS /opt/graphics/OpenGL/lib
-            /usr/openwin/lib
-            /usr/shlib /usr/X11R6/lib
-            /usr/lib
+	    /usr/openwin/lib
+	    /usr/shlib /usr/X11R6/lib
+	    /usr/lib
     )
 
     FIND_PATH(EGL_INCLUDE_DIR EGL/egl.h
@@ -89,24 +89,24 @@ ELSE (WIN32)
     FIND_LIBRARY(EGL_egl_LIBRARY
       NAMES EGL
       PATHS /opt/graphics/OpenGL/lib
-            /usr/openwin/lib
-            /usr/shlib /usr/X11R6/lib
-            /usr/lib
+	    /usr/openwin/lib
+	    /usr/shlib /usr/X11R6/lib
+	    /usr/lib
     )
 
     # On Unix OpenGL most certainly always requires X11.
-    # Feel free to tighten up these conditions if you don't 
+    # Feel free to tighten up these conditions if you don't
     # think this is always true.
     # It's not true on OSX.
 
     IF (OPENGLES3_gl_LIBRARY)
       IF(NOT X11_FOUND)
-        INCLUDE(FindX11)
+	INCLUDE(FindX11)
       ENDIF(NOT X11_FOUND)
       IF (X11_FOUND)
-        IF (NOT APPLE)
-          SET (OPENGLES3_LIBRARIES ${X11_LIBRARIES})
-        ENDIF (NOT APPLE)
+	IF (NOT APPLE)
+	  SET (OPENGLES3_LIBRARIES ${X11_LIBRARIES})
+	ENDIF (NOT APPLE)
       ENDIF (X11_FOUND)
     ENDIF (OPENGLES3_gl_LIBRARY)
 

@@ -13,7 +13,7 @@
 
 # - Try to find OpenGLES and EGL
 # Once done this will define
-#  
+#
 #  OPENGLES2_FOUND        - system has OpenGLES
 #  OPENGLES2_INCLUDE_DIR  - the GL include directory
 #  OPENGLES2_LIBRARIES    - Link these to use OpenGLES
@@ -52,7 +52,7 @@ FIND_LIBRARY(EGL_egl_LIBRARY
   )
 
 # On Unix OpenGL most certainly always requires X11.
-# Feel free to tighten up these conditions if you don't 
+# Feel free to tighten up these conditions if you don't
 # think this is always true.
 # It's not true on OSX.
 

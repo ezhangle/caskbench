@@ -33,19 +33,19 @@ gen_random(char *s, const int len) {
 }
 
 int
-ca_setup_text_glyphs(caskbench_context_t *ctx)
+ca_setup_text(caskbench_context_t *ctx)
 {
     max_dim = MIN (ctx->canvas_width, ctx->canvas_height)/2;
     return 1;
 }
 
 void
-ca_teardown_text_glyphs(void)
+ca_teardown_text(void)
 {
 }
 
 int
-ca_test_text_glyphs(caskbench_context_t *ctx)
+ca_test_text(caskbench_context_t *ctx)
 {
     cairo_t *cr = ctx->cairo_cr;
     double font_size = 18;

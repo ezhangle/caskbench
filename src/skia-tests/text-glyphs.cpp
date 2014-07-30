@@ -24,6 +24,8 @@
 #include "caskbench_context.h"
 #include "skia-shapes.h"
 
+// This test converts a text string to glyphs and displays it at various font sizes
+
 static int max_dim;
 static char rand_text_array[19][100];
 
@@ -37,7 +39,7 @@ void gen_skia_random(char *s, const int len) {
 }
 
 int
-sk_setup_text(caskbench_context_t *ctx)
+sk_setup_text_glyphs(caskbench_context_t *ctx)
 {
     max_dim = MIN(ctx->canvas_width, ctx->canvas_height)/2;
     ctx->skia_paint->setTextEncoding (SkPaint::kGlyphID_TextEncoding);
@@ -45,7 +47,7 @@ sk_setup_text(caskbench_context_t *ctx)
 }
 
 void
-sk_teardown_text(void)
+sk_teardown_text_glyphs(void)
 {
 }
 
@@ -64,7 +66,7 @@ static void getGlyphPositions(const SkPaint& paint, const uint16_t glyphs[],
 }
 
 int
-sk_test_text(caskbench_context_t *ctx)
+sk_test_text_glyphs(caskbench_context_t *ctx)
 {
     double font_size = 18;
     int ypos = 15, xpos = 0;

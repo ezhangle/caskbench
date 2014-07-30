@@ -15,6 +15,8 @@
 #include "caskbench_context.h"
 #include "cairo-shapes.h"
 
+// This test converts a text string to glyphs and displays it at various font sizes
+
 static int max_dim;
 static char rand_text_array[19][100];
 
@@ -30,19 +32,19 @@ void gen_random(char *s, const int len) {
 }
 
 int
-ca_setup_text(caskbench_context_t *ctx)
+ca_setup_text_glyphs(caskbench_context_t *ctx)
 {
     max_dim = MIN (ctx->canvas_width, ctx->canvas_height)/2;
     return 1;
 }
 
 void
-ca_teardown_text(void)
+ca_teardown_text_glyphs(void)
 {
 }
 
 int
-ca_test_text(caskbench_context_t *ctx)
+ca_test_text_glyphs(caskbench_context_t *ctx)
 {
     cairo_t *cr = ctx->cairo_cr;
     double font_size = 18;

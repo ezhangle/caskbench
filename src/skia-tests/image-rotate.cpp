@@ -6,11 +6,6 @@
  */
 #include <config.h>
 
-#include <SkCanvas.h>
-#include <SkPaint.h>
-#include <SkBitmap.h>
-#include <SkBitmapDevice.h>
-
 #include "caskbench.h"
 #include "caskbench_context.h"
 #include "skia-shapes.h"
@@ -32,6 +27,7 @@ sk_teardown_image_rotate(void)
 int
 sk_test_image_rotate(caskbench_context_t *ctx)
 {
+    static int counter = 0;
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
     int iw = bitmap.width();
@@ -45,10 +41,12 @@ sk_test_image_rotate(caskbench_context_t *ctx)
 
         ctx->skia_canvas->save();
         ctx->skia_canvas->translate(w/2, h/2);
-        ctx->skia_canvas->rotate(i / 50.0);  // TODO: Original rotates by counter/50
+        ctx->skia_canvas->rotate(SkDoubleToScalar(counter/(50.0)));
         ctx->skia_canvas->translate(-iw/2, -ih/2);
+
         ctx->skia_canvas->drawBitmap(bitmap, 0, 0);
         ctx->skia_canvas->restore();
+        counter++;
     }
 
     return 1;

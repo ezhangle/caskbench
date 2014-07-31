@@ -5,9 +5,6 @@
  * specified in the COPYING file included with this source code.
  */
 #include <config.h>
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <cairo.h>
 
 #include "caskbench.h"
@@ -36,13 +33,14 @@ int
 ca_test_image_rotate(caskbench_context_t* ctx)
 {
     cairo_t *cr = ctx->cairo_cr;
+    static int counter = 0;
+    double radian = 0;
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
     int iw = cairo_image_surface_get_width (image);
     int ih = cairo_image_surface_get_height (image);
     int pw = w - iw;
     int ph = h - ih;
-
 
 
     for (int i=0; i<ctx->size; i++) {
@@ -52,15 +50,14 @@ ca_test_image_rotate(caskbench_context_t* ctx)
         cairo_new_path(cr);
         cairo_save(cr);
         cairo_translate(cr, w/2, h/2);
-        cairo_rotate(cr, i / 50.0);  // TODO: Original rotates by counter/50
+
+        radian = (1/57.29) * (counter/50);
+        cairo_rotate(cr, radian);
+
         cairo_translate(cr, -iw/2, -ih/2);
         cairo_set_source_surface (cr, cached_image, 0, 0);
-#if 1
         cairo_paint (cr);
-#else
-        cairo_rectangle(cr, 0, 0, iw, ih);
-        cairo_fill(cr);
-#endif
+        counter++;
 
         cairo_restore(cr);
     }

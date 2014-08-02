@@ -33,25 +33,25 @@ sk_test_radial_gradient(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
+    int stops = 2;
+
+    SkPoint pts[2];
+    pts[0].iset(20, 20);
+    pts[1].iset(50, 50);
+    SkScalar radii[2];
+    radii[0] = 20.0f;
+    radii[1] = 70.0f;
     SkColor colors[10];
-    SkPoint center;
+    SkScalar pos[10];
 
-    center.fX = SkIntToScalar(20);
-    center.fY = SkIntToScalar(20);
-
-    for (int i=0; i<NUM_ELEM(colors); i++)
+    for (int i = 0; i < stops; i++) {
+        pos[i] = i / SkIntToScalar(stops - 1);
         colors[i] = skiaRandomColor();
+    }
 
-    SkShader* shader = NULL;
-    shader = SkGradientShader::CreateRadial(
-        center, 20,
-        colors, NULL, NUM_ELEM(colors),
-        SkShader::kClamp_TileMode);
-
-    // TODO: the HTML5 createRadialGradiet() routine
-    // actually creates a conical gradient:  A gradient
-    // is made between two circles C1 and C2.
-    // x0=20, y0=20, r0=20, x1=50, y1=50, r1=70
+    SkShader *shader = SkGradientShader::CreateTwoPointRadial(pts[0], radii[0],
+                                          pts[1], radii[1], colors, pos, stops,
+                                          SkShader::kClamp_TileMode);
 
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
@@ -66,6 +66,10 @@ sk_test_radial_gradient(caskbench_context_t *ctx)
         double ww = abs(x2 - x1);
         double hh = abs(y2 - y1);
 
+        ctx->skia_canvas->save();
+        ctx->skia_canvas->translate(SkDoubleToScalar(xx), SkDoubleToScalar(yy));
+        ctx->skia_canvas->scale(SkDoubleToScalar(ww/100), SkDoubleToScalar(hh/100));
+
         // transform(shape.width/100, 0, 0, shape.height/100, 0, 0)
         shape.x = 0;
         shape.y = 0;
@@ -73,16 +77,16 @@ sk_test_radial_gradient(caskbench_context_t *ctx)
         shape.height = 100;
         shape.fill_type = CB_FILL_RADIAL_GRADIENT;
 
-        skiaRandomizePaintColor(ctx);
 
         ctx->skia_paint->setStyle(SkPaint::kFill_Style);
         ctx->skia_paint->setShader(shader);
 
         skiaDrawRectangle(ctx, &shape);
+        ctx->skia_canvas->restore();
 
-        if (shader)
-            shader->unref();
     }
+    if (shader)
+        shader->unref();
 
     return 1;
 }

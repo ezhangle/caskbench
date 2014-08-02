@@ -39,20 +39,22 @@ sk_test_linear_gradient(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
-    SkShader *shader = NULL;
+    int stops = 2;
+
+    SkPoint pts[2];
+    pts[0].iset(0, 0);
+    pts[1].iset(100, 100);
     SkColor colors[10];
-    SkPoint points[2];
+    SkScalar pos[10];
 
-    for (int i=0; i<NUM_ELEM(colors); i++)
+    for (int i = 0; i < stops; i++) {
+        pos[i] = i / SkIntToScalar(stops - 1);
         colors[i] = skiaRandomColor();
-    points[0].fX = SkIntToScalar(0);
-    points[0].fY = SkIntToScalar(0);
-    points[1].fX = SkIntToScalar(100);
-    points[1].fY = SkIntToScalar(100);
+    }
 
-    shader = SkGradientShader::CreateLinear(
-        points, colors, NULL, NUM_ELEM(colors),
-        SkShader::kClamp_TileMode);
+    SkShader *shader = SkGradientShader::CreateLinear(pts, colors, pos, stops,
+                                          SkShader::kClamp_TileMode);
+    ctx->skia_paint->setShader(shader);
 
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
@@ -67,6 +69,10 @@ sk_test_linear_gradient(caskbench_context_t *ctx)
         double ww = abs(x2 - x1);
         double hh = abs(y2 - y1);
 
+        ctx->skia_canvas->save();
+        ctx->skia_canvas->translate(SkDoubleToScalar(xx), SkDoubleToScalar(yy));
+        ctx->skia_canvas->scale(SkDoubleToScalar(ww/100), SkDoubleToScalar(hh/100));
+
         // transform(shape.width/100, 0, 0, shape.height/100, 0, 0)
         shape.x = 0;
         shape.y = 0;
@@ -77,12 +83,12 @@ sk_test_linear_gradient(caskbench_context_t *ctx)
         ctx->skia_paint->setStyle(SkPaint::kFill_Style);
         ctx->skia_paint->setShader(shader);
 
-        skiaRandomizePaintColor(ctx);
         skiaDrawRectangle(ctx, &shape);
 
-        if (shader)
-            shader->unref();
+        ctx->skia_canvas->restore();
     }
+    if (shader)
+        shader->unref();
 
     return 1;
 }

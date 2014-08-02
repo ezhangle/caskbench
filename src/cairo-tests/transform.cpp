@@ -32,24 +32,30 @@ ca_test_transform(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
+    double rotation_delta(0.02*180/M_PI);
+    cairo_t *cr = ctx->cairo_cr;
 
-    shapes_t shape;
-    shape_copy(&ctx->shape_defaults, &shape);
-    for (int i=0; i<ctx->size; i++) {
-        double x1 = (double)rand()/RAND_MAX * w;
-        double x2 = (double)rand()/RAND_MAX * w;
-        double y1 = (double)rand()/RAND_MAX * h;
-        double y2 = (double)rand()/RAND_MAX * h;
-
-        shape.x = x1;
-        shape.y = y1;
-        shape.width = x1 - x2;
-        shape.height = y1 - y2;
-
-        cairoRandomizeColor(ctx);
-        cairoDrawLine(ctx, &shape);
-        cairo_stroke(ctx->cairo_cr);
+    cairo_save (cr);
+    for (int nn=0; nn<ctx->size; nn++) {
+        for (int i=0; i<w; i+=50) {
+            cairo_new_path (cr);
+            cairo_move_to (cr, i, 0);
+            cairo_line_to (cr, i, h);
+            cairoRandomizeColor(ctx);
+            cairo_stroke (cr);
+        }
+        for (int j=0; j<h; j+=50) {
+            cairo_move_to(cr, 0, j);
+            cairo_line_to(cr, w, j);
+            cairoRandomizeColor(ctx);
+            cairo_stroke (cr);
+        }
+        cairo_translate(cr, w/2.0, h/2.0);
+        cairo_rotate(cr,  (1/57.29)*rotation_delta);
+        cairo_scale(cr, 1.004, 0.996);
+        cairo_translate(cr, -w/2.0, -h/2.0);
     }
+    cairo_restore (cr);
 
     return 1;
 }

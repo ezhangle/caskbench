@@ -39,31 +39,32 @@ sk_test_curves(caskbench_context_t *ctx)
     int cp = ctx->canvas_width / 2; // center point
     int rr = ctx->canvas_width / 2;
     int nn = 32; // must be even
-    double step = 2 * M_PI / nn;
+    double step = (2 * M_PI) / nn;
+
 
     for (int i=0; i<ctx->size; i++) {
         double angle = delta;  // in radians
-        double x1 = cp + rr * cos(angle);
-        double y1 = cp + rr * sin(angle);
+        double x = cp + rr * cos(angle);
+        double y = cp + rr * sin(angle);
+
 
         // begin path
-        path.reset();
-        path.moveTo(x1, y1);
+        SkPath path;
+        path.moveTo(SkDoubleToScalar(x), SkDoubleToScalar(y));
 
         // segments
-        for (int j=0; j<nn; j+=2) {
-            double r = (double)rand()/RAND_MAX * rr / 8.0;
+        for (int j=0; j<nn; j++) {
+            double r = rr * (double)rand()/RAND_MAX / 8.0;
 
-            angle = j * step + delta;
-            x1 = cp + r * cos(angle);
-            y1 = cp + r * sin(angle);
+            double angle = j * step + delta;
 
-            angle = (j+1) * step + delta;
+            double x1 = cp + r * cos(angle);
+            double y1 = cp + r * sin(angle);
             double x2 = cp + rr * cos(angle);
             double y2 = cp + rr * sin(angle);
 
-            path.rQuadTo(x1, y1,
-                         x2, y2);
+            path.quadTo(SkDoubleToScalar(x1), SkDoubleToScalar(y1),
+                         SkDoubleToScalar(x2), SkDoubleToScalar(y2));
         }
 
         skiaRandomizePaintColor(ctx);
@@ -73,9 +74,10 @@ sk_test_curves(caskbench_context_t *ctx)
             ctx->skia_paint->setStyle(SkPaint::kStrokeAndFill_Style);
         }
 
+        path.close();
         ctx->skia_canvas->drawPath(path, *(ctx->skia_paint));
     }
-    delta += 0.05;
+    delta += 0.5;
 
     return 1;
 }

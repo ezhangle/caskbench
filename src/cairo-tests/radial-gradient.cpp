@@ -6,19 +6,17 @@
  */
 #include <config.h>
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <cairo.h>
 
 #include "caskbench.h"
 #include "caskbench_context.h"
 #include "cairo-shapes.h"
+#include <math.h>
 
 int
 ca_setup_radial_gradient(caskbench_context_t *ctx)
 {
-    cairo_set_antialias (ctx->cairo_cr, CAIRO_ANTIALIAS_NONE);
-    cairo_set_line_width (ctx->cairo_cr, 1);
     return 1;
 }
 
@@ -33,7 +31,16 @@ ca_test_radial_gradient(caskbench_context_t *ctx)
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
 
-    // TODO: Implement radial gradient
+    int stops = 2;
+    cairo_pattern_t *pattern = cairo_pattern_create_radial (20,20,20,50,50,70);
+
+    for (int i = 0; i < stops; i++) {
+        double red, green, blue, alpha;
+        generate_random_color(red,green,blue,alpha);
+        cairo_pattern_add_color_stop_rgba (pattern, i/(stops-1), red, green, blue, alpha);
+    }
+
+    cairo_t *cr = ctx->cairo_cr;
 
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
@@ -42,25 +49,30 @@ ca_test_radial_gradient(caskbench_context_t *ctx)
         double x2 = (double)rand()/RAND_MAX * w;
         double y1 = (double)rand()/RAND_MAX * h;
         double y2 = (double)rand()/RAND_MAX * h;
+        double x = MIN(x1, x2);
+        double y = MIN(y1, y2);
 
-        shape.x = MIN(x1, x2);
-        shape.y = MIN(x1, x2);
-        shape.width = abs(x2 - x1);
-        shape.height = abs(y2 - y1);
+        double width_ratio = float(fabs(x2 - x1)) / float(100);
+        double height_ratio = float(fabs(y2 - y1)) / float(100);
 
-        cairoRandomizeColor(ctx);
+        cairo_save(cr);
+        cairo_translate(cr,x, y);
+
+        cairo_scale(cr, width_ratio, height_ratio);
+
+        shape.x = 0;
+        shape.y = 0;
+        shape.width = 100;
+        shape.height = 100;
+        shape.fill_type = CB_FILL_LINEAR_GRADIENT;
+
+        cairo_set_source (cr, pattern);
         cairoDrawRectangle(ctx, &shape);
-        switch (ctx->shape_defaults.fill_type) {
-            case CB_FILL_NONE:
-                cairo_stroke(ctx->cairo_cr);
-                break;
-            case CB_FILL_SOLID:
-                cairo_fill(ctx->cairo_cr);
-                break;
-            default:
-                break;
-        }
+
+        cairo_fill (cr);
+        cairo_restore(cr);
     }
+    cairo_pattern_destroy(pattern);
 
     return 1;
 }

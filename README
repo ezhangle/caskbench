@@ -34,6 +34,15 @@ The build system looks for the skia library in /usr/lib and
 /usr/local/lib, and header files in /usr/include/skia and
 /usr/local/include/skia.
 
+A number of configuration settings can be overridden through cmake.  To
+see a list of the options available for caskbench run:
+
+ $ cmake -L
+
+or, for more advanced cmake settings:
+
+ $ cmake --help
+
 
 == Usage ==
 

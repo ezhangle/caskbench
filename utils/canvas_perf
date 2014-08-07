@@ -30,13 +30,13 @@ perfdefs = [
     [ "fill_curves",         50,   8, ["curves", "-f", "solid"] ],
     [ "stroke_star",       1000,   7, ["star", "-f", "none"] ],
     [ "fill_star",         1000,  12, ["star", "-f", "solid"] ],
-#   [ "transform",           10, 0.2, ["transform"] ],
+    [ "transform",           10, 0.2, ["transform"] ],
     [ "image",              100, 0.3, ["image"] ],
     [ "image_scale",        100, 0.8, ["image_scale"] ],
     [ "image_rotate",        15, 0.3, ["image_rotate"] ],
     [ "linear_gradient",    100,   2, ["linear_gradient"] ],
     [ "radial_gradient",    100, 0.3, ["radial_gradient"] ],
-#   [ "text",               100, 0.6, ["text"] ],
+    [ "text",               100, 0.6, ["text"] ],
     [ "clip",               100, 0.8, ["clip"] ]
     ]
 
@@ -71,7 +71,7 @@ for testcase in perfdefs:
             '-i', str(iterations),
             '-s', str(testcase[1]),
             '-j',
-            '-o', 'output.json',
+            '-o', '/tmp/output.json',
             '-t', 'egl',
             '--deferred-rendering',
             ]
@@ -82,7 +82,7 @@ for testcase in perfdefs:
     json_output = execute(cmd)
     print(json_output)
 
-    with open('output.json') as file:
+    with open('/tmp/output.json') as file:
         result = json.load(file)[0]
 
     value = testcase[1] / (result["average run time (s)"]*1000)

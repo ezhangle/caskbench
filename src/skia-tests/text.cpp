@@ -51,8 +51,9 @@ sk_test_text(caskbench_context_t *ctx)
     char text[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     size_t byteLength = strlen(text) * sizeof(char);
     double tw = SkScalarToDouble(ctx->skia_paint->measureText(text, byteLength));
-    double w = (double)ctx->skia_canvas->getDevice()->width();
-    double h = (double)ctx->skia_canvas->getDevice()->height();
+
+    double w = (double)ctx->canvas_width;
+    double h = (double)ctx->canvas_height;
     double off = abs (w - tw);
 
     ctx->skia_canvas->drawColor(SK_ColorBLACK);

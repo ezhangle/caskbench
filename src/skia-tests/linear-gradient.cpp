@@ -39,7 +39,7 @@ sk_test_linear_gradient(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
-    int stops = 2;
+    int stops = 10;
 
     SkPoint pts[2];
     pts[0].iset(0, 0);

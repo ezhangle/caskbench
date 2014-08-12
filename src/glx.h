@@ -4,8 +4,8 @@
  * Use of this source code is governed by the 3-Clause BSD license
  * specified in the COPYING file included with this source code.
  */
-#ifndef __EGL_H__    // -*- mode: c++ -*-
-#define __EGL_H__
+#ifndef __GLX_H__    // -*- mode: c++ -*-
+#define __GLX_H__
 
 #include <X11/Xlib.h>
 #include <GL/glx.h>
@@ -22,7 +22,7 @@ bool createGLXContextAndWindow(glx_state_t *state, int width, int height);
 void destroyGLXContextAndWindow(glx_state_t *state);
 void cleanup_state_glx(void *state);
 
-#endif // __EGL_H__
+#endif // __GLX_H__
 /*
   Local Variables:
   mode:c++

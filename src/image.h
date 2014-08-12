@@ -4,8 +4,8 @@
  * Use of this source code is governed by the 3-Clause BSD license
  * specified in the COPYING file included with this source code.
  */
-#ifndef __EGL_H__    // -*- mode: c++ -*-
-#define __EGL_H__
+#ifndef __IMAGE_H__    // -*- mode: c++ -*-
+#define __IMAGE_H__
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -25,7 +25,7 @@ bool createImageWindow(image_state_t *state, const device_config_t& device_confi
 void destroyImageWindow(image_state_t *state);
 void updateImageWindow(image_state_t *state);
 
-#endif // __EGL_H__
+#endif // __IMAGE_H__
 /*
   Local Variables:
   mode:c++

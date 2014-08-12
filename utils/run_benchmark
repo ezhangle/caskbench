@@ -3,6 +3,8 @@
 iterations=100
 size=256
 
+export DISPLAY=:0
+
 which hostname > /dev/null
 if [ $? = 0 ]; then
     host=$(hostname -s)
@@ -48,7 +50,8 @@ run_caskbench() {
     fi
     cp ./index.html ${out}/
     echo "== ${surface^^} ==" | tee ${outtxt}
-    ${CASKBENCH} -t ${surface} -i ${iterations} -s ${size} -o ${outjson} ${options} | tee -a ${outtxt}
+    ${CASKBENCH} -t ${surface} -i ${iterations} -s ${size} -o ${outjson} \
+	--enable-output-images ${options} | tee -a ${outtxt}
     if [ $? == 0 ]; then
 	mv -f cairo*.png skia*.png ${out}/
     fi
@@ -58,7 +61,7 @@ run_caskbench() {
     if [ ! -e ${outjson} ]; then
 	return 1
     fi
-    ./json2csv ${outjson} ${outcsv}
+    ./utils/json2csv ${outjson} ${outcsv}
     return 0
 }
 
@@ -71,12 +74,12 @@ while [ -d "${results_dir}" ]; do
 done
 
 surfaces=$(${CASKBENCH} -l)
-echo "MSAA (--enable-egl-sample-buffers)" >> ${results_dir}/comparison.txt
+#echo "MSAA (--enable-egl-sample-buffers)" >> ${results_dir}/comparison.txt
 export CAIRO_GL_COMPOSITOR=msaa
 for surface in ${surfaces}; do
-    run_caskbench "${results_dir}/${host}-${surface}-msaa" "${surface}" "--enable-egl-sample-buffers"
+    run_caskbench "${results_dir}/${host}-${surface}" "${surface}"
 done
-./compare_runs "${results_dir}/${host}-image-msaa/results.json" "${results_dir}/${host}-egl-msaa/results.json" \
+./utils/compare_runs "${results_dir}/${host}-image/results.json" "${results_dir}/${host}-egl/results.json" \
     >> ${results_dir}/comparison.txt
 echo >> ${results_dir}/comparison.txt
 

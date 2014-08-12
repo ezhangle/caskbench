@@ -1,0 +1,69 @@
+#!/bin/bash
+
+cat <<EOF
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+ <style>
+   body {
+   background-color: #333;
+   }
+
+   h1 {
+   color: #6f6;
+   }
+
+   #results {
+   font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+   border-collapse:collapse;
+   border-right:1px solid black;
+   border-left:1px solid black;
+   }
+
+   #results td, #results th {
+   font-size:1em;
+   border-bottom:1px solid black;
+   padding:3px 7px 32px 7px;
+   }
+
+   #results th {
+   font-size:1.1em;
+   text-align:left;
+   padding-top:5px;
+   padding-bottom:4px;
+   background-color:black;
+   color:#ffffff;
+   }
+
+   #results tr.alt td {
+   color:#000000;
+   background-color:silver;
+   }
+ </style>
+</head>
+<body>
+
+<h1>Cairo vs. Skia</h1>
+
+<table id="results">
+
+EOF
+
+for test in src/skia-tests/*; do
+    name=$(basename ${test%.cpp})
+    cat <<EOF
+ <tbody><tr><th colspan="2">${name}</th></tr>
+ <tr>
+  <td><img src="cairo-${name}.png"></td>
+  <td><img src="skia-${name}.png"></td>
+ </tr>
+
+EOF
+
+done
+
+cat <<EOF
+</tbody></table>
+
+
+</body></html>
+EOF

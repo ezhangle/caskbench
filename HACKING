@@ -1,0 +1,110 @@
+Adding New Tests
+================
+Tests are easy to add.  Decide a name for the test, then implement these
+three routines in cairo-tests/${name}.cpp:
+
+ * ca_setup_${name}
+ * ca_teardown_${name}
+ * ca_test_${name}
+
+The setup routine is executed just once, before the main iterations
+begin.  For tests that are directly measuring low level drawing
+operations, you may not have much - if any - setup.  But you could use
+this for one-time setup or precalculations that would be expensive to do
+in the test proper and that shouldn't be charged against performance.
+
+Now reimplement the same test for skia (and any other drawing
+libraries), with the same three routines but prefixed with sk_*.
+
+
+Adding New Rendering Backends
+=============================
+Tasks for adding another backend:
+
+ * cairo-[backend].cpp - surface creation/update/destruction
+ * skia-[backend].cpp - surface creation/update/destruction
+ * [backend].cpp - shared code for both of the above
+ * caskbench-context.cpp - register your backend
+ * caskbench.cpp - add command line options you need
+
+
+Adding New Drawing Library Backends
+===================================
+Adding a new drawing library is a bit more involved:
+
+ * config.h.cmake
+ * CMakeScripts/Modules/FindXxx.cmake
+ * CMakeLists.txt - add library to build system
+
+ * caskbench.cpp - add command line options, etc.
+ * caskbench_context.* - register your drawing library
+ * [drawlib]-[backend].cpp - surface creation/update/deletion
+ * [drawlib]-shapes.* - implement shape drawing
+ * [drawlib]-utils.cpp - misc. routines
+ * [drawlib]-tests/*.cpp - reimplement all tests
+
+Start by adding your library to the build system via the cmake files.
+The FindXxx.cmake module searches through lists of paths where your
+drawing library might be, and figures out the XXX_LIBRARIES path and
+XXX_INCLUDE_DIR.  It should set XXX_FOUND to "YES" if the library was
+detected.  Use the cairo and skia modules as examples. Now add a USE_XXX
+for your library to config.h.cmake, and then register your library in
+CMakeLists.txt - you can basically just copy the logic for cairo.  Run
+cmake and verify things get detected correctly.
+
+With the actual coding, the easiest place to start is probably the
+command line arguments in caskbench.cpp.  Add your library to
+print_drawing_libs_available() and update process_drawing_libs() to
+check for your drawing library's name.  You should now be able to invoke
+caskbench with your drawing library specified, and it'll bail out when
+it can't find the matching tests.
+
+We can go ahead and stub in all the tests at this point.  Create a
+directory src/xxx-tests/ and add the following code to line.cpp:
+
+  #include <config.h>
+  int  xx_setup_line() { return 1; }
+  void xx_teardown_line() { }
+  int  xx_test_line { return 1; }
+
+Copy this file to all the other tests, substituting the test name for
+'line' in the filename and the above three lines.
+
+Then in the generate_tests bash script, add code to write the
+declarations for these tests, and to set up the perf_tests data
+structure.  To test this part is working, run:
+
+  $ src/generate_tests src/ /dev/stdout
+
+Now go back to caskbench.cpp and extend populate_user_tests() with your
+drawing library.
+
+
+Next, enable your new drawing library in caskbench_context.cpp by adding
+definitions for these routines:
+
+  context_setup_xxx()
+  context_destroy_xxx()
+  context_update_xxx()
+
+These three routines are called indirectly from caskbench.cpp's main
+routine; it will probably help to review the DESIGN document to learn
+how all these bits interoperate.  As you implement these three routines,
+you'll add your own xxx-egl.cpp and xxx-image.cpp with your
+backend-specific code.  Use cairo-egl.cpp and cairo-image.cpp as
+examples.
+
+Also add these two routines to xxx-util.cpp:
+[Maybe all the drawing lib context routines should be moved to -utils?]
+
+  context_clear_xxx()
+  write_image_file_xxx()
+
+
+Now you're ready to create a shapes library, xxx-shapes.cpp.  This
+should be a pretty paint-by-numbers reimplementing of the cairo or
+skia shape library.
+
+Finally, go through and fill in all the tests.  This should also be
+pretty straightforward.
+

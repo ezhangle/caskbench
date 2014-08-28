@@ -45,8 +45,8 @@ ca_test_image(caskbench_context_t* ctx)
     int ph = h - ih;
 
     for (int i=0; i<ctx->size; i++) {
-        double x = (double)rand()/RAND_MAX * pw;
-        double y = (double)rand()/RAND_MAX * ph;
+        double x = (double)rnd()/RAND_MAX * pw;
+        double y = (double)rnd()/RAND_MAX * ph;
         cairo_set_source_surface (cr, cached_image, x, y);
 #if 1
         cairo_paint (cr);

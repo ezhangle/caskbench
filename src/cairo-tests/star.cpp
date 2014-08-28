@@ -38,7 +38,7 @@ ca_test_star(caskbench_context_t *ctx)
     shape_copy(&ctx->shape_defaults, &shape);
     for (int j = 0; j<h; j += 40) {
         for (int i = 0; i<w; i += 40) {
-            counter = (double)rand() * 2000.0 / RAND_MAX;
+            counter = (double)rnd() * 2000.0 / RAND_MAX;
             cairo_new_path(ctx->cairo_cr);
             cairo_save(ctx->cairo_cr);
             cairo_translate(ctx->cairo_cr,i, j);

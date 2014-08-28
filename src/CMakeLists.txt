@@ -5,6 +5,7 @@ file(GLOB caskbench_SOURCES
   kinetics.cpp
   image.cpp
   shapes.cpp
+  rnd.cpp
 )
 
 if (USE_GLX)

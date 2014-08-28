@@ -43,10 +43,10 @@ ca_test_image_scale(caskbench_context_t *ctx)
     int iw = cairo_image_surface_get_width (image);
     int ih = cairo_image_surface_get_height (image);
     for (int i=0; i<ctx->size; i++) {
-        double x1 = (double)rand()/RAND_MAX * w;
-        double x2 = (double)rand()/RAND_MAX * w;
-        double y1 = (double)rand()/RAND_MAX * h;
-        double y2 = (double)rand()/RAND_MAX * h;
+        double x1 = (double)rnd()/RAND_MAX * w;
+        double x2 = (double)rnd()/RAND_MAX * w;
+        double y1 = (double)rnd()/RAND_MAX * h;
+        double y2 = (double)rnd()/RAND_MAX * h;
         double x = MIN(x1, x2);
         double y = MIN(y1, y2);
         double width_ratio = float(fabs(x2 - x1)) / float(iw);

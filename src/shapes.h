@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
+#include "rnd.h"
+
 typedef enum {
     CB_FILL_RANDOM,
     CB_FILL_NONE,

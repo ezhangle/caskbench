@@ -50,7 +50,6 @@ typedef struct _caskbench_options {
     int cap_style;
     int join_style;
     int dash_style;
-    char *seed_value;
     unsigned int enable_output_images;
     double tolerance;
     int canvas_width;
@@ -247,9 +246,6 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
          "Dash style for stroked test objects",
          NULL},
 #endif
-        {"seed-value", 'r', POPT_ARG_STRING, &opt->seed_value, 0,
-         "Seed value for the random number generator (eg. -r ABCDEFFF)",
-         NULL},
         {"enable-output-images", '\0', POPT_ARG_NONE, &opt->enable_output_images, 0,
          "Generate image PNG files displaying the final rendering frame from each test run.",
          NULL},
@@ -619,10 +615,8 @@ main (int argc, char *argv[])
             !strncmp(perf_tests[c].name, "skia-stroke", 11))
             continue;
 
-        if(opt.seed_value == NULL)
-            srand (0xdeadbeef);
-        else
-            srand (strtoul(opt.seed_value,&end_ptr,16));
+        /* Reinitialize random seed to a known state */
+        srnd();
 
         context_init(&context, opt.size);
         if(opt.canvas_width)

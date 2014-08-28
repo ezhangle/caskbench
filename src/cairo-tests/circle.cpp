@@ -36,9 +36,9 @@ ca_test_circle(caskbench_context_t *ctx)
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
     for (int i=0; i<ctx->size; i++) {
-        shape.x = (double)rand()/RAND_MAX * w;
-        shape.y = (double)rand()/RAND_MAX * h;
-        shape.radius = (double)rand()/RAND_MAX * MIN(
+        shape.x = (double)rnd()/RAND_MAX * w;
+        shape.y = (double)rnd()/RAND_MAX * h;
+        shape.radius = (double)rnd()/RAND_MAX * MIN(
             MIN(shape.x, w-shape.x), MIN(shape.y, h-shape.y));
 
         if (ctx->shape_defaults.fill_type == CB_FILL_RANDOM) {

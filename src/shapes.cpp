@@ -94,22 +94,22 @@ shape_randomize(shapes_t *shape)
 void
 generate_random_color(double &red, double &green, double &blue, double &alpha)
 {
-    red = (double)rand()/RAND_MAX;
-    green = (double)rand()/RAND_MAX;
-    blue = (double)rand()/RAND_MAX;
-    alpha = (double)rand()/RAND_MAX;
+    red = (double)rnd()/RAND_MAX;
+    green = (double)rnd()/RAND_MAX;
+    blue = (double)rnd()/RAND_MAX;
+    alpha = (double)rnd()/RAND_MAX;
 }
 
 shape_type_t
 generate_random_shape()
 {
-    return (shape_type_t) ((((double)(CB_SHAPE_END-1) * rand())/RAND_MAX) + 1);
+    return (shape_type_t) ((((double)(CB_SHAPE_END-1) * rnd())/RAND_MAX) + 1);
 }
 
 fill_type_t
 generate_random_fill_type()
 {
-    return (fill_type_t) ((((double)(CB_FILL_END-1) * rand())/RAND_MAX) + 1);
+    return (fill_type_t) ((((double)(CB_FILL_END-1) * rnd())/RAND_MAX) + 1);
 }
 
 /*

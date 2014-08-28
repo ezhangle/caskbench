@@ -41,16 +41,16 @@ sk_test_roundrect(caskbench_context_t *ctx)
 
         skiaRandomizePaintColor(ctx);
 
-        shape.x = trunc( (((double)ctx->canvas_width-20)*rand())/RAND_MAX ) + 10;
-        shape.y = trunc( (((double)ctx->canvas_height-20)*rand())/RAND_MAX ) + 10;
+        shape.x = trunc( (((double)ctx->canvas_width-20)*rnd())/RAND_MAX ) + 10;
+        shape.y = trunc( (((double)ctx->canvas_height-20)*rnd())/RAND_MAX ) + 10;
 
         /* vary radius upto half of MIN(X,Y) */
-        shape.radius = (double)rand()/RAND_MAX * 20;
+        shape.radius = (double)rnd()/RAND_MAX * 20;
         shape.width = 100;
         shape.height = 40;
 
         /* line_width cannot be more than twice of radius due to skia limitation - Issue #4 in skia https://github.com/Samsung/skia/issues/4 */
-        shape.stroke_width = (double)rand()/RAND_MAX * (2*shape.radius);
+        shape.stroke_width = (double)rnd()/RAND_MAX * (2*shape.radius);
 
         ctx->skia_paint->setStrokeWidth(shape.stroke_width);
 

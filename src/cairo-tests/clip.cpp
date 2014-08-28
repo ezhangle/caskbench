@@ -69,10 +69,10 @@ ca_test_clip(caskbench_context_t *ctx)
     for (int i=0; i<ctx->size; i++) {
         cairoDrawStar(ctx,&shape);
         cairo_clip (cr);
-        double x1 = (double)rand()/RAND_MAX * w;
-        double x2 = (double)rand()/RAND_MAX * w;
-        double y1 = (double)rand()/RAND_MAX * h;
-        double y2 = (double)rand()/RAND_MAX * h;
+        double x1 = (double)rnd()/RAND_MAX * w;
+        double x2 = (double)rnd()/RAND_MAX * w;
+        double y1 = (double)rnd()/RAND_MAX * h;
+        double y2 = (double)rnd()/RAND_MAX * h;
         cairo_set_source_surface (cr, cached_image, x1, y1);
         // To scale without blur
         cairo_pattern_set_filter(cairo_get_source(cr), CAIRO_FILTER_FAST);
@@ -99,10 +99,10 @@ ca_test_clip(caskbench_context_t *ctx)
 
     cairo_t *cr = ctx->cairo_cr;
     for (int i=0; i<ctx->size; i++) {
-        double i = (double)rand()/RAND_MAX * w;
-        double j = (double)rand()/RAND_MAX * h;
-        double x1 = (double)rand()/RAND_MAX * 80;
-        double y1 = (double)rand()/RAND_MAX * 80;
+        double i = (double)rnd()/RAND_MAX * w;
+        double j = (double)rnd()/RAND_MAX * h;
+        double x1 = (double)rnd()/RAND_MAX * 80;
+        double y1 = (double)rnd()/RAND_MAX * 80;
 
         cairo_new_path(cr);
         cairo_save (cr);

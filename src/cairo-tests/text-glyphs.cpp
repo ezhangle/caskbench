@@ -26,7 +26,7 @@ gen_random(char *s, const int len) {
         "ABCD EFG HIJKL MNOPQ RSTUVW XYZ";
 
     for (int i = 0; i < len; ++i) {
-        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+        s[i] = alphanum[rnd() % (sizeof(alphanum) - 1)];
     }
 
     s[len] = 0;

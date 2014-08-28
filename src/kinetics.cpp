@@ -24,20 +24,20 @@ void
 kinetics_init (kinetics_t *kinetics, const caskbench_context_t *ctx)
 {
     int max_velocity = ctx->canvas_width / 2;
-    kinetics->angle = drand48 () * 2 * M_PI;
-    kinetics->velocity = max_velocity / 8.0 * 7 * drand48 () + max_velocity / 8.0;
+    kinetics->angle = drnd48() * 2 * M_PI;
+    kinetics->velocity = max_velocity / 8.0 * 7 * drnd48() + max_velocity / 8.0;
     kinetics->x = ctx->canvas_width / 2;
     kinetics->y = ctx->canvas_height / 2;
 
-    kinetics->x_radius = drand48 () * 10 + 5;
-    kinetics->y_radius = drand48 () * 10 + 5;
+    kinetics->x_radius = drnd48() * 10 + 5;
+    kinetics->y_radius = drnd48() * 10 + 5;
     kinetics->canvas_width = ctx->canvas_width;
     kinetics->canvas_height = ctx->canvas_height;
-    kinetics->width = drand48 () * 120 + 30;
-    kinetics->height = drand48 () * 120 + 30;
+    kinetics->width = drnd48() * 120 + 30;
+    kinetics->height = drnd48() * 120 + 30;
 
-    kinetics->rotation = drand48 () * 2 * M_PI;
-    kinetics->line_width = 20; //drand48() * 20;
+    kinetics->rotation = drnd48() * 2 * M_PI;
+    kinetics->line_width = 20; //drnd48() * 20;
 }
 
 void

@@ -54,8 +54,8 @@ ca_test_text(caskbench_context_t *ctx)
 
     for (int i = 0; i < ctx->size; i++)
     {
-        double x = drand48() * off;
-        double y = drand48() * h;
+        double x = drnd48() * off;
+        double y = drnd48() * h;
 
         cairoRandomizeColor(ctx);
         cairo_move_to(cr, x, y);

@@ -67,10 +67,10 @@ sk_test_clip(caskbench_context_t *ctx)
 
     for (int i=0; i<ctx->size; i++) {
         ctx->skia_canvas->clipPath(getCurrentSkiaPath(), SkRegion::kReplace_Op, true);
-        double x1 = (double)rand()/RAND_MAX * w;
-        double x2 = (double)rand()/RAND_MAX * w;
-        double y1 = (double)rand()/RAND_MAX * h;
-        double y2 = (double)rand()/RAND_MAX * h;
+        double x1 = (double)rnd()/RAND_MAX * w;
+        double x2 = (double)rnd()/RAND_MAX * w;
+        double y1 = (double)rnd()/RAND_MAX * h;
+        double y2 = (double)rnd()/RAND_MAX * h;
         ctx->skia_canvas->drawBitmap(bitmap, x1, y1);
     }
     ctx->skia_canvas->restore();
@@ -91,8 +91,8 @@ sk_test_clip(caskbench_context_t *ctx)
     ctx->skia_canvas->drawColor(SK_ColorBLACK);
 
     for (int i=0; i<ctx->size; i++) {
-        double i = (double)rand()/RAND_MAX * w;
-        double j = (double)rand()/RAND_MAX * h;
+        double i = (double)rnd()/RAND_MAX * w;
+        double j = (double)rnd()/RAND_MAX * h;
         ctx->skia_canvas->save();
         ctx->skia_canvas->translate(i, j);
         ctx->skia_canvas->scale(0.5,0.5);
@@ -107,8 +107,8 @@ sk_test_clip(caskbench_context_t *ctx)
         skiaDrawRandomizedShape(ctx, &shape);
 
         ctx->skia_canvas->clipPath(getCurrentSkiaPath(), SkRegion::kReplace_Op, true);
-        double x1 = (double)rand()/RAND_MAX * 80;
-        double y1 = (double)rand()/RAND_MAX * 80;
+        double x1 = (double)rnd()/RAND_MAX * 80;
+        double y1 = (double)rnd()/RAND_MAX * 80;
         ctx->skia_canvas->drawBitmap(bitmap, x1, y1);
         ctx->skia_canvas->restore();
     }

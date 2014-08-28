@@ -39,12 +39,12 @@ sk_test_quadratic(caskbench_context_t *ctx)
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
     for (int i=0; i<ctx->size; i++) {
-        shape.x  = (double)rand()/RAND_MAX * w;
-        shape.dx1 = (double)rand()/RAND_MAX * w;
-        shape.width = (double)rand()/RAND_MAX * w - shape.x;
-        shape.y  = (double)rand()/RAND_MAX * h;
-        shape.dy1 = (double)rand()/RAND_MAX * h;
-        shape.height = (double)rand()/RAND_MAX * h - shape.y;
+        shape.x  = (double)rnd()/RAND_MAX * w;
+        shape.dx1 = (double)rnd()/RAND_MAX * w;
+        shape.width = (double)rnd()/RAND_MAX * w - shape.x;
+        shape.y  = (double)rnd()/RAND_MAX * h;
+        shape.dy1 = (double)rnd()/RAND_MAX * h;
+        shape.height = (double)rnd()/RAND_MAX * h - shape.y;
 
         skiaRandomizePaintColor(ctx);
         skiaDrawQuadraticCurve(ctx, &shape);

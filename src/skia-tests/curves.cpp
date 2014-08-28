@@ -54,7 +54,7 @@ sk_test_curves(caskbench_context_t *ctx)
 
         // segments
         for (int j=0; j<nn; j++) {
-            double r = rr * (double)rand()/RAND_MAX / 8.0;
+            double r = rr * (double)rnd()/RAND_MAX / 8.0;
 
             double angle = j * step + delta;
 

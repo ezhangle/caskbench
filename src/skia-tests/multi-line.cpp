@@ -35,14 +35,14 @@ sk_test_multi_line(caskbench_context_t *ctx)
 {
     int w = ctx->canvas_width;
     int h = ctx->canvas_height;
-    double x = (double)rand()/RAND_MAX * w;
-    double y = (double)rand()/RAND_MAX * h;
+    double x = (double)rnd()/RAND_MAX * w;
+    double y = (double)rnd()/RAND_MAX * h;
     SkPath path;
 
     path.moveTo(x, y);
     for (int i=0; i<ctx->size; i++) {
-        x = (double)rand()/RAND_MAX * w;
-        y = (double)rand()/RAND_MAX * h;
+        x = (double)rnd()/RAND_MAX * w;
+        y = (double)rnd()/RAND_MAX * h;
 
         path.lineTo(x, y);
     }

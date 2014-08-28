@@ -39,9 +39,9 @@ sk_test_vline(caskbench_context_t *ctx)
     shapes_t shape;
     shape_copy(&ctx->shape_defaults, &shape);
     for (int i=0; i<ctx->size; i++) {
-        double x = (double)rand()/RAND_MAX * w;
-        double y1 = (double)rand()/RAND_MAX * h;
-        double y2 = (double)rand()/RAND_MAX * h;
+        double x = (double)rnd()/RAND_MAX * w;
+        double y1 = (double)rnd()/RAND_MAX * h;
+        double y2 = (double)rnd()/RAND_MAX * h;
 
         shape.x = x;
         shape.y = y1;

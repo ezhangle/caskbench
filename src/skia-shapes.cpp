@@ -28,10 +28,10 @@ SkColor
 skiaRandomColor()
 {
     unsigned int red, blue, green, alpha;
-    red = int( 255 * (double)rand()/RAND_MAX );
-    green = int( 255 * (double)rand()/RAND_MAX );
-    blue = int( 255 * (double)rand()/RAND_MAX );
-    alpha = int( 255 * (double)rand()/RAND_MAX );
+    red = int( 255 * (double)rnd()/RAND_MAX );
+    green = int( 255 * (double)rnd()/RAND_MAX );
+    blue = int( 255 * (double)rnd()/RAND_MAX );
+    alpha = int( 255 * (double)rnd()/RAND_MAX );
     return SkColorSetARGB(alpha, red, green, blue);
 }
 
@@ -120,14 +120,14 @@ skiaCreateRadialGradientShader(const shapes_t *shape)
     } else if (shape->width > shape->height) {
         radius = shape->height/2;
         center.set(
-            shape->x + radius + ((double)rand()*shape->width)/RAND_MAX,
+            shape->x + radius + ((double)rnd()*shape->width)/RAND_MAX,
             shape->y + radius
             );
     } else {
         radius = shape->width/2;
         center.set(
             shape->x + radius,
-            shape->y + radius + ((double)rand()*shape->height)/RAND_MAX
+            shape->y + radius + ((double)rnd()*shape->height)/RAND_MAX
             );
     }
 
@@ -321,9 +321,9 @@ skiaDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         ctx->skia_paint->setShader (NULL);
         ctx->skia_paint->setStyle(SkPaint::kStroke_Style);
         ctx->skia_paint->setStrokeWidth(shape->stroke_width);
-        ctx->skia_paint->setStrokeJoin((SkPaint::Join)(int)(drand48()*2));
-        ctx->skia_paint->setStrokeCap((SkPaint::Cap)(int)(drand48()*2));
-        SkScalar vals[] = { SkIntToScalar((drand48()*20)), SkIntToScalar((drand48()*20))  };
+        ctx->skia_paint->setStrokeJoin((SkPaint::Join)(int)(drnd48()*2));
+        ctx->skia_paint->setStrokeCap((SkPaint::Cap)(int)(drnd48()*2));
+        SkScalar vals[] = { SkIntToScalar((drnd48()*20)), SkIntToScalar((drnd48()*20))  };
         ctx->skia_paint->setPathEffect(NULL);
         ctx->skia_paint->setPathEffect(SkDashPathEffect::Create(vals, 2, 0))->unref();
         SkColor color;

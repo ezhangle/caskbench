@@ -37,9 +37,9 @@ ca_test_bubbles(caskbench_context_t *ctx)
     for (i=0; i<ctx->size; i++) {
         cairoRandomizeColor(ctx);
 
-        r = ((double)max_dim*rand())/RAND_MAX + 1;
-        x = (0.5*(double)ctx->canvas_width*rand())/RAND_MAX;
-        y = (0.5*(double)ctx->canvas_height*rand())/RAND_MAX;
+        r = ((double)max_dim*rnd())/RAND_MAX + 1;
+        x = (0.5*(double)ctx->canvas_width*rnd())/RAND_MAX;
+        y = (0.5*(double)ctx->canvas_height*rnd())/RAND_MAX;
         cairo_arc (cr, x, y, r, 0, 2*M_PI);
         cairo_fill (cr);
     }

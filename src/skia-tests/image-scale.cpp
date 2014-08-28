@@ -37,10 +37,10 @@ sk_test_image_scale(caskbench_context_t *ctx)
     SkRect r;
 
     for (int i=0; i<ctx->size; i++) {
-        double x1 = (double)rand()/RAND_MAX * w;
-        double x2 = (double)rand()/RAND_MAX * w;
-        double y1 = (double)rand()/RAND_MAX * h;
-        double y2 = (double)rand()/RAND_MAX * h;
+        double x1 = (double)rnd()/RAND_MAX * w;
+        double x2 = (double)rnd()/RAND_MAX * w;
+        double y1 = (double)rnd()/RAND_MAX * h;
+        double y2 = (double)rnd()/RAND_MAX * h;
         double x = MIN(x1, x2);
         double y = MIN(y1, y2);
         r.set(x, y, x + fabs(x2 - x1), y + fabs(y2 - y1));

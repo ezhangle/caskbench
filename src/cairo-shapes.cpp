@@ -28,12 +28,12 @@ cairoCreateRadialGradientPattern (const shapes_t *shape)
         center_y = shape->y + shape->radius;
     } else if (shape->width > shape->height) {
         radius = shape->height/2;
-        center_x = shape->x + radius + ((double)rand()*shape->width)/RAND_MAX;
+        center_x = shape->x + radius + ((double)rnd()*shape->width)/RAND_MAX;
         center_y = shape->y + radius;
     } else {
         radius = shape->width/2;
         center_x = shape->x + radius;
-        center_y = shape->y + radius + ((double)rand()*shape->width)/RAND_MAX;
+        center_y = shape->y + radius + ((double)rnd()*shape->width)/RAND_MAX;
     }
 
     double red, green, blue, alpha;
@@ -324,10 +324,10 @@ cairoDrawRandomizedShape(caskbench_context_t *ctx, shapes_t *shape)
         cairo_append_path (ctx->cairo_cr, new_path);
 
         cairo_set_line_width (ctx->cairo_cr, shape->stroke_width);
-        cairo_set_line_join (ctx->cairo_cr,  (cairo_line_join_t) (int)(drand48()*2));
-        cairo_set_line_cap (ctx->cairo_cr, (cairo_line_cap_t)(int)(drand48()*2));
-        dashed[0] = (drand48()*20);
-        dashed[1] = (drand48()*20);
+        cairo_set_line_join (ctx->cairo_cr,  (cairo_line_join_t) (int)(drnd48()*2));
+        cairo_set_line_cap (ctx->cairo_cr, (cairo_line_cap_t)(int)(drnd48()*2));
+        dashed[0] = (drnd48()*20);
+        dashed[1] = (drnd48()*20);
         cairo_set_dash (ctx->cairo_cr, dashed, 2, 0);
 
         if (shape->stroke_color != -1) {

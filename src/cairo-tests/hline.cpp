@@ -37,9 +37,9 @@ ca_test_hline(caskbench_context_t *ctx)
     shape_copy(&ctx->shape_defaults, &shape);
     for (int i=0; i<ctx->size; i++) {
 
-        double x1 = (double)rand()/RAND_MAX * w;
-        double x2 = (double)rand()/RAND_MAX * w;
-        double y = (double)rand()/RAND_MAX * h;
+        double x1 = (double)rnd()/RAND_MAX * w;
+        double x2 = (double)rnd()/RAND_MAX * w;
+        double y = (double)rnd()/RAND_MAX * h;
 
         shape.x = x1;
         shape.y = y;

@@ -50,7 +50,7 @@ ca_test_curves(caskbench_context_t *ctx)
 
         // segments
         for (int j=0; j<nn; j++) {
-            double r = rr * drand48() / 8.0;
+            double r = rr * drnd48() / 8.0;
 
             double angle1 = j * step + delta;
             double x1 = cp + r * cos(angle1);

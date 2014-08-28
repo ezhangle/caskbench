@@ -40,10 +40,10 @@ ca_test_rectangles(caskbench_context_t *ctx)
     for (i=0; i<ctx->size; i++) {
         cairoRandomizeColor(ctx);
 
-        w = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX ) + 1;
-        h = trunc( (0.5*(double)ctx->canvas_height*rand())/RAND_MAX ) + 1;
-        x = trunc( (0.5*(double)ctx->canvas_width*rand())/RAND_MAX );
-        y = trunc( (0.5*(double)ctx->canvas_height*rand())/RAND_MAX );
+        w = trunc( (0.5*(double)ctx->canvas_width*rnd())/RAND_MAX ) + 1;
+        h = trunc( (0.5*(double)ctx->canvas_height*rnd())/RAND_MAX ) + 1;
+        x = trunc( (0.5*(double)ctx->canvas_width*rnd())/RAND_MAX );
+        y = trunc( (0.5*(double)ctx->canvas_height*rnd())/RAND_MAX );
         cairo_rectangle(cr, x+1, y+1, w, h);
 
         cairo_stroke (cr);

@@ -36,8 +36,8 @@ sk_test_image_rotate(caskbench_context_t *ctx)
     int ph = h - ih;
 
     for (int i=0; i<ctx->size; i++) {
-        double x = (double)rand()/RAND_MAX * pw;
-        double y = (double)rand()/RAND_MAX * ph;
+        double x = (double)rnd()/RAND_MAX * pw;
+        double y = (double)rnd()/RAND_MAX * ph;
 
         ctx->skia_canvas->save();
         ctx->skia_canvas->translate(w/2, h/2);

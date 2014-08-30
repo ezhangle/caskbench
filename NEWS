@@ -1,3 +1,16 @@
+0.5 - August 29, 2014
+---------------------
+Many more tests are available now, in particular a number of tests have
+been adapted from the FlashCanvas testsuite, providing Caskbench with a
+wider coverage than previously, and a test scoring mechanism.  A number
+of tests have also received major re-work and produce better results
+than past releases.
+
+Caskbench is now Open Source!  We've moved to a public repository in
+github, and hope this enables new contributions from the wider
+community.
+
+
 0.4 - April 25, 2014
 --------------------
 Building on last release's preliminary porting of Caskbench to Tizen and

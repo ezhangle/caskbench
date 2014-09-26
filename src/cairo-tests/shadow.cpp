@@ -36,6 +36,7 @@ static double y_offset;
 
 static kinetics_t *particles;
 
+#ifdef USE_CAIROGLES
 static void particle_init ()
 {
     line_width = 20.0;
@@ -100,10 +101,14 @@ static void fill_particle (caskbench_context_t *ctx, shapes_t *shape)
     cairo_set_line_width (cr, spread_line_width);
     cairo_stroke (cr);
 }
+#endif
 
 int
 ca_setup_shadow(caskbench_context_t *ctx)
 {
+#ifndef USE_CAIROGLES
+    return 0;
+#else
     if (ctx->size < 0)
         return 0;
     // Animation & Shadow setup
@@ -113,17 +118,25 @@ ca_setup_shadow(caskbench_context_t *ctx)
 
     particle_init ();
     return 1;
+#endif
 }
 
 void
 ca_teardown_shadow(void)
 {
+#ifndef USE_CAIROGLES
+    return;
+#else
     free(particles);
+#endif
 }
 
 int
 ca_test_shadow(caskbench_context_t *ctx)
 {
+#ifndef USE_CAIROGLES
+    return 0;
+#else
     cairo_set_source_rgb (ctx->cairo_cr, 1, 1, 1);
     cairo_rectangle (ctx->cairo_cr, 0, 0, ctx->canvas_width ,ctx->canvas_height);
     cairo_fill (ctx->cairo_cr);
@@ -145,6 +158,7 @@ ca_test_shadow(caskbench_context_t *ctx)
         fill_particle (ctx, &shape);
     }
     return 1;
+#endif
 }
 
 /*

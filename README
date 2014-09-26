@@ -43,6 +43,10 @@ or, for more advanced cmake settings:
 
  $ cmake --help
 
+For example, to build caskbench with only Cairo and no Skia at all, do:
+
+ $ cmake . -DENABLE_SKIA=OFF
+
 
 == Usage ==
 

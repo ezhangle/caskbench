@@ -65,6 +65,7 @@ typedef struct _caskbench_options {
     int max_swap_interval;
     int match_native_pixmap;
     int deferred_canvas;
+    int short_help;
 
     const char **tests;
 } caskbench_options_t;
@@ -293,6 +294,9 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         {"drawing-lib", 'D', POPT_ARG_STRING, &opt->drawing_lib, 0,
          "Drawing libraries to be used for drawing (e.g. 'cairo', 'cairo,skia')",
          NULL},
+        {"short-help", 'h', POPT_ARG_NONE, &opt->short_help, 0,
+         "Display brief usage message",
+         NULL},
         POPT_AUTOHELP
         {NULL}
     };
@@ -322,6 +326,11 @@ process_options(caskbench_options_t *opt, int argc, char *argv[])
         default:
             errx(1, "Unknown error in option processing\n");
         }
+    }
+
+    if (opt->short_help) {
+        poptPrintHelp(pc, stdout, 0);
+        exit(0);
     }
 
     // Remaining args are the tests to be run, or all if this list is empty
